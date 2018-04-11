@@ -64,6 +64,7 @@ under the License.
   <properties>
     <mavenVersion>2.2.1</mavenVersion>
     <scmVersion>1.9.2</scmVersion>
+    <surefire.version>2.21.0</surefire.version>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>    
   </properties>
