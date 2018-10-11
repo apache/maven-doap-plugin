@@ -63,7 +63,7 @@ under the License.
 
   <properties>
     <mavenVersion>2.2.1</mavenVersion>
-    <scmVersion>1.10.0</scmVersion>
+    <scmVersion>1.11.1</scmVersion>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>    
   </properties>
