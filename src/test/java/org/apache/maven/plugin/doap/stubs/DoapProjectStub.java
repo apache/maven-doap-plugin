@@ -138,7 +138,7 @@ public class DoapProjectStub
     public List<ArtifactRepository> getRemoteArtifactRepositories()
     {
         ArtifactRepository repository =
-            new DefaultArtifactRepository( "central", "http://repo2.maven.org/maven2/", new DefaultRepositoryLayout() );
+            new DefaultArtifactRepository( "central", "https://repo.maven.apache.org/maven2", new DefaultRepositoryLayout() );
 
         return Collections.singletonList( repository );
     }
