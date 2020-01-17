@@ -81,7 +81,6 @@ import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
  * Utility class for {@link DoapMojo} class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 1.0
  */
 public class DoapUtil
@@ -359,7 +358,6 @@ public class DoapUtil
      * Utility class for keeping track of DOAP organizations in the DoaP mojo.
      *
      * @author <a href="mailto:t.fliss@gmail.com">Tim Fliss</a>
-     * @version $Id$
      * @since 1.1
      */
     public static class Organization

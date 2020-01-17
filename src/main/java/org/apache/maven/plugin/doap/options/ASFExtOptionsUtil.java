@@ -32,7 +32,6 @@ import org.codehaus.plexus.util.StringUtils;
  * Utility class for {@link ASFExtOptions} class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 1.1
  */
 public class ASFExtOptionsUtil

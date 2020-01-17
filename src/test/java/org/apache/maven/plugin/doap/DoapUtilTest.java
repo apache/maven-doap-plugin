@@ -38,7 +38,6 @@ import org.codehaus.plexus.util.xml.XMLWriter;
  * Test {@link DoapUtil} class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  */
 public class DoapUtilTest
     extends PlexusTestCase

@@ -88,7 +88,6 @@ import java.util.TimeZone;
  *
  * @author Jason van Zyl
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 1.0-beta-1
  */
 @Mojo( name = "generate" )
