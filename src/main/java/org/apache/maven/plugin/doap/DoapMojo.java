@@ -81,10 +81,12 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
+ * <p>
  * Generate a <a href="http://usefulinc.com/ns/doap">Description of a Project (DOAP)</a> file from the main information
- * found in a POM. <br/>
- * <b>Note</b>: The generated file is tailored for use by projects at <a
- * href="http://projects.apache.org/doap.html">Apache</a>.
+ * found in a POM.
+ * </p>
+ * <b>Note</b>: The generated file is tailored for use by projects at
+ * <a href="http://projects.apache.org/doap.html">Apache</a>.
  *
  * @author Jason van Zyl
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>

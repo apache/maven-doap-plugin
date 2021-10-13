@@ -47,7 +47,7 @@ some POM options.
         </field>
         <field>
           <name>xmlnsNamespaceURI</name>
-          <description><![CDATA[The URI of the DOAP xmlns namespace.<br/>
+          <description><![CDATA[The URI of the DOAP xmlns namespace.<br>
 <b>Default value</b>: http://usefulinc.com/ns/doap#]]></description>
           <version>1.0.0</version>
           <type>String</type>
@@ -71,7 +71,7 @@ some POM options.
         </field>
         <field>
           <name>bugDatabase</name>
-          <description><![CDATA[Bug tracker for a project.<br/>
+          <description><![CDATA[Bug tracker for a project.<br>
 <b>Default value</b>: ${project.issueManagement.url}
 @see <a href="http://usefulinc.com/ns/doap#bug-database">http://usefulinc.com/ns/doap#bug-database</a>]]></description>
           <version>1.0.0</version>
@@ -81,8 +81,8 @@ some POM options.
         </field>
         <field>
           <name>category</name>
-          <description><![CDATA[A category of project.<br/>
-<b>Default value</b>: library<br/>
+          <description><![CDATA[A category of project.<br>
+<b>Default value</b>: library<br>
 <b>Note</b>: This string is comma separated to allow several categories.
 @see <a href="http://usefulinc.com/ns/doap#category">http://usefulinc.com/ns/doap#category</a>]]></description>
           <version>1.0.0</version>
@@ -92,7 +92,7 @@ some POM options.
         </field>
         <field>
           <name>created</name>
-          <description><![CDATA[Date when something was created, in YYYY-MM-DD form. e.g. 2004-04-05.<br/>
+          <description><![CDATA[Date when something was created, in YYYY-MM-DD form. e.g. 2004-04-05.<br>
 <b>Default value</b>: ${project.inceptionYear}-01-01
 @see <a href="http://usefulinc.com/ns/doap#created">http://usefulinc.com/ns/doap#created</a>]]></description>
           <version>1.0.0</version>
@@ -102,7 +102,7 @@ some POM options.
         </field>
         <field>
           <name>description</name>
-          <description><![CDATA[The project description.<br/>
+          <description><![CDATA[The project description.<br>
 <b>Default value</b>: ${project.description}
 @see <a href="http://usefulinc.com/ns/doap#description">http://usefulinc.com/ns/doap#description</a>]]></description>
           <version>1.0.0</version>
@@ -112,7 +112,7 @@ some POM options.
         </field>
         <field>
           <name>downloadPage</name>
-          <description><![CDATA[Web page from which the project software can be downloaded.<br/>
+          <description><![CDATA[Web page from which the project software can be downloaded.<br>
 <b>Default value</b>: ${project.distributionManagement.downloadUrl}
 @see <a href="http://usefulinc.com/ns/doap#download-page">http://usefulinc.com/ns/doap#download-page</a>]]></description>
           <version>1.0.0</version>
@@ -122,7 +122,7 @@ some POM options.
         </field>
         <field>
           <name>downloadMirror</name>
-          <description><![CDATA[Mirror of software download web page.<br/>
+          <description><![CDATA[Mirror of software download web page.<br>
 <b>Note</b>: This string is comma separated to allow several mirror pages.
 @see <a href="http://usefulinc.com/ns/doap#download-mirror">http://usefulinc.com/ns/doap#download-mirror</a>]]></description>
           <version>1.0.0</version>
@@ -131,7 +131,7 @@ some POM options.
         </field>
         <field>
           <name>homepage</name>
-          <description><![CDATA[URL of a project's homepage, associated with exactly one project.<br/>
+          <description><![CDATA[URL of a project's homepage, associated with exactly one project.<br>
 <b>Default value</b>: ${project.url}
 @see <a href="http://usefulinc.com/ns/doap#homepage">http://usefulinc.com/ns/doap#homepage</a>]]></description>
           <version>1.0.0</version>
@@ -141,7 +141,7 @@ some POM options.
         </field>
         <field>
           <name>implementations</name>
-          <description><![CDATA[A specification that a project implements. Could be a standard, API or legally defined level of conformance.<br/>
+          <description><![CDATA[A specification that a project implements. Could be a standard, API or legally defined level of conformance.<br>
 <b>Note</b>: This string is comma separated to allow several implementations.
 @see <a href="http://usefulinc.com/ns/doap#implements">http://usefulinc.com/ns/doap#implements</a>]]></description>
           <version>1.0.0</version>
@@ -159,7 +159,7 @@ some POM options.
         </field>
         <field>
           <name>license</name>
-          <description><![CDATA[The URI of an RDF description of the license the software is distributed under.<br/>
+          <description><![CDATA[The URI of an RDF description of the license the software is distributed under.<br>
 <b>Default value</b>: ${project.licenses[0].url}
 @see <a href="http://usefulinc.com/ns/doap#license">http://usefulinc.com/ns/doap#license</a>]]></description>
           <version>1.0.0</version>
@@ -169,8 +169,8 @@ some POM options.
         </field>
         <field>
           <name>mailingList</name>
-          <description><![CDATA[Single web page that allows people to find out more information about the mailing lists provided by the project.<br/>
-<b>Default value</b>: ${project.url}/mail-lists.html<br/>
+          <description><![CDATA[Single web page that allows people to find out more information about the mailing lists provided by the project.<br>
+<b>Default value</b>: ${project.url}/mail-lists.html<br>
 <b>Note</b>: by default, the mailing list page is the one generated by the Maven Project Info Reports Plugin.
 @see <a href="http://usefulinc.com/ns/doap#mailing-list">http://usefulinc.com/ns/doap#mailing-list</a>]]></description>
           <version>1.0.0</version>
@@ -180,7 +180,7 @@ some POM options.
         </field>
         <field>
           <name>name</name>
-          <description><![CDATA[The project name.<br/>
+          <description><![CDATA[The project name.<br>
 <b>Default value</b>: ${project.name}
 @see <a href="http://usefulinc.com/ns/doap#name">http://usefulinc.com/ns/doap#name</a>]]></description>
           <version>1.0.0</version>
@@ -198,7 +198,7 @@ some POM options.
         </field>
         <field>
           <name>os</name>
-          <description><![CDATA[Operating system that a project is limited to.  Omit this property if the project is not OS-specific.<br/>
+          <description><![CDATA[Operating system that a project is limited to.  Omit this property if the project is not OS-specific.<br>
 <b>Note</b>: This string is comma separated to allow several OS.
 @see <a href="http://usefulinc.com/ns/doap#os">http://usefulinc.com/ns/doap#os</a>]]></description>
           <version>1.0.0</version>
@@ -207,7 +207,7 @@ some POM options.
         </field>
         <field>
           <name>platform</name>
-          <description><![CDATA[Indicator of software platform (non-OS specific), e.g. Java, Firefox, ECMA CLR.<br/>
+          <description><![CDATA[Indicator of software platform (non-OS specific), e.g. Java, Firefox, ECMA CLR.<br>
 <b>Note</b>: This string is comma separated to allow several platforms.
 @see <a href="http://usefulinc.com/ns/doap#platform">http://usefulinc.com/ns/doap#platform</a>]]></description>
           <version>1.0.0</version>
@@ -216,8 +216,8 @@ some POM options.
         </field>
         <field>
           <name>programmingLanguage</name>
-          <description><![CDATA[Programming language a project is implemented in or intended for use with.<br/>
-<b>Default value</b>: Java<br/>
+          <description><![CDATA[Programming language a project is implemented in or intended for use with.<br>
+<b>Default value</b>: Java<br>
 <b>Note</b>: This string is comma separated to allow several programming-language.
 @see <a href="http://usefulinc.com/ns/doap#programming-language">http://usefulinc.com/ns/doap#programming-language</a>]]></description>
           <version>1.0.0</version>
@@ -227,7 +227,7 @@ some POM options.
         </field>
         <field>
           <name>scmAnonymous</name>
-          <description><![CDATA[Anonymous Source Repository as URL or Maven format.<br/>
+          <description><![CDATA[Anonymous Source Repository as URL or Maven format.<br>
 <b>Default value</b>: ${project.scm.connection}
 @see <a href="http://usefulinc.com/ns/doap#Repository">http://usefulinc.com/ns/doap#Repository</a>
 @see <a href="http://usefulinc.com/ns/doap#CVSRepository">http://usefulinc.com/ns/doap#CVSRepository</a>
@@ -239,7 +239,7 @@ some POM options.
         </field>
         <field>
           <name>scmDeveloper</name>
-          <description><![CDATA[Developer Source Repository as URL or Maven format.<br/>
+          <description><![CDATA[Developer Source Repository as URL or Maven format.<br>
 <b>Default value</b>: ${project.scm.developerConnection}
 @see <a href="http://usefulinc.com/ns/doap#Repository">http://usefulinc.com/ns/doap#Repository</a>
 @see <a href="http://usefulinc.com/ns/doap#CVSRepository">http://usefulinc.com/ns/doap#CVSRepository</a>
@@ -267,7 +267,7 @@ some POM options.
         </field>
         <field>
           <name>shortdesc</name>
-          <description><![CDATA[Short (8 or 9 words) plain text description of a project.<br/>
+          <description><![CDATA[Short (8 or 9 words) plain text description of a project.<br>
 <b>Default value</b>: ${project.description}
 @see <a href="http://usefulinc.com/ns/doap#shortdesc">http://usefulinc.com/ns/doap#shortdesc</a>]]></description>
           <version>1.0.0</version>
@@ -277,7 +277,7 @@ some POM options.
         </field>
         <field>
           <name>vendor</name>
-          <description><![CDATA[Vendor organization: commercial, free or otherwise.<br/>
+          <description><![CDATA[Vendor organization: commercial, free or otherwise.<br>
 <b>Default value</b>: ${project.organization.name}
 @see <a href="http://usefulinc.com/ns/doap#vendor">http://usefulinc.com/ns/doap#vendor</a>]]></description>
           <version>1.0.0</version>
@@ -345,8 +345,8 @@ some POM options.
           <code>
             <![CDATA[
     /**
-     * Get the path of the DOAP file that will be generated, no notion of path. <br/>
-     * If not specified, return <code>"doap_" + this.artifactId + ".rdf"</code> <br/>
+     * Get the path of the DOAP file that will be generated, no notion of path. <br>
+     * If not specified, return <code>"doap_" + this.artifactId + ".rdf"</code> <br>
      *
      * @return String
      */
