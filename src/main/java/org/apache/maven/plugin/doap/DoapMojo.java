@@ -731,13 +731,13 @@ public class DoapMojo extends AbstractMojo {
         // Releases
         writeReleases(writer, project);
 
-        // Developers
+        // Developers && Contributors
         List<Developer> developers = project.getDevelopers();
-        writeContributors(writer, new ArrayList<Contributor>(developers));
-
-        // Contributors
         List<Contributor> contributors = project.getContributors();
-        writeContributors(writer, contributors);
+
+        List<Contributor> all = new ArrayList<>( developers );
+        all.addAll( contributors );
+        writeContributors( writer, all);
 
         // Extra DOAP
         Map<Object, String> map = doapOptions.getExtra();
