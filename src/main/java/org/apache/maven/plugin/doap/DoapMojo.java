@@ -67,7 +67,6 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.scm.manager.NoSuchScmProviderException;
 import org.apache.maven.scm.manager.ScmManager;
-import org.apache.maven.scm.provider.cvslib.repository.CvsScmProviderRepository;
 import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
@@ -733,8 +732,8 @@ public class DoapMojo extends AbstractMojo {
         writeReleases(writer, project);
 
         // Developers
-        List<Contributor> developers = project.getDevelopers();
-        writeContributors(writer, developers);
+        List<Developer> developers = project.getDevelopers();
+        writeContributors(writer, new ArrayList<Contributor>(developers));
 
         // Contributors
         List<Contributor> contributors = project.getContributors();
@@ -1391,7 +1390,6 @@ public class DoapMojo extends AbstractMojo {
      * @param writer  not null
      * @param project the Maven project, not null
      * @see <a href="http://usefulinc.com/ns/doap#Repository">http://usefulinc.com/ns/doap#Repository</a>
-     * @see <a href="http://usefulinc.com/ns/doap#CVSRepository">http://usefulinc.com/ns/doap#CVSRepository</a>
      * @see <a href="http://usefulinc.com/ns/doap#SVNRepository">http://usefulinc.com/ns/doap#SVNRepository</a>
      */
     private void writeSourceRepositories(XMLWriter writer, MavenProject project) {
@@ -1447,7 +1445,7 @@ public class DoapMojo extends AbstractMojo {
      *   &lt;repository&gt;
      *     &lt;SVNRepository&gt;
      *       &lt;location rdf:resource="http://svn.apache.org/repos/asf/maven/components/trunk/"/&gt;
-     *       &lt;browse rdf:resource="http://svn.apache.org/viewcvs.cgi/maven/components/trunk/"/&gt;
+     *       &lt;browse rdf:resource="http://svn.apache.org/viewvc.cgi/maven/components/trunk/"/&gt;
      *     &lt;/SVNRepository&gt;
      *   &lt;/repository&gt;
      * </pre>
@@ -1456,7 +1454,6 @@ public class DoapMojo extends AbstractMojo {
      * @param project    the Maven project, not null
      * @param connection not null
      * @see <a href="http://usefulinc.com/ns/doap#Repository">http://usefulinc.com/ns/doap#Repository</a>
-     * @see <a href="http://usefulinc.com/ns/doap#CVSRepository">http://usefulinc.com/ns/doap#CVSRepository</a>
      * @see <a href="http://usefulinc.com/ns/doap#SVNRepository">http://usefulinc.com/ns/doap#SVNRepository</a>
      */
     private void writeSourceRepository(XMLWriter writer, MavenProject project, String connection) {
@@ -1464,14 +1461,7 @@ public class DoapMojo extends AbstractMojo {
 
         DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "repository");
 
-        if (isScmSystem(repository, "cvs")) {
-            DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "CVSRepository");
-
-            CvsScmProviderRepository cvsRepo = (CvsScmProviderRepository) repository.getProviderRepository();
-
-            DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "anon-root", cvsRepo.getCvsRoot());
-            DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "module", cvsRepo.getModule());
-        } else if (isScmSystem(repository, "svn")) {
+        if (isScmSystem(repository, "svn")) {
             DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "SVNRepository");
 
             SvnScmProviderRepository svnRepo = (SvnScmProviderRepository) repository.getProviderRepository();
@@ -1495,7 +1485,7 @@ public class DoapMojo extends AbstractMojo {
         DoapUtil.writeRdfResourceElement(
                 writer, doapOptions.getXmlnsPrefix(), "browse", project.getScm().getUrl());
 
-        writer.endElement(); // CVSRepository || SVNRepository || Repository
+        writer.endElement(); // SVNRepository || Repository
         writer.endElement(); // repository
     }
 
@@ -2127,7 +2117,7 @@ public class DoapMojo extends AbstractMojo {
     /**
      * Convenience method that return true is the defined <code>SCM repository</code> is a known provider.
      * <p>
-     * Actually, we fully support Clearcase, CVS, Perforce, Starteam, SVN by the maven-scm-providers component.
+     * Actually, we fully support SVN by the maven-scm-providers component.
      * </p>
      *
      * @param scmRepository a SCM repository
