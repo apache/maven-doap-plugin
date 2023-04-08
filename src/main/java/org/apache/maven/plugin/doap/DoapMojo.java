@@ -1925,14 +1925,7 @@ public class DoapMojo
             {
                 repo = scmManager.makeScmRepository( scmUrl );
             }
-            catch ( NoSuchScmProviderException e )
-            {
-                if ( getLog().isDebugEnabled() )
-                {
-                    getLog().debug( e.getMessage(), e );
-                }
-            }
-            catch ( ScmRepositoryException e )
+            catch ( NoSuchScmProviderException | ScmRepositoryException e )
             {
                 if ( getLog().isDebugEnabled() )
                 {
@@ -2548,9 +2541,9 @@ public class DoapMojo
 
         public static final int SHORT_DESC_TOO_LONG = 34;
 
-        private List<String> errorMessages = new ArrayList<String>();
+        private List<String> errorMessages = new ArrayList<>();
 
-        private List<String> warnMessages = new ArrayList<String>();
+        private List<String> warnMessages = new ArrayList<>();
 
         /**
          * @return the error messages

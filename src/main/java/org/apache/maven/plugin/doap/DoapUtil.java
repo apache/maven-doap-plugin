@@ -105,7 +105,7 @@ public class DoapUtil
     protected static final String RDF_NODE_ID = "rdf:nodeID";
 
     /** DoaP Organizations stored by name */
-    private static Map<String, DoapUtil.Organization> organizations = new HashMap<String, DoapUtil.Organization>();
+    private static Map<String, DoapUtil.Organization> organizations = new HashMap<>();
 
     /**
      * Write comments in the DOAP file header
@@ -366,7 +366,7 @@ public class DoapUtil
 
         private String url;
 
-        private List<String> members = new LinkedList<String>();
+        private List<String> members = new LinkedList<>();
 
         public Organization( String name, String url )
         {
@@ -468,7 +468,7 @@ public class DoapUtil
         Model model = ModelFactory.createDefaultModel();
         RDFReader r = model.getReader( "RDF/XML" );
         r.setProperty( "error-mode", "strict-error" );
-        final List<String> errors = new ArrayList<String>();
+        final List<String> errors = new ArrayList<>();
         r.setErrorHandler( new RDFDefaultErrorHandler()
         {
             @Override
@@ -696,14 +696,14 @@ public class DoapUtil
     private static Map<String, List<Contributor>> filterContributorsByDoapRoles( I18N i18n,
                                                                            List<Contributor> developersOrContributors )
     {
-        Map<String, List<Contributor>> returnMap = new HashMap<String, List<Contributor>>( 7 );
-        returnMap.put( "maintainers", new ArrayList<Contributor>() );
-        returnMap.put( "developers", new ArrayList<Contributor>() );
-        returnMap.put( "documenters", new ArrayList<Contributor>() );
-        returnMap.put( "translators", new ArrayList<Contributor>() );
-        returnMap.put( "testers", new ArrayList<Contributor>() );
-        returnMap.put( "helpers", new ArrayList<Contributor>() );
-        returnMap.put( "unknowns", new ArrayList<Contributor>() );
+        Map<String, List<Contributor>> returnMap = new HashMap<>( 7 );
+        returnMap.put( "maintainers", new ArrayList<>() );
+        returnMap.put( "developers", new ArrayList<>() );
+        returnMap.put( "documenters", new ArrayList<>() );
+        returnMap.put( "translators", new ArrayList<>() );
+        returnMap.put( "testers", new ArrayList<>() );
+        returnMap.put( "helpers", new ArrayList<>() );
+        returnMap.put( "unknowns", new ArrayList<>() );
 
         if ( developersOrContributors == null || developersOrContributors.isEmpty() )
         {
@@ -845,7 +845,7 @@ public class DoapUtil
          * space overflows due to retention of discarded classloaders.
          */
         @SuppressWarnings( "rawtypes" )
-        private static final Map<Class, ClassMap> CLASS_MAPS = new WeakHashMap<Class, ClassMap>();
+        private static final Map<Class, ClassMap> CLASS_MAPS = new WeakHashMap<>();
 
         private ReflectionValueExtractor()
         {
@@ -891,7 +891,7 @@ public class DoapUtil
                     token = parser2.nextToken();
                     try
                     {
-                        index = Integer.valueOf( parser2.nextToken() ).intValue();
+                        index = Integer.parseInt( parser2.nextToken() );
                     }
                     catch ( NumberFormatException e )
                     {
