@@ -64,7 +64,7 @@ under the License.
   <properties>
     <javaVersion>8</javaVersion>
     <mavenVersion>2.2.1</mavenVersion>
-    <scmVersion>1.11.1</scmVersion>
+    <scmVersion>1.13.0</scmVersion>
     <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
   </properties>
 
