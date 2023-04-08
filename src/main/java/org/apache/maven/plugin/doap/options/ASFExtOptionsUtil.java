@@ -186,7 +186,7 @@ public class ASFExtOptionsUtil
             return null;
         }
 
-        List<Developer> pmcs = new ArrayList<Developer>();
+        List<Developer> pmcs = new ArrayList<>();
         for ( Developer developer : developers )
         {
             List<String> roles = developer.getRoles();

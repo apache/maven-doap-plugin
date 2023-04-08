@@ -137,7 +137,7 @@ public class DoapUtilTest
         assertNotNull( i18n );
         assertNotNull( i18n.getBundle() );
 
-        List<Contributor> developersOrContributors = new ArrayList<Contributor>();
+        List<Contributor> developersOrContributors = new ArrayList<>();
 
         // One role
         Developer dev = new Developer();
@@ -217,7 +217,7 @@ public class DoapUtilTest
         license.setName( "licenseName" );
         license.setUrl( "licenseUrl" );
 
-        List<Developer> developers = new ArrayList<Developer>();
+        List<Developer> developers = new ArrayList<>();
         Developer developer1 = new Developer();
         developer1.setId( "id1" );
         developer1.setName( "developerName1" );
