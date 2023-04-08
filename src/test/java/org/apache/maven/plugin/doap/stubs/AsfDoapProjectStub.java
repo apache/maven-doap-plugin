@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.doap.stubs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.doap.stubs;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.doap.stubs;
 
 import java.io.File;
 import java.util.Collections;
@@ -40,95 +39,78 @@ import org.codehaus.plexus.util.ReaderFactory;
 /**
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
-public class AsfDoapProjectStub
-    extends MavenProjectStub
-{
+public class AsfDoapProjectStub extends MavenProjectStub {
     private Model model;
 
     /**
      * Default constructor
      */
-    public AsfDoapProjectStub()
-    {
+    public AsfDoapProjectStub() {
         MavenXpp3Reader pomReader = new MavenXpp3Reader();
-        try
-        {
-            model =
-                pomReader.read( ReaderFactory.newXmlReader( new File(
-                                                                      new File( super.getBasedir(),
-                                                                                "/src/test/resources/unit/asf-doap-configuration/" ),
-                                                                      "asf-doap-configuration-plugin-config.xml" ) ) );
-            setModel( model );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+        try {
+            model = pomReader.read(ReaderFactory.newXmlReader(new File(
+                    new File(super.getBasedir(), "/src/test/resources/unit/asf-doap-configuration/"),
+                    "asf-doap-configuration-plugin-config.xml")));
+            setModel(model);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        setGroupId( model.getGroupId() );
-        setArtifactId( model.getArtifactId() );
-        setVersion( model.getVersion() );
-        setName( model.getName() );
-        setDescription( model.getDescription() );
-        setUrl( model.getUrl() );
-        setPackaging( model.getPackaging() );
-        setDevelopers( model.getDevelopers() );
+        setGroupId(model.getGroupId());
+        setArtifactId(model.getArtifactId());
+        setVersion(model.getVersion());
+        setName(model.getName());
+        setDescription(model.getDescription());
+        setUrl(model.getUrl());
+        setPackaging(model.getPackaging());
+        setDevelopers(model.getDevelopers());
     }
 
     @Override
-    public List<Developer> getDevelopers()
-    {
+    public List<Developer> getDevelopers() {
         return model.getDevelopers();
     }
 
     @Override
-    public List<License> getLicenses()
-    {
+    public List<License> getLicenses() {
         return model.getLicenses();
     }
 
     @Override
-    public Organization getOrganization()
-    {
+    public Organization getOrganization() {
         return model.getOrganization();
     }
 
     @Override
-    public Scm getScm()
-    {
+    public Scm getScm() {
         return model.getScm();
     }
 
     @Override
-    public IssueManagement getIssueManagement()
-    {
+    public IssueManagement getIssueManagement() {
         return model.getIssueManagement();
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return model.getDescription();
     }
 
     @Override
-    public String getInceptionYear()
-    {
+    public String getInceptionYear() {
         return model.getInceptionYear();
     }
 
     @Override
-    public DistributionManagement getDistributionManagement()
-    {
+    public DistributionManagement getDistributionManagement() {
         return model.getDistributionManagement();
     }
 
     @Override
-    public List<ArtifactRepository> getRemoteArtifactRepositories()
-    {
-        ArtifactRepository repository =
-            new DefaultArtifactRepository( "central", "https://repo.maven.apache.org/maven2", new DefaultRepositoryLayout() );
+    public List<ArtifactRepository> getRemoteArtifactRepositories() {
+        ArtifactRepository repository = new DefaultArtifactRepository(
+                "central", "https://repo.maven.apache.org/maven2", new DefaultRepositoryLayout());
 
-        return Collections.singletonList( repository );
+        return Collections.singletonList(repository);
     }
 }

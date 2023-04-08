@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.doap.options;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.doap.options;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.doap.options;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,8 +33,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 1.1
  */
-public class ASFExtOptionsUtil
-{
+public class ASFExtOptionsUtil {
     /** Apache domain name, i.e. apache.org */
     private static final String APACHE_DOMAIN_NAME = "apache.org";
 
@@ -80,9 +78,19 @@ public class ASFExtOptionsUtil
     public static final String XML_CATEGORY = "xml";
 
     /** All categories supported by ASF */
-    public static final String[] CATEGORIES = { BUILD_MANAGEMENT_CATEGORY, DATABASE_CATEGORY, HTTP_CATEGORY,
-        HTTP_MODULES_CATEGORY, LIBRARY_CATEGORY, MAIL_CATEGORY, NETWORK_CLIENT_CATEGORY, NETWORK_SERVER_CATEGORY,
-        TESTING_CATEGORY, WEB_FRAMEWORK_CATEGORY, XML_CATEGORY };
+    public static final String[] CATEGORIES = {
+        BUILD_MANAGEMENT_CATEGORY,
+        DATABASE_CATEGORY,
+        HTTP_CATEGORY,
+        HTTP_MODULES_CATEGORY,
+        LIBRARY_CATEGORY,
+        MAIL_CATEGORY,
+        NETWORK_CLIENT_CATEGORY,
+        NETWORK_SERVER_CATEGORY,
+        TESTING_CATEGORY,
+        WEB_FRAMEWORK_CATEGORY,
+        XML_CATEGORY
+    };
 
     /** C or C++ Programming Language. */
     public static final String C_PROGRAMMING_LANGUAGE = "C";
@@ -103,8 +111,14 @@ public class ASFExtOptionsUtil
     public static final String TCL_PROGRAMMING_LANGUAGE = "Tcl";
 
     /** All Programming Languages supported by ASF */
-    public static final String[] PROGRAMMING_LANGUAGES = { C_PROGRAMMING_LANGUAGE, JAVA_PROGRAMMING_LANGUAGE,
-        PERL_PROGRAMMING_LANGUAGE, PYTHON_PROGRAMMING_LANGUAGE, SVG_PROGRAMMING_LANGUAGE, TCL_PROGRAMMING_LANGUAGE };
+    public static final String[] PROGRAMMING_LANGUAGES = {
+        C_PROGRAMMING_LANGUAGE,
+        JAVA_PROGRAMMING_LANGUAGE,
+        PERL_PROGRAMMING_LANGUAGE,
+        PYTHON_PROGRAMMING_LANGUAGE,
+        SVG_PROGRAMMING_LANGUAGE,
+        TCL_PROGRAMMING_LANGUAGE
+    };
 
     /**
      * @param category not null
@@ -112,12 +126,9 @@ public class ASFExtOptionsUtil
      * @see <a href="http://projects.apache.org/categories.html">http://projects.apache.org/categories.html</a>
      * @see #CATEGORIES
      */
-    public static String getCategorySupportedByASF( String category )
-    {
-        for ( String supportedCategory : CATEGORIES )
-        {
-            if ( supportedCategory.equalsIgnoreCase( category ) )
-            {
+    public static String getCategorySupportedByASF(String category) {
+        for (String supportedCategory : CATEGORIES) {
+            if (supportedCategory.equalsIgnoreCase(category)) {
                 return supportedCategory;
             }
         }
@@ -131,12 +142,9 @@ public class ASFExtOptionsUtil
      * @see <a href="http://projects.apache.org/languages.html">http://projects.apache.org/languages.html</a>
      * @see #PROGRAMMING_LANGUAGES
      */
-    public static String getProgrammingLanguageSupportedByASF( String programmingLanguage )
-    {
-        for ( String supportedProgrammingLanguage : PROGRAMMING_LANGUAGES )
-        {
-            if ( supportedProgrammingLanguage.equalsIgnoreCase( programmingLanguage ) )
-            {
+    public static String getProgrammingLanguageSupportedByASF(String programmingLanguage) {
+        for (String supportedProgrammingLanguage : PROGRAMMING_LANGUAGES) {
+            if (supportedProgrammingLanguage.equalsIgnoreCase(programmingLanguage)) {
                 return supportedProgrammingLanguage;
             }
         }
@@ -150,21 +158,16 @@ public class ASFExtOptionsUtil
      * @param developers list of <code>{@link Developer}</code>
      * @return a Developer or null if not found.
      */
-    public static Developer findChair( List<Developer> developers )
-    {
-        if ( developers == null || developers.isEmpty() )
-        {
+    public static Developer findChair(List<Developer> developers) {
+        if (developers == null || developers.isEmpty()) {
             return null;
         }
 
-        for ( Developer developer : developers )
-        {
+        for (Developer developer : developers) {
             List<String> roles = developer.getRoles();
 
-            for ( String role : roles )
-            {
-                if ( role.toLowerCase().contains( "chair" ) )
-                {
+            for (String role : roles) {
+                if (role.toLowerCase().contains("chair")) {
                     return developer;
                 }
             }
@@ -179,23 +182,18 @@ public class ASFExtOptionsUtil
      * @param developers list of <code>{@link Developer}</code>
      * @return a not null list of Developer.
      */
-    public static List<Developer> findPMCMembers( List<Developer> developers )
-    {
-        if ( developers == null || developers.isEmpty() )
-        {
+    public static List<Developer> findPMCMembers(List<Developer> developers) {
+        if (developers == null || developers.isEmpty()) {
             return null;
         }
 
         List<Developer> pmcs = new ArrayList<>();
-        for ( Developer developer : developers )
-        {
+        for (Developer developer : developers) {
             List<String> roles = developer.getRoles();
 
-            for ( String role : roles )
-            {
-                if ( role.toLowerCase().contains( "pmc" ) )
-                {
-                    pmcs.add( developer );
+            for (String role : roles) {
+                if (role.toLowerCase().contains("pmc")) {
+                    pmcs.add(developer);
                 }
             }
         }
@@ -212,75 +210,68 @@ public class ASFExtOptionsUtil
      * @see #APACHE_DOMAIN_NAME
      * @since 1.1
      */
-    public static boolean isASFProject( MavenProject project )
-    {
-        if ( project == null )
-        {
-            throw new IllegalArgumentException( "project is required" );
+    public static boolean isASFProject(MavenProject project) {
+        if (project == null) {
+            throw new IllegalArgumentException("project is required");
         }
 
         // check organization name
-        if ( project.getOrganization() != null && StringUtils.isNotEmpty( project.getOrganization().getName() )
-            && project.getOrganization().getName().trim().equals( "The Apache Software Foundation" ) )
-            // see org.apache:apache artifact
+        if (project.getOrganization() != null
+                && StringUtils.isNotEmpty(project.getOrganization().getName())
+                && project.getOrganization().getName().trim().equals("The Apache Software Foundation"))
+        // see org.apache:apache artifact
         {
             return true;
         }
 
         // check domain name
-        if ( project.getOrganization() != null && isHostedAtASF( project.getOrganization().getUrl() ) )
-        {
+        if (project.getOrganization() != null
+                && isHostedAtASF(project.getOrganization().getUrl())) {
             return true;
         }
 
-        if ( isHostedAtASF( project.getUrl() ) )
-        {
+        if (isHostedAtASF(project.getUrl())) {
             return true;
         }
 
-        if ( project.getScm() != null )
-        {
-            if ( StringUtils.isNotEmpty( project.getScm().getUrl() )
-                && project.getScm().getUrl().contains( APACHE_DOMAIN_NAME ) )
-            {
+        if (project.getScm() != null) {
+            if (StringUtils.isNotEmpty(project.getScm().getUrl())
+                    && project.getScm().getUrl().contains(APACHE_DOMAIN_NAME)) {
                 return true;
             }
 
-            if ( StringUtils.isNotEmpty( project.getScm().getConnection() )
-                && project.getScm().getConnection().contains( APACHE_DOMAIN_NAME ) )
-            {
+            if (StringUtils.isNotEmpty(project.getScm().getConnection())
+                    && project.getScm().getConnection().contains(APACHE_DOMAIN_NAME)) {
                 return true;
             }
 
-            if ( StringUtils.isNotEmpty( project.getScm().getDeveloperConnection() )
-                && project.getScm().getDeveloperConnection().contains( APACHE_DOMAIN_NAME ) )
-            {
+            if (StringUtils.isNotEmpty(project.getScm().getDeveloperConnection())
+                    && project.getScm().getDeveloperConnection().contains(APACHE_DOMAIN_NAME)) {
                 return true;
             }
         }
 
-        if ( project.getDistributionManagement() != null )
-        {
-            if ( isHostedAtASF( project.getDistributionManagement().getDownloadUrl() ) )
-            {
+        if (project.getDistributionManagement() != null) {
+            if (isHostedAtASF(project.getDistributionManagement().getDownloadUrl())) {
                 return true;
             }
 
-            if ( project.getDistributionManagement().getRepository() != null
-                && isHostedAtASF( project.getDistributionManagement().getRepository().getUrl() ) )
-            {
+            if (project.getDistributionManagement().getRepository() != null
+                    && isHostedAtASF(
+                            project.getDistributionManagement().getRepository().getUrl())) {
                 return true;
             }
 
-            if ( project.getDistributionManagement().getSnapshotRepository() != null
-                && isHostedAtASF( project.getDistributionManagement().getSnapshotRepository().getUrl() ) )
-            {
+            if (project.getDistributionManagement().getSnapshotRepository() != null
+                    && isHostedAtASF(project.getDistributionManagement()
+                            .getSnapshotRepository()
+                            .getUrl())) {
                 return true;
             }
 
-            if ( project.getDistributionManagement().getSite() != null
-                && isHostedAtASF( project.getDistributionManagement().getSite().getUrl() ) )
-            {
+            if (project.getDistributionManagement().getSite() != null
+                    && isHostedAtASF(
+                            project.getDistributionManagement().getSite().getUrl())) {
                 return true;
             }
         }
@@ -293,24 +284,18 @@ public class ASFExtOptionsUtil
      * @return <code>true</code> if the str is hosted by ASF.
      * @see #APACHE_DOMAIN_NAME
      */
-    private static boolean isHostedAtASF( String str )
-    {
-        if ( StringUtils.isEmpty( str ) )
-        {
+    private static boolean isHostedAtASF(String str) {
+        if (StringUtils.isEmpty(str)) {
             return false;
         }
 
         str = str.trim();
-        try
-        {
-            URL url = new URL( str );
-            if ( url.getHost().endsWith( APACHE_DOMAIN_NAME ) )
-            {
+        try {
+            URL url = new URL(str);
+            if (url.getHost().endsWith(APACHE_DOMAIN_NAME)) {
                 return true;
             }
-        }
-        catch ( MalformedURLException e )
-        {
+        } catch (MalformedURLException e) {
             // ignore
         }
 
