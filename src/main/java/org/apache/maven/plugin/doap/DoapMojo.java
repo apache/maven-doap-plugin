@@ -1618,7 +1618,8 @@ public class DoapMojo extends AbstractMojo {
             return;
         }
 
-        if (!(organization == null || organization.isEmpty()) || !(organizationUrl == null || organizationUrl.isEmpty())) {
+        if (!(organization == null || organization.isEmpty())
+                || !(organizationUrl == null || organizationUrl.isEmpty())) {
             DoapUtil.Organization doapOrganization = DoapUtil.addOrganization(organization, organizationUrl);
             nodeId = DoapUtil.getNodeId();
             doapOrganization.addMember(nodeId);
@@ -1642,7 +1643,8 @@ public class DoapMojo extends AbstractMojo {
                         UserMessages.INVALID_EMAIL);
             }
         }
-        if ((organization != null && !organization.isEmpty()) && (organizationUrl != null && !organizationUrl.isEmpty())) {
+        if ((organization != null && !organization.isEmpty())
+                && (organizationUrl != null && !organizationUrl.isEmpty())) {
             try {
                 new URL(organizationUrl);
 
