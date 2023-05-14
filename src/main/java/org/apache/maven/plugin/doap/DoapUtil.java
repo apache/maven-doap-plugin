@@ -142,7 +142,7 @@ public class DoapUtil {
      * @since 1.1
      */
     public static void writeComment(XMLWriter writer, String comment) throws IllegalArgumentException {
-        if (StringUtils.isEmpty(comment)) {
+        if (comment == null || comment.isEmpty()) {
             throw new IllegalArgumentException("comment should be defined");
         }
 
@@ -159,7 +159,7 @@ public class DoapUtil {
      */
     public static void writeElement(XMLWriter writer, String xmlnsPrefix, String name, String value)
             throws IllegalArgumentException {
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name should be defined");
         }
 
@@ -180,12 +180,12 @@ public class DoapUtil {
      */
     public static void writeElement(XMLWriter writer, String xmlnsPrefix, String name, String value, String lang)
             throws IllegalArgumentException {
-        if (StringUtils.isEmpty(lang)) {
+        if (lang == null || lang.isEmpty()) {
             writeElement(writer, xmlnsPrefix, name, value);
             return;
         }
 
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name should be defined");
         }
 
@@ -206,11 +206,11 @@ public class DoapUtil {
      */
     public static void writeStartElement(XMLWriter writer, String xmlnsPrefix, String name)
             throws IllegalArgumentException {
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name should be defined");
         }
 
-        if (StringUtils.isNotEmpty(xmlnsPrefix)) {
+        if (xmlnsPrefix != null && !xmlnsPrefix.isEmpty()) {
             writer.startElement(xmlnsPrefix + ":" + name);
         } else {
             writer.startElement(name);
@@ -226,7 +226,7 @@ public class DoapUtil {
      */
     public static void writeRdfResourceElement(XMLWriter writer, String xmlnsPrefix, String name, String value)
             throws IllegalArgumentException {
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name should be defined");
         }
 
@@ -245,7 +245,7 @@ public class DoapUtil {
      */
     public static void writeRdfNodeIdElement(XMLWriter writer, String xmlnsPrefix, String name, String value)
             throws IllegalArgumentException {
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name should be defined");
         }
 
@@ -449,7 +449,7 @@ public class DoapUtil {
      * @since 1.1
      */
     public static boolean isValidEmail(String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str == null || str.isEmpty()) {
             return false;
         }
 

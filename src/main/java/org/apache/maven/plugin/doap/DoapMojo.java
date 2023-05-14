@@ -630,7 +630,7 @@ public class DoapMojo extends AbstractMojo {
         if (artifact != null) {
             String about = project.getUrl();
 
-            if (StringUtils.isNotEmpty(about)) {
+            if (about != null && !about.isEmpty()) {
                 try {
                     new URL(about);
 
@@ -649,7 +649,7 @@ public class DoapMojo extends AbstractMojo {
         }
 
         if (!added) {
-            if (StringUtils.isNotEmpty(about)) {
+            if (about != null && !about.isEmpty()) {
                 try {
                     new URL(about);
 
@@ -765,7 +765,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeName(XMLWriter writer, MavenProject project) {
         String name = DoapUtil.interpolate(doapOptions.getName(), project, settings);
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "name"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -790,7 +790,7 @@ public class DoapMojo extends AbstractMojo {
     private void writeDescription(XMLWriter writer, MavenProject project) {
         boolean addComment = false;
         String description = DoapUtil.interpolate(doapOptions.getDescription(), project, settings);
-        if (StringUtils.isEmpty(description)) {
+        if (description == null || description.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "description"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
         } else {
@@ -801,7 +801,7 @@ public class DoapMojo extends AbstractMojo {
 
         String comment = "Short plain text description of a project.";
         String shortdesc = DoapUtil.interpolate(doapOptions.getShortdesc(), project, settings);
-        if (StringUtils.isEmpty(shortdesc)) {
+        if (shortdesc == null || shortdesc.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "shortdesc"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -834,7 +834,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeCreated(XMLWriter writer, MavenProject project) {
         String created = DoapUtil.interpolate(doapOptions.getCreated(), project, settings);
-        if (StringUtils.isEmpty(created)) {
+        if (created == null || created.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "created"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -861,7 +861,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeHomepage(XMLWriter writer, MavenProject project) {
         String homepage = DoapUtil.interpolate(doapOptions.getHomepage(), project, settings);
-        if (StringUtils.isEmpty(homepage)) {
+        if (homepage == null || homepage.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "homepage"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
         } else {
@@ -877,7 +877,7 @@ public class DoapMojo extends AbstractMojo {
 
         if (StringUtils.isNotEmpty(doapOptions.getOldHomepage())) {
             String oldHomepage = DoapUtil.interpolate(doapOptions.getOldHomepage(), project, settings);
-            if (StringUtils.isEmpty(oldHomepage)) {
+            if (oldHomepage == null || oldHomepage.isEmpty()) {
                 return;
             }
 
@@ -901,7 +901,7 @@ public class DoapMojo extends AbstractMojo {
      *      http://usefulinc.com/ns/doap#programming-language</a>
      */
     private void writeProgrammingLanguage(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getProgrammingLanguage()) && StringUtils.isEmpty(language)) {
+        if (StringUtils.isEmpty(doapOptions.getProgrammingLanguage()) && (language == null || language.isEmpty())) {
             messages.addMessage(
                     new String[] {"doapOptions", "programmingLanguage"},
                     null,
@@ -911,7 +911,7 @@ public class DoapMojo extends AbstractMojo {
 
         boolean addComment = false;
         String comment = "Programming language.";
-        if (StringUtils.isNotEmpty(language)) // backward compatible
+        if (language != null && !language.isEmpty()) // backward compatible
         {
             getLog().warn("The <language/> parameter is deprecated, please use "
                     + messages.toConfiguration(new String[] {"doapOptions", "programmingLanguage"}, null)
@@ -981,7 +981,7 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://usefulinc.com/ns/doap#category">http://usefulinc.com/ns/doap#category</a>
      */
     private void writeCategory(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getCategory()) && StringUtils.isEmpty(category)) {
+        if (StringUtils.isEmpty(doapOptions.getCategory()) && (category == null || category.isEmpty())) {
             messages.addMessage(
                     new String[] {"doapOptions", "category"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -990,7 +990,7 @@ public class DoapMojo extends AbstractMojo {
         // TODO: how to lookup category, map it, or just declare it.
         boolean addComment = false;
         String comment = "A category of project.";
-        if (StringUtils.isNotEmpty(category)) // backward compatible
+        if (category != null && !category.isEmpty()) // backward compatible
         {
             getLog().warn("The <category/> parameter is deprecated, please use "
                     + messages.toConfiguration(new String[] {"doapOptions", "category"}, null)
@@ -1066,7 +1066,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeDownloadPage(XMLWriter writer, MavenProject project) {
         String downloadPage = DoapUtil.interpolate(doapOptions.getDownloadPage(), project, settings);
-        if (StringUtils.isEmpty(downloadPage)) {
+        if (downloadPage == null || downloadPage.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "downloadPage"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -1113,7 +1113,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeOS(XMLWriter writer, MavenProject project) {
         String osList = DoapUtil.interpolate(doapOptions.getOs(), project, settings);
-        if (StringUtils.isEmpty(osList)) {
+        if (osList == null || osList.isEmpty()) {
             return;
         }
 
@@ -1133,7 +1133,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeScreenshots(XMLWriter writer, MavenProject project) {
         String screenshots = DoapUtil.interpolate(doapOptions.getScreenshots(), project, settings);
-        if (StringUtils.isEmpty(screenshots)) {
+        if (screenshots == null || screenshots.isEmpty()) {
             return;
         }
 
@@ -1158,7 +1158,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeWiki(XMLWriter writer, MavenProject project) {
         String wiki = DoapUtil.interpolate(doapOptions.getWiki(), project, settings);
-        if (StringUtils.isEmpty(wiki)) {
+        if (wiki == null || wiki.isEmpty()) {
             return;
         }
 
@@ -1183,7 +1183,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeLicenses(XMLWriter writer, MavenProject project) {
         String license = DoapUtil.interpolate(doapOptions.getLicense(), project, settings);
-        if (StringUtils.isEmpty(license)) {
+        if (license == null || license.isEmpty()) {
             boolean added = false;
             @SuppressWarnings("unchecked")
             List<License> licenses = project.getLicenses();
@@ -1234,7 +1234,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeBugDatabase(XMLWriter writer, MavenProject project) {
         String bugDatabase = DoapUtil.interpolate(doapOptions.getBugDatabase(), project, settings);
-        if (StringUtils.isEmpty(bugDatabase)) {
+        if (bugDatabase == null || bugDatabase.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "bugDatabase"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -1260,7 +1260,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeMailingList(XMLWriter writer, MavenProject project) {
         String ml = DoapUtil.interpolate(doapOptions.getMailingList(), project, settings);
-        if (StringUtils.isEmpty(ml)) {
+        if (ml == null || ml.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "mailingList"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -1394,7 +1394,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeSourceRepositories(XMLWriter writer, MavenProject project) {
         String anonymousConnection = DoapUtil.interpolate(doapOptions.getScmAnonymous(), project, settings);
-        if (StringUtils.isEmpty(anonymousConnection)) {
+        if (anonymousConnection == null || anonymousConnection.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "scmAnonymousConnection"},
                     null,
@@ -1416,7 +1416,7 @@ public class DoapMojo extends AbstractMojo {
         }
 
         String devConnection = DoapUtil.interpolate(doapOptions.getScmDeveloper(), project, settings);
-        if (StringUtils.isEmpty(devConnection)) {
+        if (devConnection == null || devConnection.isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "scmDeveloperConnection"},
                     null,
@@ -1598,7 +1598,7 @@ public class DoapMojo extends AbstractMojo {
             return;
         }
 
-        if (StringUtils.isEmpty(doapType)) {
+        if (doapType == null || doapType.isEmpty()) {
             throw new IllegalArgumentException("doapType is required.");
         }
 
@@ -1610,7 +1610,7 @@ public class DoapMojo extends AbstractMojo {
         String nodeId = null;
 
         // Name is required to write doap
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             messages.addMessage(
                     new String[] {"project", "developers|contributors", "developer|contributor", "name"},
                     null,
@@ -1618,7 +1618,7 @@ public class DoapMojo extends AbstractMojo {
             return;
         }
 
-        if (!StringUtils.isEmpty(organization) || !StringUtils.isEmpty(organizationUrl)) {
+        if (!(organization == null || organization.isEmpty()) || !(organizationUrl == null || organizationUrl.isEmpty())) {
             DoapUtil.Organization doapOrganization = DoapUtil.addOrganization(organization, organizationUrl);
             nodeId = DoapUtil.getNodeId();
             doapOrganization.addMember(nodeId);
@@ -1626,13 +1626,13 @@ public class DoapMojo extends AbstractMojo {
 
         DoapUtil.writeStartElement(writer, xmlsPrefix, doapType);
         DoapUtil.writeStartElement(writer, "foaf", "Person");
-        if (StringUtils.isNotEmpty(nodeId)) {
+        if (nodeId != null && !nodeId.isEmpty()) {
             writer.addAttribute("rdf:nodeID", nodeId);
         }
         DoapUtil.writeStartElement(writer, "foaf", "name");
         writer.writeText(name);
         writer.endElement(); // foaf:name
-        if (StringUtils.isNotEmpty(email)) {
+        if (email != null && !email.isEmpty()) {
             if (DoapUtil.isValidEmail(email)) {
                 DoapUtil.writeRdfResourceElement(writer, "foaf", "mbox", "mailto:" + email);
             } else {
@@ -1642,7 +1642,7 @@ public class DoapMojo extends AbstractMojo {
                         UserMessages.INVALID_EMAIL);
             }
         }
-        if (StringUtils.isNotEmpty(organization) && StringUtils.isNotEmpty(organizationUrl)) {
+        if ((organization != null && !organization.isEmpty()) && (organizationUrl != null && !organizationUrl.isEmpty())) {
             try {
                 new URL(organizationUrl);
 
@@ -1654,7 +1654,7 @@ public class DoapMojo extends AbstractMojo {
                         UserMessages.INVALID_URL);
             }
         }
-        if (StringUtils.isNotEmpty(homepage)) {
+        if (homepage != null && !homepage.isEmpty()) {
             try {
                 new URL(homepage);
 
@@ -1678,7 +1678,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private ScmRepository getScmRepository(String scmUrl) {
         ScmRepository repo = null;
-        if (!StringUtils.isEmpty(scmUrl)) {
+        if (!(scmUrl == null || scmUrl.isEmpty())) {
             try {
                 repo = scmManager.makeScmRepository(scmUrl);
             } catch (NoSuchScmProviderException | ScmRepositoryException e) {
@@ -1709,7 +1709,7 @@ public class DoapMojo extends AbstractMojo {
 
         // asfext:pmc
         String pmc = DoapUtil.interpolate(asfExtOptions.getPmc(), project, settings);
-        if (StringUtils.isNotEmpty(pmc)) {
+        if (pmc != null && !pmc.isEmpty()) {
             DoapUtil.writeRdfResourceElement(writer, asfExtOptions.getXmlnsPrefix(), "pmc", pmc);
         } else {
             messages.addMessage(new String[] {"asfExtOptions", "pmc"}, null, UserMessages.REQUIRED_BY_ASF);
@@ -1717,7 +1717,7 @@ public class DoapMojo extends AbstractMojo {
 
         // asfext:name
         String name = DoapUtil.interpolate(asfExtOptions.getName(), project, settings);
-        if (StringUtils.isNotEmpty(name)) {
+        if (name != null && !name.isEmpty()) {
             if (!name.toLowerCase(Locale.ENGLISH).trim().startsWith("apache")) {
                 name = "Apache " + name;
             }
@@ -1727,7 +1727,7 @@ public class DoapMojo extends AbstractMojo {
         }
 
         String homepage = DoapUtil.interpolate(doapOptions.getHomepage(), project, settings);
-        if (StringUtils.isNotEmpty(homepage)) {
+        if (homepage != null && !homepage.isEmpty()) {
             try {
                 new URL(homepage);
 
@@ -1901,7 +1901,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeAudience(XMLWriter writer) {
         String audience = DoapUtil.interpolate(doapOptions.getAudience(), project, settings);
-        if (StringUtils.isEmpty(audience)) {
+        if (audience == null || audience.isEmpty()) {
             return;
         }
 
@@ -1963,7 +1963,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeVendor(XMLWriter writer, MavenProject project) {
         String vendor = DoapUtil.interpolate(doapOptions.getVendor(), project, settings);
-        if (StringUtils.isEmpty(vendor)) {
+        if (vendor == null || vendor.isEmpty()) {
             return;
         }
 
@@ -2010,7 +2010,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeServiceEndpoint(XMLWriter writer) {
         String serviceEndpoint = DoapUtil.interpolate(doapOptions.getServiceEndpoint(), project, settings);
-        if (StringUtils.isEmpty(serviceEndpoint)) {
+        if (serviceEndpoint == null || serviceEndpoint.isEmpty()) {
             return;
         }
 
@@ -2126,7 +2126,7 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://svn.apache.org/repos/asf/maven/scm/trunk/maven-scm-providers/">maven-scm-providers</a>
      */
     private static boolean isScmSystem(ScmRepository scmRepository, String scmProvider) {
-        if (StringUtils.isEmpty(scmProvider)) {
+        if (scmProvider == null || scmProvider.isEmpty()) {
             return false;
         }
 
@@ -2310,17 +2310,17 @@ public class DoapMojo extends AbstractMojo {
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < tags.length; i++) {
-                if (i == tags.length - 1 && StringUtils.isEmpty(value)) {
+                if (i == tags.length - 1 && (value == null || value.isEmpty())) {
                     sb.append("<").append(tags[i]).append("/>");
                 } else {
                     sb.append("<").append(tags[i]).append(">");
                 }
             }
-            if (StringUtils.isNotEmpty(value)) {
+            if (value != null && !value.isEmpty()) {
                 sb.append(value);
             }
             for (int i = tags.length - 1; i >= 0; i--) {
-                if (!(i == tags.length - 1 && StringUtils.isEmpty(value))) {
+                if (!(i == tags.length - 1 && (value == null || value.isEmpty()))) {
                     sb.append("</").append(tags[i]).append(">");
                 }
             }
