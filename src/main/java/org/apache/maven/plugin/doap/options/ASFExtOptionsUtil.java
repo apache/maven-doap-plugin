@@ -285,7 +285,7 @@ public class ASFExtOptionsUtil {
      * @see #APACHE_DOMAIN_NAME
      */
     private static boolean isHostedAtASF(String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str == null || str.isEmpty()) {
             return false;
         }
 
