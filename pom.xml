@@ -114,7 +114,10 @@ under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-xml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -222,7 +225,6 @@ under the License.
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-invoker-plugin</artifactId>
-              <version>3.6.0</version>
               <configuration>
                 <goals>
                   <goal>clean</goal>
