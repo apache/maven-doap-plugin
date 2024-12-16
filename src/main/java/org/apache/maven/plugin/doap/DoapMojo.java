@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.doap;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -59,7 +61,6 @@ import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.plugin.doap.options.ExtOptions;
 import org.apache.maven.plugin.doap.options.Standard;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -124,32 +125,28 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
-    private ScmManager scmManager;
+    private final ScmManager scmManager;
 
     /**
      * Artifact factory.
      *
      * @since 1.0
      */
-    @Component
-    private ArtifactFactory artifactFactory;
+    private final ArtifactFactory artifactFactory;
 
     /**
      * Used to resolve artifacts.
      *
      * @since 1.0
      */
-    @Component
-    private RepositoryMetadataManager repositoryMetadataManager;
+    private final RepositoryMetadataManager repositoryMetadataManager;
 
     /**
      * Internationalization component.
      *
      * @since 1.0
      */
-    @Component
-    private I18N i18n;
+    private final I18N i18n;
 
     // ----------------------------------------------------------------------
     // Mojo parameters
@@ -196,24 +193,21 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.1
      */
-    @Component
-    private ArtifactFactory factory;
+    private final ArtifactFactory factory;
 
     /**
      * Project builder
      *
      * @since 1.1
      */
-    @Component
-    private MavenProjectBuilder mavenProjectBuilder;
+    private final MavenProjectBuilder mavenProjectBuilder;
 
     /**
      * Used for resolving artifacts
      *
      * @since 1.1
      */
-    @Component
-    private ArtifactResolver resolver;
+    private final ArtifactResolver resolver;
 
     /**
      * The current user system settings for use in Maven.
@@ -387,6 +381,24 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private UserMessages messages = new UserMessages();
+
+    @Inject
+    public DoapMojo(
+            ScmManager scmManager,
+            ArtifactFactory artifactFactory,
+            RepositoryMetadataManager repositoryMetadataManager,
+            I18N i18n,
+            ArtifactFactory factory,
+            MavenProjectBuilder mavenProjectBuilder,
+            ArtifactResolver resolver) {
+        this.scmManager = scmManager;
+        this.artifactFactory = artifactFactory;
+        this.repositoryMetadataManager = repositoryMetadataManager;
+        this.i18n = i18n;
+        this.factory = factory;
+        this.mavenProjectBuilder = mavenProjectBuilder;
+        this.resolver = resolver;
+    }
 
     // ----------------------------------------------------------------------
     // Public methods
