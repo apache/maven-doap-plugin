@@ -69,7 +69,6 @@ import org.codehaus.plexus.interpolation.ObjectBasedValueSource;
 import org.codehaus.plexus.interpolation.PrefixedObjectValueSource;
 import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.introspection.ClassMap;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -458,10 +457,10 @@ public class DoapUtil {
     }
 
     /**
-     * Fetch an URL
+     * Fetch a URL.
      *
-     * @param settings the user settings used to fetch the url with an active proxy, if defined.
-     * @param url the url to fetch
+     * @param settings the user settings used to fetch the URL with an active proxy, if defined
+     * @param url the URL to fetch
      * @throws IOException if any
      * @see #DEFAULT_TIMEOUT
      * @since 1.1
@@ -472,16 +471,13 @@ public class DoapUtil {
         }
 
         if ("file".equals(url.getProtocol())) {
-            InputStream in = null;
-            try {
-                in = url.openStream();
-                in.close();
-                in = null;
-            } finally {
-                IOUtil.close(in);
+            // [ERROR] src/main/java/org/apache/maven/plugin/doap/DoapUtil.java:[474,53] (blocks) EmptyBlock: Empty try
+            // block.
+            try (InputStream in = url.openStream()) {
+                return;
+            } catch (IOException ex) {
+                return;
             }
-
-            return;
         }
 
         // http, https...
@@ -688,24 +684,18 @@ public class DoapUtil {
      */
     private static String getPluginVersion() {
         Properties pomProperties = new Properties();
-        InputStream is = null;
-        try {
-            is = DoapUtil.class.getResourceAsStream(
-                    "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties");
+
+        try (InputStream is = DoapUtil.class.getResourceAsStream(
+                "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties")) {
             if (is == null) {
                 return "<unknown>";
             }
 
             pomProperties.load(is);
 
-            is.close();
-            is = null;
-
             return pomProperties.getProperty("version", "<unknown>");
         } catch (IOException e) {
             return "<unknown>";
-        } finally {
-            IOUtil.close(is);
         }
     }
 

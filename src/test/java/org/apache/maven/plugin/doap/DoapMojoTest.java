@@ -405,27 +405,9 @@ public class DoapMojoTest extends AbstractMojoTestCase {
         assertTrue(readed.contains("<labs:status>active</labs:status>"));
     }
 
-    /**
-     * @param file
-     * @return
-     * @throws IOException if any
-     */
     private String readFile(File file) throws IOException {
-        String result = null;
-
-        FileReader reader = null;
-        try {
-            // platform encoding
-            reader = new FileReader(file);
-
-            result = IOUtil.toString(reader);
-
-            reader.close();
-            reader = null;
-        } finally {
-            IOUtil.close(reader);
+        try (FileReader reader = new FileReader(file)) {
+            return IOUtil.toString(reader);
         }
-
-        return result;
     }
 }
