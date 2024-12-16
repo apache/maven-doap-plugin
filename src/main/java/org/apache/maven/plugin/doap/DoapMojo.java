@@ -1333,11 +1333,7 @@ public class DoapMojo extends AbstractMojo {
             DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "Version");
 
             DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "name");
-            if (version.equals(metadata.getMetadata().getVersioning().getRelease())) {
-                writer.writeText("Latest stable release");
-            } else {
-                writer.writeText(project.getName() + " - " + version);
-            }
+            writer.writeText(project.getName() + " - " + version);
             writer.endElement(); // name
 
             DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "revision", version);
