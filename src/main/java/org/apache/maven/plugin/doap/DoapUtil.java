@@ -413,7 +413,7 @@ public class DoapUtil {
     /**
      * Validate the given DOAP file.
      *
-     * @param doapFile not null and should exists.
+     * @param doapFile not null and should exist
      * @return an empty list if the DOAP file is valid, otherwise a list of errors.
      * @since 1.1
      */
@@ -465,6 +465,7 @@ public class DoapUtil {
      * @see #DEFAULT_TIMEOUT
      * @since 1.1
      */
+    @SuppressWarnings("checkstyle:emptyblock")
     public static void fetchURL(Settings settings, URL url) throws IOException {
         if (url == null) {
             throw new IllegalArgumentException("The url is null");
