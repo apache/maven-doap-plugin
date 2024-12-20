@@ -69,7 +69,6 @@ import org.codehaus.plexus.interpolation.ObjectBasedValueSource;
 import org.codehaus.plexus.interpolation.PrefixedObjectValueSource;
 import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.introspection.ClassMap;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -414,7 +413,7 @@ public class DoapUtil {
     /**
      * Validate the given DOAP file.
      *
-     * @param doapFile not null and should exists.
+     * @param doapFile not null and should exist
      * @return an empty list if the DOAP file is valid, otherwise a list of errors.
      * @since 1.1
      */
@@ -458,29 +457,25 @@ public class DoapUtil {
     }
 
     /**
-     * Fetch an URL
+     * Fetch a URL.
      *
-     * @param settings the user settings used to fetch the url with an active proxy, if defined.
-     * @param url the url to fetch
+     * @param settings the user settings used to fetch the URL with an active proxy, if defined
+     * @param url the URL to fetch
      * @throws IOException if any
      * @see #DEFAULT_TIMEOUT
      * @since 1.1
      */
+    @SuppressWarnings("checkstyle:emptyblock")
     public static void fetchURL(Settings settings, URL url) throws IOException {
         if (url == null) {
             throw new IllegalArgumentException("The url is null");
         }
 
         if ("file".equals(url.getProtocol())) {
-            InputStream in = null;
-            try {
-                in = url.openStream();
-                in.close();
-                in = null;
-            } finally {
-                IOUtil.close(in);
-            }
-
+            // [ERROR] src/main/java/org/apache/maven/plugin/doap/DoapUtil.java:[474,53] (blocks) EmptyBlock: Empty try
+            // block.
+            // Test if file exists
+            try (InputStream in = url.openStream()) {}
             return;
         }
 
@@ -688,24 +683,18 @@ public class DoapUtil {
      */
     private static String getPluginVersion() {
         Properties pomProperties = new Properties();
-        InputStream is = null;
-        try {
-            is = DoapUtil.class.getResourceAsStream(
-                    "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties");
+
+        try (InputStream is = DoapUtil.class.getResourceAsStream(
+                "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties")) {
             if (is == null) {
                 return "<unknown>";
             }
 
             pomProperties.load(is);
 
-            is.close();
-            is = null;
-
             return pomProperties.getProperty("version", "<unknown>");
         } catch (IOException e) {
             return "<unknown>";
-        } finally {
-            IOUtil.close(is);
         }
     }
 
