@@ -475,8 +475,7 @@ public class DoapUtil {
             // [ERROR] src/main/java/org/apache/maven/plugin/doap/DoapUtil.java:[474,53] (blocks) EmptyBlock: Empty try
             // block.
             // Test if file exists
-            try (InputStream in = url.openStream()) {
-            }
+            try (InputStream in = url.openStream()) {}
             return;
         }
 
