@@ -554,7 +554,7 @@ public class DoapMojo extends AbstractMojo {
             }
         }
     }
-
+    // CHECKSTYLE_OFF: MethodLength
     private void doWrite(MavenProject project, File outputFile, Writer w) throws MojoExecutionException {
         if (asfExtOptions.isIncluded()) {
             getLog().info("Generating an ASF DOAP file " + outputFile.getAbsolutePath());
@@ -755,7 +755,7 @@ public class DoapMojo extends AbstractMojo {
 
         writer.endElement(); // rdf:RDF
     }
-
+    // CHECKSTYLE_OFF: MethodLength
     /**
      * Write DOAP name.
      *
