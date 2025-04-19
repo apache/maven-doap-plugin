@@ -45,8 +45,8 @@ under the License.
     <url>https://github.com/apache/maven-doap-plugin/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.apache.org/jira/browse/MDOAP</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/maven-doap-plugin/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
