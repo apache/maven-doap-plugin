@@ -63,7 +63,7 @@ under the License.
     <javaVersion>8</javaVersion>
     <mavenVersion>3.6.3</mavenVersion>
     <scmVersion>2.1.0</scmVersion>
-    <resolverVersion>1.4.1</resolverVersion>
+    <resolverVersion>1.9.23</resolverVersion>
     <checkstyle.violation.ignore>FileLength</checkstyle.violation.ignore>
     <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
   </properties>
