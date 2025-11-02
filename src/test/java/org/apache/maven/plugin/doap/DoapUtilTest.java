@@ -32,6 +32,15 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test {@link DoapUtil} class.
@@ -40,12 +49,14 @@ import org.codehaus.plexus.util.xml.XMLWriter;
  */
 public class DoapUtilTest extends PlexusTestCase {
     /** {@inheritDoc} */
-    protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
         super.setUp();
     }
 
     /** {@inheritDoc} */
-    protected void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() throws Exception {
         super.tearDown();
     }
 
@@ -54,6 +65,7 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
+    @Test
     public void testWriteElement() throws Exception {
         StringWriter w = new StringWriter();
         XMLWriter writer = new PrettyPrintXMLWriter(w);
@@ -65,9 +77,9 @@ public class DoapUtilTest extends PlexusTestCase {
         writer = new PrettyPrintXMLWriter(w);
         try {
             DoapUtil.writeElement(writer, null, null, null);
-            assertTrue("Null not catched", false);
+            assertTrue(false, "Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue("IllegalArgumentException catched", true);
+            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
@@ -78,6 +90,7 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
+    @Test
     public void testWriteRdfResourceElement() throws Exception {
         StringWriter w = new StringWriter();
         XMLWriter writer = new PrettyPrintXMLWriter(w);
@@ -89,9 +102,9 @@ public class DoapUtilTest extends PlexusTestCase {
         writer = new PrettyPrintXMLWriter(w);
         try {
             DoapUtil.writeRdfResourceElement(writer, null, null, null);
-            assertTrue("Null not catched", false);
+            assertTrue(false, "Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue("IllegalArgumentException catched", true);
+            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
@@ -109,6 +122,7 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
+    @Test
     public void testDevelopersOrContributorsByDoapRoles() throws Exception {
         I18N i18n = (I18N) getContainer().lookup(I18N.ROLE);
         assertNotNull(i18n);
@@ -190,6 +204,7 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
+    @Test
     public void testValidate() throws Exception {
         File doapFile = new File(getBasedir(), "src/test/resources/generated-doap-1.0.rdf");
         assertFalse(DoapUtil.validate(doapFile).isEmpty());
@@ -201,6 +216,7 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
+    @Test
     public void testInterpolate() throws Exception {
         License license = new License();
         license.setName("licenseName");
