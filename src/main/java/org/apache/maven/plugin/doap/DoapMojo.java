@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.doap;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -59,7 +61,6 @@ import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.plugin.doap.options.ExtOptions;
 import org.apache.maven.plugin.doap.options.Standard;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -124,7 +125,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private ScmManager scmManager;
 
     /**
@@ -132,7 +133,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private ArtifactFactory artifactFactory;
 
     /**
@@ -140,7 +141,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private RepositoryMetadataManager repositoryMetadataManager;
 
     /**
@@ -148,7 +149,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private I18N i18n;
 
     // ----------------------------------------------------------------------
@@ -196,7 +197,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private ArtifactFactory factory;
 
     /**
@@ -204,7 +205,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private MavenProjectBuilder mavenProjectBuilder;
 
     /**
@@ -212,7 +213,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private ArtifactResolver resolver;
 
     /**
