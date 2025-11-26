@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @since 1.1
  */
 public class ASFExtOptionsUtil {
-    /** Apache domain name, i.e. apache.org */
+    /** Apache domain name, i.e. apache.org. */
     private static final String APACHE_DOMAIN_NAME = "apache.org";
 
     /**
@@ -77,7 +77,7 @@ public class ASFExtOptionsUtil {
     /** Software based on XML technologies. */
     public static final String XML_CATEGORY = "xml";
 
-    /** All categories supported by ASF */
+    /** All categories supported by ASF. */
     public static final String[] CATEGORIES = {
         BUILD_MANAGEMENT_CATEGORY,
         DATABASE_CATEGORY,
@@ -110,7 +110,7 @@ public class ASFExtOptionsUtil {
     /** Tcl Programming Language. */
     public static final String TCL_PROGRAMMING_LANGUAGE = "Tcl";
 
-    /** All Programming Languages supported by ASF */
+    /** All Programming Languages supported by ASF. */
     public static final String[] PROGRAMMING_LANGUAGES = {
         C_PROGRAMMING_LANGUAGE,
         JAVA_PROGRAMMING_LANGUAGE,
@@ -122,7 +122,7 @@ public class ASFExtOptionsUtil {
 
     /**
      * @param category not null
-     * @return if the given category is supported by ASF (correctly formatted) or <code>null</code> if not found.
+     * @return if the given category is supported by ASF (correctly formatted) or <code>null</code> if not found
      * @see <a href="http://projects.apache.org/categories.html">http://projects.apache.org/categories.html</a>
      * @see #CATEGORIES
      */
@@ -138,7 +138,7 @@ public class ASFExtOptionsUtil {
 
     /**
      * @param programmingLanguage not null
-     * @return the given programming language supported by ASF (correctly formatted) or <code>null</code> if not found.
+     * @return the given programming language supported by ASF (correctly formatted) or <code>null</code> if not found
      * @see <a href="http://projects.apache.org/languages.html">http://projects.apache.org/languages.html</a>
      * @see #PROGRAMMING_LANGUAGES
      */
@@ -156,7 +156,7 @@ public class ASFExtOptionsUtil {
      * Find the chair man of the project. The role of the developer should contain <code>chair</code>.
      *
      * @param developers list of <code>{@link Developer}</code>
-     * @return a Developer or null if not found.
+     * @return a Developer or null if not found
      */
     public static Developer findChair(List<Developer> developers) {
         if (developers == null || developers.isEmpty()) {
@@ -180,7 +180,7 @@ public class ASFExtOptionsUtil {
      * Find the list of PMC members of the project. The role of each developer should contain <code>pmc</code>.
      *
      * @param developers list of <code>{@link Developer}</code>
-     * @return a not null list of Developer.
+     * @return a not null list of Developer
      */
     public static List<Developer> findPMCMembers(List<Developer> developers) {
         if (developers == null || developers.isEmpty()) {
@@ -206,7 +206,7 @@ public class ASFExtOptionsUtil {
      *
      * @param project not null
      * @return <code>true</code> if the SCM url, distribution management url, project url or organization url is hosted
-     *         in the Apache domain name, <code>false</code> otherwise.
+     *         in the Apache domain name, <code>false</code> otherwise
      * @see #APACHE_DOMAIN_NAME
      * @since 1.1
      */
@@ -281,7 +281,7 @@ public class ASFExtOptionsUtil {
 
     /**
      * @param str an url could be null
-     * @return <code>true</code> if the str is hosted by ASF.
+     * @return <code>true</code> if the str is hosted by ASF
      * @see #APACHE_DOMAIN_NAME
      */
     private static boolean isHostedAtASF(String str) {
