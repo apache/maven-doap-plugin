@@ -43,15 +43,19 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFReader;
@@ -479,51 +483,90 @@ public class DoapUtil {
             return;
         }
 
-        // http, https...
-        HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
-        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(DEFAULT_TIMEOUT);
-        httpClient.getHttpConnectionManager().getParams().setSoTimeout(DEFAULT_TIMEOUT);
-        httpClient.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+        // 1. Configure Request Parameters (Timeouts and Redirects)
+        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
+                .setConnectTimeout(DEFAULT_TIMEOUT)
+                .setSocketTimeout(DEFAULT_TIMEOUT)
+                .setCircularRedirectsAllowed(true); // Replaces ALLOW_CIRCULAR_REDIRECTS
 
-        // Some web servers don't allow the default user-agent sent by httpClient
-        httpClient
-                .getParams()
-                .setParameter(HttpMethodParams.USER_AGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        // 2. Prepare Credentials Provider
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
 
+        // 3. Configure Proxy
         if (settings != null && settings.getActiveProxy() != null) {
             Proxy activeProxy = settings.getActiveProxy();
 
+            // Assuming ProxyInfo and ProxyUtils are custom classes in your project
             ProxyInfo proxyInfo = new ProxyInfo();
             proxyInfo.setNonProxyHosts(activeProxy.getNonProxyHosts());
 
             if (StringUtils.isNotEmpty(activeProxy.getHost())
                     && !ProxyUtils.validateNonProxyHosts(proxyInfo, url.getHost())) {
-                httpClient.getHostConfiguration().setProxy(activeProxy.getHost(), activeProxy.getPort());
+
+                // Set the proxy on the configuration
+                HttpHost proxy = new HttpHost(activeProxy.getHost(), activeProxy.getPort());
+                requestConfigBuilder.setProxy(proxy);
 
                 if (StringUtils.isNotEmpty(activeProxy.getUsername()) && activeProxy.getPassword() != null) {
-                    Credentials credentials =
-                            new UsernamePasswordCredentials(activeProxy.getUsername(), activeProxy.getPassword());
-
-                    httpClient.getState().setProxyCredentials(AuthScope.ANY, credentials);
+                    credsProvider.setCredentials(
+                            new AuthScope(proxy), // Scope to the specific proxy
+                            new UsernamePasswordCredentials(activeProxy.getUsername(), activeProxy.getPassword()));
                 }
             }
         }
 
-        GetMethod getMethod = new GetMethod(url.toString());
+        // 4. Build the Client
+        // Note: MultiThreadedHttpConnectionManager is replaced by PoolingHttpClientConnectionManager.
+        // Ideally, the ConnectionManager and Client should be singletons reused across the application,
+        // not created per request.
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(new PoolingHttpClientConnectionManager())
+                .setDefaultCredentialsProvider(credsProvider)
+                .setDefaultRequestConfig(requestConfigBuilder.build())
+                .setUserAgent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)")
+                .build();
+
+        // 5. Execute Method
+        HttpGet httpGet = new HttpGet(url.toString());
+        CloseableHttpResponse response = null;
+
         try {
             int status;
             try {
-                status = httpClient.executeMethod(getMethod);
+                response = httpClient.execute(httpGet);
+                status = response.getStatusLine().getStatusCode();
             } catch (SocketTimeoutException e) {
-                // could be a sporadic failure, one more retry before we give up
-                status = httpClient.executeMethod(getMethod);
+                // Retry logic: Close previous response if it exists (unlikely on timeout) and retry once
+                if (response != null) {
+                    response.close();
+                }
+                response = httpClient.execute(httpGet);
+                status = response.getStatusLine().getStatusCode();
             }
 
             if (status != HttpStatus.SC_OK) {
+                // Ensure entity is consumed before throwing exception to release connection
+                if (response.getEntity() != null) {
+                    EntityUtils.consume(response.getEntity());
+                }
                 throw new FileNotFoundException(url.toString());
             }
+
+            // Process success response here...
+
+        } catch (IOException e) {
+            // Handle IO exceptions (and potential re-thrown SocketTimeoutException from the retry)
+            throw e;
         } finally {
-            getMethod.releaseConnection();
+            // 6. Release Connection
+            // In 4.5, closing the response releases the connection back to the pool
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    // Log or ignore
+                }
+            }
         }
     }
 
