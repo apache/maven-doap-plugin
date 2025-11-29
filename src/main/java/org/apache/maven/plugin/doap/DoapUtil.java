@@ -469,6 +469,9 @@ public class DoapUtil {
      * @see #DEFAULT_TIMEOUT
      * @since 1.1
      */
+    // TODO this method fetches a URL but the respoinse seems to be ignored.
+    // Does it actually do anything? Is this effectuvely a NOOP?
+    // Is it testing reachability?
     @SuppressWarnings("checkstyle:emptyblock")
     public static void fetchURL(Settings settings, URL url) throws IOException {
         if (url == null) {
@@ -490,7 +493,7 @@ public class DoapUtil {
                 .setCircularRedirectsAllowed(true); // Replaces ALLOW_CIRCULAR_REDIRECTS
 
         // 2. Prepare Credentials Provider
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 
         // 3. Configure Proxy
         if (settings != null && settings.getActiveProxy() != null) {
@@ -507,24 +510,22 @@ public class DoapUtil {
                 requestConfigBuilder.setProxy(proxy);
 
                 if (StringUtils.isNotEmpty(activeProxy.getUsername()) && activeProxy.getPassword() != null) {
-                    credsProvider.setCredentials(
+                    credentialsProvider.setCredentials(
                             new AuthScope(proxy), // Scope to the specific proxy
                             new UsernamePasswordCredentials(activeProxy.getUsername(), activeProxy.getPassword()));
                 }
             }
         }
 
-        // 4. Build the Client
         // Ideally, the ConnectionManager and Client should be singletons reused across the application,
         // not created per request.
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setConnectionManager(new PoolingHttpClientConnectionManager())
-                .setDefaultCredentialsProvider(credsProvider)
+                .setDefaultCredentialsProvider(credentialsProvider)
                 .setDefaultRequestConfig(requestConfigBuilder.build())
                 .setUserAgent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)")
                 .build();
 
-        // 5. Execute Method
         HttpGet httpGet = new HttpGet(url.toString());
         CloseableHttpResponse response = null;
 
@@ -549,14 +550,7 @@ public class DoapUtil {
                 }
                 throw new FileNotFoundException(url.toString());
             }
-
-            // Process success response here...
-
-        } catch (IOException e) {
-            // Handle IO exceptions (and potential re-thrown SocketTimeoutException from the retry)
-            throw e;
         } finally {
-            // 6. Release Connection
             // In 4.5, closing the response releases the connection back to the pool
             if (response != null) {
                 try {
