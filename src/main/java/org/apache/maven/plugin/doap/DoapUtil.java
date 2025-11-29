@@ -496,7 +496,6 @@ public class DoapUtil {
         if (settings != null && settings.getActiveProxy() != null) {
             Proxy activeProxy = settings.getActiveProxy();
 
-            // Assuming ProxyInfo and ProxyUtils are custom classes in your project
             ProxyInfo proxyInfo = new ProxyInfo();
             proxyInfo.setNonProxyHosts(activeProxy.getNonProxyHosts());
 
@@ -516,7 +515,6 @@ public class DoapUtil {
         }
 
         // 4. Build the Client
-        // Note: MultiThreadedHttpConnectionManager is replaced by PoolingHttpClientConnectionManager.
         // Ideally, the ConnectionManager and Client should be singletons reused across the application,
         // not created per request.
         CloseableHttpClient httpClient = HttpClients.custom()
