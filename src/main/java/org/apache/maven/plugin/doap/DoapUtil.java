@@ -469,8 +469,8 @@ public class DoapUtil {
      * @see #DEFAULT_TIMEOUT
      * @since 1.1
      */
-    // TODO this method fetches a URL but the respoinse seems to be ignored.
-    // Does it actually do anything? Is this effectuvely a NOOP?
+    // TODO this method fetches a URL but the response seems to be ignored.
+    // Does it actually do anything? Is this effectively a NOOP?
     // Is it testing reachability?
     @SuppressWarnings("checkstyle:emptyblock")
     public static void fetchURL(Settings settings, URL url) throws IOException {
