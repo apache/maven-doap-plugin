@@ -549,6 +549,11 @@ public class DoapUtil {
                     EntityUtils.consume(response.getEntity());
                 }
                 throw new FileNotFoundException(url.toString());
+            } else {
+                // Ensure entity is consumed in the success case to release connection for reuse
+                if (response.getEntity() != null) {
+                    EntityUtils.consume(response.getEntity());
+                }
             }
         } finally {
             // In 4.5, closing the response releases the connection back to the pool
