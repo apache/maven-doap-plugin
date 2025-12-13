@@ -55,7 +55,6 @@ import org.codehaus.plexus.interpolation.ObjectBasedValueSource;
 import org.codehaus.plexus.interpolation.PrefixedObjectValueSource;
 import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.introspection.ClassMap;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -68,30 +67,30 @@ import org.codehaus.plexus.util.xml.XmlWriterUtil;
  * @since 1.0
  */
 public class DoapUtil {
-    /** Email regex */
+    /** Email regex. */
     private static final String EMAIL_REGEX =
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    /** Email pattern */
+    /** Email pattern. */
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
-    /** Magic number to repeat '=' */
+    /** Magic number to repeat '='. */
     private static final int REPEAT_EQUALS = 21;
 
     /** The default timeout used when fetching url, i.e. 2000. */
     public static final int DEFAULT_TIMEOUT = 2000;
 
-    /** RDF resource attribute */
+    /** RDF resource attribute. */
     protected static final String RDF_RESOURCE = "rdf:resource";
 
-    /** RDF nodeID attribute */
+    /** RDF nodeID attribute. */
     protected static final String RDF_NODE_ID = "rdf:nodeID";
 
-    /** DoaP Organizations stored by name */
+    /** DoaP Organizations stored by name. */
     private static Map<String, DoapUtil.Organization> organizations = new HashMap<>();
 
     /**
-     * Write comments in the DOAP file header
+     * Write comments in the DOAP file header.
      *
      * @param writer not null
      */
@@ -245,7 +244,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have a <code>developer</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have a <code>developer</code> DOAP role
      */
     public static List<Contributor> getContributorsWithDeveloperRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -255,7 +254,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have a <code>documenter</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have a <code>documenter</code> DOAP role
      */
     public static List<Contributor> getContributorsWithDocumenterRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -265,7 +264,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have an <code>helper</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have an <code>helper</code> DOAP role
      */
     public static List<Contributor> getContributorsWithHelperRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -275,7 +274,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have a <code>maintainer</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have a <code>maintainer</code> DOAP role
      */
     public static List<Contributor> getContributorsWithMaintainerRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -285,7 +284,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have a <code>tester</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have a <code>tester</code> DOAP role
      */
     public static List<Contributor> getContributorsWithTesterRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -295,7 +294,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have a <code>translator</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have a <code>translator</code> DOAP role
      */
     public static List<Contributor> getContributorsWithTranslatorRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -305,7 +304,7 @@ public class DoapUtil {
     /**
      * @param i18n the internationalization component
      * @param developersOrContributors list of <code>{@link Contributor}</code>
-     * @return a none null list of <code>{@link Contributor}</code> which have an <code>unknown</code> DOAP role.
+     * @return a none null list of <code>{@link Contributor}</code> which have an <code>unknown</code> DOAP role
      */
     public static List<Contributor> getContributorsWithUnknownRole(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -356,11 +355,11 @@ public class DoapUtil {
     }
 
     /**
-     * put an organization from the pom file in the organization list.
+     * Put an organization from the pom file in the organization list.
      *
      * @param name from the pom file (e.g. Yoyodyne)
      * @param url from the pom file (e.g. http://yoyodyne.example.org/about)
-     * @return the existing organization if a duplicate, or a new one.
+     * @return the existing organization if a duplicate, or a new one
      */
     public static DoapUtil.Organization addOrganization(String name, String url) {
         Organization organization = organizations.get(name);
@@ -378,7 +377,7 @@ public class DoapUtil {
     private static int nodeNumber = 1;
 
     /**
-     * get a unique (within the DoaP file) RDF blank node ID
+     * Get a unique (within the DoaP file) RDF blank node ID.
      *
      * @return the nodeID
      * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-Syntax-blank-nodes">
@@ -389,7 +388,7 @@ public class DoapUtil {
     }
 
     /**
-     * get the set of Organizations that people are members of
+     * Get the set of Organizations that people are members of.
      *
      * @return Map.EntrySet of DoapUtil.Organization
      */
@@ -400,8 +399,8 @@ public class DoapUtil {
     /**
      * Validate the given DOAP file.
      *
-     * @param doapFile not null and should exists.
-     * @return an empty list if the DOAP file is valid, otherwise a list of errors.
+     * @param doapFile not null and should exist
+     * @return an empty list if the DOAP file is valid, otherwise a list of errors
      * @since 1.1
      */
     public static List<String> validate(File doapFile) {
@@ -431,7 +430,7 @@ public class DoapUtil {
 
     /**
      * @param str not null
-     * @return <code>true</code> if the str parameter is a valid email, <code>false</code> otherwise.
+     * @return <code>true</code> if the str parameter is a valid email, <code>false</code> otherwise
      * @since 1.1
      */
     public static boolean isValidEmail(String str) {
@@ -447,7 +446,7 @@ public class DoapUtil {
      * Pings a URL.
      *
      * @param settings ignored
-     * @param url the url to fetch
+     * @param url the URL to fetch
      * @throws IOException if any
      * @since 1.1
      * @deprecated use a different library to load a URL.
@@ -469,7 +468,7 @@ public class DoapUtil {
      * @param value could be null
      * @param project not null
      * @param settings could be null
-     * @return the value trimmed and interpolated or null if the interpolation doesn't work.
+     * @return the value trimmed and interpolated or null if the interpolation doesn't work
      * @since 1.1
      */
     public static String interpolate(String value, final MavenProject project, Settings settings) {
@@ -540,7 +539,7 @@ public class DoapUtil {
      * @param developersOrContributors list of <code>{@link Contributor}</code>
      * @return a none null map with <code>maintainers</code>, <code>developers</code>, <code>documenters</code>,
      *         <code>translators</code>, <code>testers</code>, <code>helpers</code>, <code>unknowns</code> as keys and
-     *         list of <code>{@link Contributor}</code> as value.
+     *         list of <code>{@link Contributor}</code> as value
      */
     private static Map<String, List<Contributor>> filterContributorsByDoapRoles(
             I18N i18n, List<Contributor> developersOrContributors) {
@@ -608,35 +607,29 @@ public class DoapUtil {
     /**
      * @param i18n not null
      * @param key not null
-     * @return lower case value for the key in the i18n bundle.
+     * @return lower case value for the key in the i18n bundle
      */
     private static String getLowerCaseString(I18N i18n, String key) {
         return i18n.getString("doap-person", Locale.ENGLISH, key).toLowerCase(Locale.ENGLISH);
     }
 
     /**
-     * @return the Maven artefact version.
+     * @return the Maven artefact version
      */
     private static String getPluginVersion() {
         Properties pomProperties = new Properties();
-        InputStream is = null;
-        try {
-            is = DoapUtil.class.getResourceAsStream(
-                    "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties");
+
+        try (InputStream is = DoapUtil.class.getResourceAsStream(
+                "/META-INF/maven/org.apache.maven.plugins/" + "maven-doap-plugin/pom.properties")) {
             if (is == null) {
                 return "<unknown>";
             }
 
             pomProperties.load(is);
 
-            is.close();
-            is = null;
-
             return pomProperties.getProperty("version", "<unknown>");
         } catch (IOException e) {
             return "<unknown>";
-        } finally {
-            IOUtil.close(is);
         }
     }
 

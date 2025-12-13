@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.doap;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -59,7 +61,6 @@ import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.plugin.doap.options.ExtOptions;
 import org.apache.maven.plugin.doap.options.Standard;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -93,17 +94,17 @@ import org.codehaus.plexus.util.xml.XMLWriter;
 @Mojo(name = "generate")
 public class DoapMojo extends AbstractMojo {
     /**
-     * UTC Time Zone
+     * UTC Time Zone.
      */
     private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
     /**
-     * Date format for <lastUpdated/> tag in the repository metadata, i.e.: yyyyMMddHHmmss
+     * Date format for <lastUpdated/> tag in the repository metadata, i.e.: yyyyMMddHHmmss.
      */
     private static final DateFormat REPOSITORY_DATE_FORMAT;
 
     /**
-     * Date format for DOAP file, i.e. ISO-8601 YYYY-MM-DD
+     * Date format for DOAP file, i.e. ISO-8601 YYYY-MM-DD.
      */
     private static final DateFormat DOAP_DATE_FORMAT;
 
@@ -124,7 +125,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private ScmManager scmManager;
 
     /**
@@ -132,7 +133,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private ArtifactFactory artifactFactory;
 
     /**
@@ -140,7 +141,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private RepositoryMetadataManager repositoryMetadataManager;
 
     /**
@@ -148,7 +149,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.0
      */
-    @Component
+    @Inject
     private I18N i18n;
 
     // ----------------------------------------------------------------------
@@ -192,27 +193,27 @@ public class DoapMojo extends AbstractMojo {
     private List<ArtifactRepository> remoteRepositories;
 
     /**
-     * Factory for creating artifact objects
+     * Factory for creating artifact objects.
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private ArtifactFactory factory;
 
     /**
-     * Project builder
+     * Project builder.
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private MavenProjectBuilder mavenProjectBuilder;
 
     /**
-     * Used for resolving artifacts
+     * Used for resolving artifacts.
      *
      * @since 1.1
      */
-    @Component
+    @Inject
     private ArtifactResolver resolver;
 
     /**
@@ -554,7 +555,7 @@ public class DoapMojo extends AbstractMojo {
             }
         }
     }
-
+    // CHECKSTYLE_OFF: MethodLength
     private void doWrite(MavenProject project, File outputFile, Writer w) throws MojoExecutionException {
         if (asfExtOptions.isIncluded()) {
             getLog().info("Generating an ASF DOAP file " + outputFile.getAbsolutePath());
@@ -755,7 +756,7 @@ public class DoapMojo extends AbstractMojo {
 
         writer.endElement(); // rdf:RDF
     }
-
+    // CHECKSTYLE_OFF: MethodLength
     /**
      * Write DOAP name.
      *
@@ -1564,7 +1565,7 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Writer a single developer or contributor
+     * Writer a single developer or contributor.
      *
      * @param writer                 not null
      * @param xmlsPrefix             could be null
@@ -1663,7 +1664,7 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Return a <code>SCM repository</code> defined by a given url
+     * Return a <code>SCM repository</code> defined by a given url.
      *
      * @param scmUrl an SCM URL
      * @return a valid SCM repository or null
@@ -1684,7 +1685,7 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Write the ASF extensions
+     * Write the ASF extensions.
      *
      * @param writer  not null
      * @param project the Maven project, not null
@@ -2114,7 +2115,7 @@ public class DoapMojo extends AbstractMojo {
      *
      * @param scmRepository a SCM repository
      * @param scmProvider   a SCM provider name
-     * @return true if the provider of the given SCM repository is equal to the given scm provider.
+     * @return true if the provider of the given SCM repository is equal to the given scm provider
      * @see <a href="http://svn.apache.org/repos/asf/maven/scm/trunk/maven-scm-providers/">maven-scm-providers</a>
      */
     private static boolean isScmSystem(ScmRepository scmRepository, String scmProvider) {
@@ -2293,7 +2294,7 @@ public class DoapMojo extends AbstractMojo {
         /**
          * @param tags  not null
          * @param value of the last tag, could be null
-         * @return the XML configuration defined in tags.
+         * @return the XML configuration defined in tags
          */
         protected String toConfiguration(String[] tags, String value) {
             if (tags == null) {
