@@ -78,6 +78,11 @@ import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
  * <p>
@@ -144,6 +149,9 @@ public class DoapMojo extends AbstractMojo {
     @Inject
     private RepositoryMetadataManager repositoryMetadataManager;
 
+    @Inject
+    private RepositorySystem repositorySystem;
+    
     /**
      * Internationalization component.
      *
@@ -162,6 +170,9 @@ public class DoapMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    private RepositorySystemSession repositorySystemSession;
+    
     /**
      * The name of the DOAP file that will be generated.
      */
@@ -1349,12 +1360,12 @@ public class DoapMojo extends AbstractMojo {
                 }
 
                 String fileRelease = repo.getUrl() + "/" + repo.pathOf(artifactRelease);
-                try {
-                    DoapUtil.fetchURL(settings, new URL(fileRelease));
-                } catch (IOException e) {
-                    getLog().debug("IOException :" + e.getMessage());
+                
+                if (!isArtifactInRepository(artifactRelease, repo)) {
+                    getLog().debug(artifactRelease + " is not in the repository " + repo);
                     continue;
                 }
+
                 DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "file-release", fileRelease);
 
                 Date releaseDate = null;
@@ -1379,6 +1390,47 @@ public class DoapMojo extends AbstractMojo {
 
             i++;
         }
+    }
+
+    private boolean isArtifactInRepository(Artifact artifact, ArtifactRepository repository) {
+        // Convert Legacy Artifact to Aether Artifact
+        String artifactCoordinates = String.format(
+            "%s:%s:%s:%s",
+            artifact.getGroupId(),
+            artifact.getArtifactId(),
+            artifact.getType(),
+            artifact.getVersion()
+        );
+
+        org.eclipse.aether.artifact.Artifact aetherArtifact = new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
+
+        // Convert Legacy ArtifactRepository to Aether RemoteRepository
+        // TODO: do we need to handle authentication/proxies here?
+        RemoteRepository aetherRemoteRepository = new RemoteRepository.Builder(
+            repository.getId(),
+            repository.getLayout().getId(),
+            repository.getUrl()
+        ).build();
+
+        ArtifactRequest artifactRequest = new ArtifactRequest();
+        artifactRequest.setArtifact(aetherArtifact);
+
+        // Limit resolution to ONLY the target remote repository
+        artifactRequest.setRepositories(Collections.singletonList(aetherRemoteRepository));
+
+        try {
+            // Attempt to resolve the artifact
+            ArtifactResult result = repositorySystem.resolveArtifact(repositorySystemSession, artifactRequest);
+
+            if (result.isResolved()) {
+                return true;
+            }
+
+        } catch (org.eclipse.aether.resolution.ArtifactResolutionException ex) {
+            return false;
+        }
+
+        return false;
     }
 
     /**
