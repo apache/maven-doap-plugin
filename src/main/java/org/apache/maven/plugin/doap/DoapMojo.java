@@ -151,7 +151,7 @@ public class DoapMojo extends AbstractMojo {
 
     @Inject
     private RepositorySystem repositorySystem;
-    
+
     /**
      * Internationalization component.
      *
@@ -172,7 +172,7 @@ public class DoapMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
     private RepositorySystemSession repositorySystemSession;
-    
+
     /**
      * The name of the DOAP file that will be generated.
      */
@@ -1360,7 +1360,7 @@ public class DoapMojo extends AbstractMojo {
                 }
 
                 String fileRelease = repo.getUrl() + "/" + repo.pathOf(artifactRelease);
-                
+
                 if (!isArtifactInRepository(artifactRelease, repo)) {
                     getLog().debug(artifactRelease + " is not in the repository " + repo);
                     continue;
@@ -1395,22 +1395,17 @@ public class DoapMojo extends AbstractMojo {
     private boolean isArtifactInRepository(Artifact artifact, ArtifactRepository repository) {
         // Convert Legacy Artifact to Aether Artifact
         String artifactCoordinates = String.format(
-            "%s:%s:%s:%s",
-            artifact.getGroupId(),
-            artifact.getArtifactId(),
-            artifact.getType(),
-            artifact.getVersion()
-        );
+                "%s:%s:%s:%s",
+                artifact.getGroupId(), artifact.getArtifactId(), artifact.getType(), artifact.getVersion());
 
-        org.eclipse.aether.artifact.Artifact aetherArtifact = new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
+        org.eclipse.aether.artifact.Artifact aetherArtifact =
+                new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
 
         // Convert Legacy ArtifactRepository to Aether RemoteRepository
         // TODO: do we need to handle authentication/proxies here?
         RemoteRepository aetherRemoteRepository = new RemoteRepository.Builder(
-            repository.getId(),
-            repository.getLayout().getId(),
-            repository.getUrl()
-        ).build();
+                        repository.getId(), repository.getLayout().getId(), repository.getUrl())
+                .build();
 
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact(aetherArtifact);
