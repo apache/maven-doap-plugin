@@ -1402,15 +1402,20 @@ public class DoapMojo extends AbstractMojo {
                 new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
 
         // Convert Legacy ArtifactRepository to Aether RemoteRepository
-        RemoteRepository aetherRemoteRepository = new RemoteRepository.Builder(
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(
                         repository.getId(), repository.getLayout().getId(), repository.getUrl())
                 .build();
+
+        // set up for authentication
+        remoteRepository = repositorySystem
+                .newResolutionRepositories(repositorySystemSession, Collections.singletonList(remoteRepository))
+                .get(0);
 
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact(aetherArtifact);
 
         // Limit resolution to ONLY the target remote repository
-        artifactRequest.setRepositories(Collections.singletonList(aetherRemoteRepository));
+        artifactRequest.setRepositories(Collections.singletonList(remoteRepository));
 
         try {
             // Attempt to resolve the artifact
