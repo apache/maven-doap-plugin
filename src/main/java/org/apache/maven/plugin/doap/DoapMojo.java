@@ -1402,7 +1402,6 @@ public class DoapMojo extends AbstractMojo {
                 new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
 
         // Convert Legacy ArtifactRepository to Aether RemoteRepository
-        // TODO: do we need to handle authentication/proxies here?
         RemoteRepository aetherRemoteRepository = new RemoteRepository.Builder(
                         repository.getId(), repository.getLayout().getId(), repository.getUrl())
                 .build();
