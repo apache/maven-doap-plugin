@@ -80,9 +80,11 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.impl.RepositoryConnectorProvider;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.spi.connector.ArtifactDownload;
+import org.eclipse.aether.spi.connector.RepositoryConnector;
+import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 
 /**
  * <p>
@@ -210,6 +212,9 @@ public class DoapMojo extends AbstractMojo {
      */
     @Inject
     private ArtifactFactory factory;
+
+    @Inject
+    private RepositoryConnectorProvider connectorProvider;
 
     /**
      * Project builder.
@@ -1406,30 +1411,30 @@ public class DoapMojo extends AbstractMojo {
                         repository.getId(), repository.getLayout().getId(), repository.getUrl())
                 .build();
 
-        // set up for authentication
+        // set up authentication
         remoteRepository = repositorySystem
                 .newResolutionRepositories(repositorySystemSession, Collections.singletonList(remoteRepository))
                 .get(0);
 
-        ArtifactRequest artifactRequest = new ArtifactRequest();
-        artifactRequest.setArtifact(aetherArtifact);
+        return artifactExistsRemotely(aetherArtifact, remoteRepository);
+    }
 
-        // Limit resolution to ONLY the target remote repository
-        artifactRequest.setRepositories(Collections.singletonList(remoteRepository));
+    /**
+     * Check if an artifact exists in a remote repo without downloading it.
+     */
+    private boolean artifactExistsRemotely(org.eclipse.aether.artifact.Artifact artifact, RemoteRepository repository) {
+        try (RepositoryConnector connector =
+                connectorProvider.newRepositoryConnector(this.repositorySystemSession, repository)) {
+            ArtifactDownload download = new ArtifactDownload(artifact, null, null, null);
+            download.setExistenceCheck(true);
 
-        try {
-            // Attempt to resolve the artifact
-            ArtifactResult result = repositorySystem.resolveArtifact(repositorySystemSession, artifactRequest);
+            connector.get(Collections.singleton(download), null);
 
-            if (result.isResolved()) {
-                return true;
-            }
+            return download.getException() == null;
 
-        } catch (org.eclipse.aether.resolution.ArtifactResolutionException ex) {
+        } catch (NoRepositoryConnectorException e) {
             return false;
         }
-
-        return false;
     }
 
     /**
