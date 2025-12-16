@@ -63,7 +63,7 @@ under the License.
     <javaVersion>8</javaVersion>
     <mavenVersion>3.9.11</mavenVersion>
     <scmVersion>2.2.1</scmVersion>
-    <resolverVersion>1.9.25</resolverVersion>
+    <resolverVersion>1.9.24</resolverVersion>
     <checkstyle.violation.ignore>FileLength</checkstyle.violation.ignore>
     <project.build.outputTimestamp>2025-11-24T20:16:28Z</project.build.outputTimestamp>
   </properties>
@@ -117,6 +117,21 @@ under the License.
       <artifactId>maven-repository-metadata</artifactId>
       <version>${mavenVersion}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+      <version>${resolverVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-impl</artifactId>
+      <version>${resolverVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-spi</artifactId>
+      <version>${resolverVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
@@ -181,11 +196,6 @@ under the License.
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <version>3.17.0</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version>
     </dependency>
 
     <!-- test -->

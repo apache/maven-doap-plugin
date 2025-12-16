@@ -78,6 +78,13 @@ import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.impl.RepositoryConnectorProvider;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.spi.connector.ArtifactDownload;
+import org.eclipse.aether.spi.connector.RepositoryConnector;
+import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 
 /**
  * <p>
@@ -144,6 +151,9 @@ public class DoapMojo extends AbstractMojo {
     @Inject
     private RepositoryMetadataManager repositoryMetadataManager;
 
+    @Inject
+    private RepositorySystem repositorySystem;
+
     /**
      * Internationalization component.
      *
@@ -161,6 +171,9 @@ public class DoapMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
+
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    private RepositorySystemSession repositorySystemSession;
 
     /**
      * The name of the DOAP file that will be generated.
@@ -199,6 +212,9 @@ public class DoapMojo extends AbstractMojo {
      */
     @Inject
     private ArtifactFactory factory;
+
+    @Inject
+    private RepositoryConnectorProvider connectorProvider;
 
     /**
      * Project builder.
@@ -1349,12 +1365,12 @@ public class DoapMojo extends AbstractMojo {
                 }
 
                 String fileRelease = repo.getUrl() + "/" + repo.pathOf(artifactRelease);
-                try {
-                    DoapUtil.fetchURL(settings, new URL(fileRelease));
-                } catch (IOException e) {
-                    getLog().debug("IOException :" + e.getMessage());
+
+                if (!isArtifactInRepository(artifactRelease, repo)) {
+                    getLog().debug(artifactRelease + " is not in the repository " + repo);
                     continue;
                 }
+
                 DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "file-release", fileRelease);
 
                 Date releaseDate = null;
@@ -1378,6 +1394,46 @@ public class DoapMojo extends AbstractMojo {
             writer.endElement(); // release
 
             i++;
+        }
+    }
+
+    private boolean isArtifactInRepository(Artifact artifact, ArtifactRepository repository) {
+        // Convert Legacy Artifact to Aether Artifact
+        String artifactCoordinates = String.format(
+                "%s:%s:%s:%s",
+                artifact.getGroupId(), artifact.getArtifactId(), artifact.getType(), artifact.getVersion());
+
+        org.eclipse.aether.artifact.Artifact aetherArtifact =
+                new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
+
+        // Convert Legacy ArtifactRepository to Aether RemoteRepository
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(
+                        repository.getId(), repository.getLayout().getId(), repository.getUrl())
+                .build();
+
+        // set up authentication
+        remoteRepository = repositorySystem
+                .newResolutionRepositories(repositorySystemSession, Collections.singletonList(remoteRepository))
+                .get(0);
+
+        return artifactExistsRemotely(aetherArtifact, remoteRepository);
+    }
+
+    /**
+     * Check if an artifact exists in a remote repo without downloading it.
+     */
+    private boolean artifactExistsRemotely(org.eclipse.aether.artifact.Artifact artifact, RemoteRepository repository) {
+        try (RepositoryConnector connector =
+                connectorProvider.newRepositoryConnector(this.repositorySystemSession, repository)) {
+            ArtifactDownload download = new ArtifactDownload(artifact, null, null, null);
+            download.setExistenceCheck(true);
+
+            connector.get(Collections.singleton(download), null);
+
+            return download.getException() == null;
+
+        } catch (NoRepositoryConnectorException e) {
+            return false;
         }
     }
 
