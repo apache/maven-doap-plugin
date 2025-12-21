@@ -17,13 +17,5 @@
  * under the License.
  */
 
-import java.io.*;
-
-File doapFile = new File( basedir, "target/site/doap_minimal.rdf" );
-System.out.println( "Checking for existence of " + doapFile );
-if ( !doapFile.isFile() )
-{
-    throw new FileNotFoundException( doapFile + " missing" );
-}
-
-return true;
+def rdfFile = new File( basedir, 'target/site/doap_maven-it-plugin.rdf' )
+assert rdfFile.exists()
