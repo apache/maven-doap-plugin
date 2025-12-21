@@ -197,14 +197,6 @@ under the License.
       <artifactId>jena-core</artifactId>
       <version>3.17.0</version>
     </dependency>
-
-    <!-- test -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
@@ -221,6 +213,11 @@ under the License.
       <groupId>org.apache.maven.resolver</groupId>
       <artifactId>maven-resolver-transport-wagon</artifactId>
       <version>${resolverVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
