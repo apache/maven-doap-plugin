@@ -18,49 +18,66 @@
  */
 package org.apache.maven.plugin.doap;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.inject.Inject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+import org.apache.maven.api.plugin.testing.Basedir;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.apache.maven.api.plugin.testing.MojoExtension.getBasedir;
+import static org.apache.maven.api.plugin.testing.MojoExtension.getTestFile;
+import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
+import static org.apache.maven.api.plugin.testing.MojoExtension.setVariableValueToObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test {@link DoapMojo} class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
-public class DoapMojoTest extends AbstractMojoTestCase {
+@MojoTest(realRepositorySession = true)
+class DoapMojoTest {
+
+    @Inject
+    private MavenProject mavenProject;
 
     /**
      * Verify the generation of a pure DOAP file.
      *
      * @throws Exception if any
      */
-    public void testGeneratedDoap() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // Set some Mojo parameters
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testGeneratedDoap(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in = Files.newInputStream(
+                getTestFile("doap-configuration-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
         setVariableValueToObject(mojo, "about", mavenProject.getUrl());
 
         mojo.execute();
 
-        File doapFile = new File(getBasedir(), "target/test/unit/doap-configuration/doap-configuration.rdf");
-        assertTrue("Doap File was not generated!", doapFile.exists());
+        File doapFile = new File(getBasedir(), "target/doap-configuration.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
 
         String readed = readFile(doapFile);
 
@@ -124,43 +141,37 @@ public class DoapMojoTest extends AbstractMojoTestCase {
     /**
      * @throws Exception if any
      */
-    public void testLangParameter() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // check invalid lang
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
-        setVariableValueToObject(mojo, "lang", "foo");
-
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @MojoParameter(name = "lang", value = "foo")
+    @Basedir("/unit/doap-configuration/")
+    void testLangParameter(DoapMojo mojo) throws Exception {
         try {
             mojo.execute();
             fail("No lang checked");
         } catch (MojoExecutionException ex) {
-            assertNotNull(ex.getMessage());
+            assertEquals(
+                    "The <doapOptions><lang>foo</lang></doapOptions> parameter is not a valid ISO language.",
+                    ex.getMessage());
         }
     }
 
     /**
      * @throws Exception if any
      */
-    public void testAboutParameter() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
-        setVariableValueToObject(mojo, "about", "foo");
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @MojoParameter(name = "about", value = "http://foo/about")
+    @Basedir("/unit/doap-configuration/")
+    void testAboutParameter(DoapMojo mojo) throws Exception {
 
         mojo.execute();
+
+        File doapFile = new File(getBasedir(), "target/doap-configuration.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
+
+        String readed = readFile(doapFile);
+        assertTrue(readed.contains("<Project rdf:about=\"http://foo/about\">"));
     }
 
     /**
@@ -168,19 +179,11 @@ public class DoapMojoTest extends AbstractMojoTestCase {
      *
      * @throws Exception if any
      */
-    public void testGeneratedDoapArtifact() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // Set some Mojo parameters
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
-        setVariableValueToObject(mojo, "about", mavenProject.getUrl());
-        DoapOptions doapOptions = (DoapOptions) getVariableValueFromObject(mojo, "doapOptions");
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testGeneratedDoapArtifact(DoapMojo mojo) throws Exception {
+        DoapOptions doapOptions = getVariableValueFromObject(mojo, "doapOptions");
         doapOptions.setDescription("Common Utilities");
         doapOptions.setShortdesc("Common Utilities");
         doapOptions.setDownloadPage("http://plexus.codehaus.org/download-binaries.html");
@@ -191,12 +194,11 @@ public class DoapMojoTest extends AbstractMojoTestCase {
         artifact.setArtifactId("plexus-utils");
         artifact.setVersion("1.5.5");
         setVariableValueToObject(mojo, "artifact", artifact);
-        setVariableValueToObject(mojo, "outputDirectory", "target/test/unit/doap-configuration/");
 
         mojo.execute();
 
-        File doapFile = new File(getBasedir(), "target/test/unit/doap-configuration/doap_plexus-utils.rdf");
-        assertTrue("Doap File was not generated!", doapFile.exists());
+        File doapFile = new File(getBasedir(), "target/doap_plexus-utils.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
 
         String readed = readFile(doapFile);
 
@@ -245,18 +247,10 @@ public class DoapMojoTest extends AbstractMojoTestCase {
      *
      * @throws Exception if any
      */
-    public void testGeneratedDoapArtifactMinimalist() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // Set some Mojo parameters
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
-        setVariableValueToObject(mojo, "about", "foo");
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testGeneratedDoapArtifactMinimalist(DoapMojo mojo) throws Exception {
         DoapOptions doapOptions = new DoapOptions();
         doapOptions.setName("XStream");
         doapOptions.setDescription("XStream is a simple library to serialize objects to XML and back again.");
@@ -275,12 +269,11 @@ public class DoapMojoTest extends AbstractMojoTestCase {
         artifact.setArtifactId("xstream");
         artifact.setVersion("1.1");
         setVariableValueToObject(mojo, "artifact", artifact);
-        setVariableValueToObject(mojo, "outputDirectory", "target/test/unit/doap-configuration/");
 
         mojo.execute();
 
-        File doapFile = new File(getBasedir(), "target/test/unit/doap-configuration/doap_xstream.rdf");
-        assertTrue("Doap File was not generated!", doapFile.exists());
+        File doapFile = new File(getBasedir(), "target/doap_xstream.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
 
         String readed = readFile(doapFile);
 
@@ -323,24 +316,21 @@ public class DoapMojoTest extends AbstractMojoTestCase {
      *
      * @throws Exception if any
      */
-    public void testGeneratedDoapForASF() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(),
-                "src/test/resources/unit/asf-doap-configuration/asf-doap-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // Set some Mojo parameters
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
+    @Test
+    @InjectMojo(goal = "generate", pom = "asf-doap-configuration-plugin-config.xml")
+    @Basedir("/unit/asf-doap-configuration/")
+    void testGeneratedDoapForASF(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in = Files.newInputStream(
+                getTestFile("asf-doap-configuration-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
         setVariableValueToObject(mojo, "about", mavenProject.getUrl());
 
         mojo.execute();
 
-        File doapFile = new File(getBasedir(), "target/test/unit/asf-doap-configuration/asf-doap-configuration.rdf");
-        assertTrue("Doap File was not generated!", doapFile.exists());
+        File doapFile = new File(getBasedir(), "target/asf-doap-configuration.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
 
         String readed = readFile(doapFile);
 
@@ -371,23 +361,15 @@ public class DoapMojoTest extends AbstractMojoTestCase {
      *
      * @throws Exception if any
      */
-    public void testGeneratedExtraDoap() throws Exception {
-        File pluginXmlFile = new File(
-                getBasedir(), "src/test/resources/unit/doap-configuration/doap-extra-configuration-plugin-config.xml");
-        DoapMojo mojo = lookupMojo("generate", pluginXmlFile);
-        assertNotNull("Mojo found.", mojo);
-
-        MavenProject mavenProject = getVariableValueFromObject(mojo, "project");
-        assertNotNull(mavenProject);
-
-        // Set some Mojo parameters
-        setVariableValueToObject(mojo, "remoteRepositories", mavenProject.getRemoteArtifactRepositories());
-        setVariableValueToObject(mojo, "about", mavenProject.getUrl());
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-extra-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testGeneratedExtraDoap(DoapMojo mojo) throws Exception {
 
         mojo.execute();
 
-        File doapFile = new File(getBasedir(), "target/test/unit/doap-configuration/doap-extra-configuration.rdf");
-        assertTrue("Doap File was not generated!", doapFile.exists());
+        File doapFile = new File(getBasedir(), "target/doap-extra-configuration.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
 
         String readed = readFile(doapFile);
 
@@ -397,8 +379,6 @@ public class DoapMojoTest extends AbstractMojoTestCase {
     }
 
     private String readFile(File file) throws IOException {
-        try (FileReader reader = new FileReader(file)) {
-            return IOUtil.toString(reader);
-        }
+        return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
     }
 }
