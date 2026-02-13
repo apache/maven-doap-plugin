@@ -1374,6 +1374,12 @@ public class DoapMojo extends AbstractMojo {
                 DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "file-release", fileRelease);
 
                 Date releaseDate = null;
+
+                // If the last updated date is not available, skip it
+                if (metadata.getMetadata().getVersioning().getLastUpdated() == null) {
+                    continue;
+                }
+
                 try {
                     releaseDate = REPOSITORY_DATE_FORMAT.parse(
                             metadata.getMetadata().getVersioning().getLastUpdated());

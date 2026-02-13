@@ -82,10 +82,8 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <configuration>
-          <project implementation="org.apache.maven.plugin.doap.stubs.DoapProjectStub"/>
-          <localRepository>${localRepository}</localRepository>
-          <doapFile>target/test/unit/doap-configuration/doap-configuration.rdf</doapFile>
-          <outputDirectory>target/test/unit/doap-configuration</outputDirectory>
+          <doapFile>target/doap-configuration.rdf</doapFile>
+          <outputDirectory>target</outputDirectory>
           <lang>en</lang>
           <validate>true</validate>
 

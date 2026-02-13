@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.doap;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -28,46 +30,51 @@ import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.License;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.junit.jupiter.api.Test;
+
+import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test {@link DoapUtil} class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
-public class DoapUtilTest extends PlexusTestCase {
-    /** {@inheritDoc} */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+@PlexusTest
+class DoapUtilTest {
 
-    /** {@inheritDoc} */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+    @Inject
+    private I18N i18n;
 
     /**
      * Test method for {@link DoapUtil#writeElement(XMLWriter, String, String, String)}.
      *
      * @throws Exception if any
      */
-    public void testWriteElement() throws Exception {
+    @Test
+    void testWriteElement() throws Exception {
         StringWriter w = new StringWriter();
         XMLWriter writer = new PrettyPrintXMLWriter(w);
         DoapUtil.writeElement(writer, null, "name", "value");
         w.close();
-        assertEquals(w.toString(), "<name>value</name>");
+        assertEquals("<name>value</name>", w.toString());
 
         w = new StringWriter();
         writer = new PrettyPrintXMLWriter(w);
         try {
             DoapUtil.writeElement(writer, null, null, null);
-            assertTrue("Null not catched", false);
+            fail("Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue("IllegalArgumentException catched", true);
+            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
@@ -78,20 +85,21 @@ public class DoapUtilTest extends PlexusTestCase {
      *
      * @throws Exception if any
      */
-    public void testWriteRdfResourceElement() throws Exception {
+    @Test
+    void testWriteRdfResourceElement() throws Exception {
         StringWriter w = new StringWriter();
         XMLWriter writer = new PrettyPrintXMLWriter(w);
         DoapUtil.writeRdfResourceElement(writer, null, "name", "value");
         w.close();
-        assertEquals(w.toString(), "<name " + DoapUtil.RDF_RESOURCE + "=\"value\"/>");
+        assertEquals("<name " + DoapUtil.RDF_RESOURCE + "=\"value\"/>", w.toString());
 
         w = new StringWriter();
         writer = new PrettyPrintXMLWriter(w);
         try {
             DoapUtil.writeRdfResourceElement(writer, null, null, null);
-            assertTrue("Null not catched", false);
+            fail("Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue("IllegalArgumentException catched", true);
+            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
@@ -107,12 +115,9 @@ public class DoapUtilTest extends PlexusTestCase {
      * {@link DoapUtil#getContributorsWithTranslatorRole(I18N, List)}
      * {@link DoapUtil#getContributorsWithUnknownRole(I18N, List)}
      *
-     * @throws Exception if any
      */
-    public void testDevelopersOrContributorsByDoapRoles() throws Exception {
-        I18N i18n = (I18N) getContainer().lookup(I18N.ROLE);
-        assertNotNull(i18n);
-        assertNotNull(i18n.getBundle());
+    @Test
+    void testDevelopersOrContributorsByDoapRoles() {
 
         List<Contributor> developersOrContributors = new ArrayList<>();
 
@@ -179,18 +184,19 @@ public class DoapUtilTest extends PlexusTestCase {
                 .size();
         dev.addRole(" Emeritus");
 
-        assertTrue(DoapUtil.getContributorsWithUnknownRole(i18n, developersOrContributors)
-                        .size()
-                == sizeBeforeEmeritus);
+        assertEquals(
+                DoapUtil.getContributorsWithUnknownRole(i18n, developersOrContributors)
+                        .size(),
+                sizeBeforeEmeritus);
     }
 
     /**
      * Test method for:
      * {@link DoapUtil#validate(java.io.File)}
      *
-     * @throws Exception if any
      */
-    public void testValidate() throws Exception {
+    @Test
+    void testValidate() {
         File doapFile = new File(getBasedir(), "src/test/resources/generated-doap-1.0.rdf");
         assertFalse(DoapUtil.validate(doapFile).isEmpty());
     }
@@ -199,9 +205,9 @@ public class DoapUtilTest extends PlexusTestCase {
      * Test method for:
      * {@link DoapUtil#interpolate(String, MavenProject, org.apache.maven.settings.Settings)}
      *
-     * @throws Exception if any
      */
-    public void testInterpolate() throws Exception {
+    @Test
+    void testInterpolate() {
         License license = new License();
         license.setName("licenseName");
         license.setUrl("licenseUrl");
@@ -223,17 +229,17 @@ public class DoapUtilTest extends PlexusTestCase {
         project.setDevelopers(developers);
         project.getProperties().put("myKey", "myValue");
 
-        assertEquals(DoapUtil.interpolate("${project.name}", project, null), "projectName");
-        assertEquals(DoapUtil.interpolate("my name is ${project.name}", project, null), "my name is projectName");
+        assertEquals("projectName", DoapUtil.interpolate("${project.name}", project, null));
+        assertEquals("my name is projectName", DoapUtil.interpolate("my name is ${project.name}", project, null));
         assertEquals(
-                DoapUtil.interpolate("my name is ${project.invalid}", project, null), "my name is ${project.invalid}");
-        assertEquals(DoapUtil.interpolate("${pom.description}", project, null), "projectDescription");
+                "my name is ${project.invalid}", DoapUtil.interpolate("my name is ${project.invalid}", project, null));
+        assertEquals("projectDescription", DoapUtil.interpolate("${pom.description}", project, null));
         assertNull(DoapUtil.interpolate("${project.licenses.name}", project, null));
-        assertEquals(DoapUtil.interpolate("${project.licenses[0].name}", project, null), "licenseName");
+        assertEquals("licenseName", DoapUtil.interpolate("${project.licenses[0].name}", project, null));
         assertNull(DoapUtil.interpolate("${project.licenses[1].name}", project, null));
         assertNotNull(DoapUtil.interpolate("${project.developers}", project, null));
-        assertEquals(DoapUtil.interpolate("${project.developers[0].name}", project, null), "developerName1");
-        assertEquals(DoapUtil.interpolate("${project.developers[1].name}", project, null), "developerName2");
-        assertEquals(DoapUtil.interpolate("${myKey}", project, null), "myValue");
+        assertEquals("developerName1", DoapUtil.interpolate("${project.developers[0].name}", project, null));
+        assertEquals("developerName2", DoapUtil.interpolate("${project.developers[1].name}", project, null));
+        assertEquals("myValue", DoapUtil.interpolate("${myKey}", project, null));
     }
 }
