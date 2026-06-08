@@ -190,7 +190,7 @@ under the License.
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.17.0</version>
+      <version>4.0.0</version>
     </dependency>
 
     <!-- test -->
