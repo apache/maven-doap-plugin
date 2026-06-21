@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -199,6 +200,16 @@ class DoapUtilTest {
     void testValidate() {
         File doapFile = new File(getBasedir(), "src/test/resources/generated-doap-1.0.rdf");
         assertFalse(DoapUtil.validate(doapFile).isEmpty());
+    }
+
+    /**
+     * Test method for:
+     * {@link DoapUtil#fetchURL(org.apache.maven.settings.Settings, java.net.URL)}
+     *
+     */
+    @Test
+    void testFetchURLWithNullURL() {
+        assertThrows(NullPointerException.class, () -> DoapUtil.fetchURL(null, null));
     }
 
     /**
