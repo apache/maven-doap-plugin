@@ -447,6 +447,7 @@ public class DoapUtil {
      *
      * @param settings ignored
      * @param url the URL to fetch
+     * @throws NullPointerException if url is null
      * @throws IOException if any
      * @since 1.1
      * @deprecated Use java.net.URL or a different library to load the URL.
@@ -454,7 +455,7 @@ public class DoapUtil {
     @Deprecated
     public static void fetchURL(Settings settings, URL url) throws IOException {
         if (url == null) {
-            throw new IllegalArgumentException("The url is null");
+            throw new NullPointerException("url");
         }
 
         try (InputStream in = url.openStream()) {
