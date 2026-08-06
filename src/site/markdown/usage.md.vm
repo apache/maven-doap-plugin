@@ -1,40 +1,30 @@
- ------
- Usage
- ------
- Jason van Zyl
- Vincent Siveton
- ------
- 2011-01-11
- ------
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+http://www.apache.org/licenses/LICENSE-2.0
 
-~~ NOTE: For help with the syntax of this file, see:
-~~ http://maven.apache.org/doxia/references/apt-format.html
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 
-Usage
+# Usage
 
- The DOAP Plugin generates DOAP and ASF DOAP compliant files. The following examples describe the basic usage of
- the Plugin.
+The DOAP Plugin generates DOAP and ASF DOAP compliant files. The following examples describe the basic usage of the Plugin.
 
-* {Pure DOAP Configuration}
+<a id="Pure_DOAP_Configuration"></a>Pure DOAP Configuration
+-----------------------------------------------------------
 
-+-----+
+```xml
 <project>
   ...
   <build>
@@ -46,20 +36,20 @@ Usage
         <configuration>
           <doapOptions>
             <!-- Default values -->
-            <bugDatabase>\${project.issueManagement.url}</bugDatabase>
+            <bugDatabase>${esc.d}{project.issueManagement.url}</bugDatabase>
             <category>library</category>
-            <created>\${project.inceptionYear}-01-01</created>
-            <description>\${project.description}</description>
-            <downloadPage>\${project.distributionManagement.downloadUrl}</downloadPage>
-            <homepage>\${project.url}</homepage>
+            <created>${esc.d}{project.inceptionYear}-01-01</created>
+            <description>${esc.d}{project.description}</description>
+            <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
+            <homepage>${esc.d}{project.url}</homepage>
             <license>\$\{project.licenses[0].url}</license>
-            <mailingList>\${project.url}/mail-lists.html</mailingList>
-            <name>\${project.name}</name>
+            <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
+            <name>${esc.d}{project.name}</name>
             <programmingLanguage>Java</programmingLanguage>
-            <scmAnonymousConnection>\${project.scm.connection}</scmAnonymousConnection>
-            <scmDeveloperConnection>\${project.scm.developerConnection}</scmDeveloperConnection>
-            <shortdesc>\${project.description}</shortdesc>
-            <vendor>\${project.organization.name}</vendor>
+            <scmAnonymousConnection>${esc.d}{project.scm.connection}</scmAnonymousConnection>
+            <scmDeveloperConnection>${esc.d}{project.scm.developerConnection}</scmDeveloperConnection>
+            <shortdesc>${esc.d}{project.description}</shortdesc>
+            <vendor>${esc.d}{project.organization.name}</vendor>
             ...
           </doapOptions>
         </configuration>
@@ -68,16 +58,16 @@ Usage
   </build>
   ...
 </project>
-+-----+
+```
 
-  <<Note>>: See the {{{./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html}DoapOptions Javadoc}} for
-  advanced DOAP options.
+**Note**: See the [DoapOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html) for advanced DOAP options.
 
-* {DOAP ASF Configuration}
+<a id="DOAP_ASF_Configuration"></a>DOAP ASF Configuration
+---------------------------------------------------------
 
-  This is the minimal POM to be ASF compliant.
+This is the minimal POM to be ASF compliant.
 
-+-----+
+```xml
 <project>
   <!-- To retrieve the ASF organization and the ASF license -->
   <parent>
@@ -147,18 +137,18 @@ Usage
             <category>build-management</category>
 
             <!-- Default values -->
-            <bugDatabase>\${project.issueManagement.url}</bugDatabase>
-            <created>\${project.inceptionYear}-01-01</created>
-            <description>\${project.description}</description>
-            <downloadPage>\${project.distributionManagement.downloadUrl}</downloadPage>
-            <homepage>\${project.url}</homepage>
+            <bugDatabase>${esc.d}{project.issueManagement.url}</bugDatabase>
+            <created>${esc.d}{project.inceptionYear}-01-01</created>
+            <description>${esc.d}{project.description}</description>
+            <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
+            <homepage>${esc.d}{project.url}</homepage>
             <license>\$\{project.licenses[0].url}</license>
-            <mailingList>\${project.url}/mail-lists.html</mailingList>
-            <name>\${project.name}</name>
-            <scmAnonymousConnection>\${project.scm.connection}</scmAnonymousConnection>
-            <scmDeveloperConnection>\${project.scm.developerConnection}</scmDeveloperConnection>
-            <shortdesc>\${project.description}</shortdesc>
-            <vendor>\${project.organization.name}</vendor>
+            <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
+            <name>${esc.d}{project.name}</name>
+            <scmAnonymousConnection>${esc.d}{project.scm.connection}</scmAnonymousConnection>
+            <scmDeveloperConnection>${esc.d}{project.scm.developerConnection}</scmDeveloperConnection>
+            <shortdesc>${esc.d}{project.description}</shortdesc>
+            <vendor>${esc.d}{project.organization.name}</vendor>
             ...
           </doapOptions>
 
@@ -167,8 +157,8 @@ Usage
             libraries that provide ...</charter>
             ...
             <!-- Default values -->
-            <pmc>\${project.url}</pmc>
-            <name>\${project.name}</name>
+            <pmc>${esc.d}{project.url}</pmc>
+            <name>${esc.d}{project.name}</name>
 
             <!-- If this Apache project implements a standard -->
             <standards>
@@ -186,14 +176,14 @@ Usage
     </plugins>
   </build>
 </project>
-+-----+
+```
 
-  <<Note>>: See the {{{./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html}DoapOptions Javadoc}} and
-  the {{{./apidocs/org/apache/maven/plugin/doap/options/ASFExtOptions.html}ASFExtOptions Javadoc}} for advanced options.
+**Note**: See the [DoapOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html) and the [ASFExtOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/ASFExtOptions.html) for advanced options.
 
-* Advanced DOAP Configuration
+Advanced DOAP Configuration
+---------------------------
 
-+-----+
+```xml
 <project>
   <build>
     <plugins>
@@ -257,26 +247,22 @@ Usage
     </plugins>
   </build>
 </project>
-+-----+
+```
 
-* Generate DOAP File
+Generate DOAP File
+------------------
 
- To generate the DOAP file you would use the following command:
+To generate the DOAP file you would use the following command:
 
-+-----
+```shell
 mvn doap:generate
-+-----
+```
 
-* Further Links
+Further Links
+-------------
 
- * Parameters for the {{{./generate-mojo.html}doap:generate}} goal
-
- * {{{http://usefulinc.com/ns/doap#}http://usefulinc.com/ns/doap#}}
-
- * {{{http://projects.apache.org/docs/pmc.html}http://projects.apache.org/docs/pmc.html}}
-
- * {{{http://projects.apache.org/docs/standards.html}http://projects.apache.org/docs/standards.html}}
-
- * {{{http://www.w3.org/RDF/Validator/}W3C RDF Validation Service}}
-
- []
+- Parameters for the [doap:generate](./generate-mojo.html) goal
+- [http://usefulinc.com/ns/doap#](http://usefulinc.com/ns/doap#)
+- [http://projects.apache.org/docs/pmc.html](http://projects.apache.org/docs/pmc.html)
+- [http://projects.apache.org/docs/standards.html](http://projects.apache.org/docs/standards.html)
+- [W3C RDF Validation Service](http://www.w3.org/RDF/Validator/)
