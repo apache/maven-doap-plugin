@@ -1,3 +1,10 @@
+---
+title: Generated DOAP In Use
+author: 
+  - Vincent Siveton
+date: 2008-07-17
+---
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
