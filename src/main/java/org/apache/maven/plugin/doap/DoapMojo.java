@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,19 +41,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.RepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.RepositoryMetadataManager;
-import org.apache.maven.artifact.repository.metadata.RepositoryMetadataResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.repository.metadata.Metadata;
+import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.License;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.doap.options.ASFExtOptions;
@@ -63,9 +61,11 @@ import org.apache.maven.plugin.doap.options.ExtOptions;
 import org.apache.maven.plugin.doap.options.Standard;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.scm.manager.NoSuchScmProviderException;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
@@ -74,14 +74,23 @@ import org.apache.maven.scm.repository.ScmRepositoryException;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.impl.RepositoryConnectorProvider;
+import org.eclipse.aether.metadata.DefaultMetadata;
+import org.eclipse.aether.metadata.Metadata.Nature;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.MetadataRequest;
+import org.eclipse.aether.resolution.MetadataResult;
 import org.eclipse.aether.spi.connector.ArtifactDownload;
 import org.eclipse.aether.spi.connector.RepositoryConnector;
 import org.eclipse.aether.transfer.NoRepositoryConnectorException;
@@ -142,14 +151,6 @@ public class DoapMojo extends AbstractMojo {
      */
     @Inject
     private ArtifactFactory artifactFactory;
-
-    /**
-     * Used to resolve artifacts.
-     *
-     * @since 1.0
-     */
-    @Inject
-    private RepositoryMetadataManager repositoryMetadataManager;
 
     @Inject
     private RepositorySystem repositorySystem;
@@ -222,15 +223,7 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     @Inject
-    private MavenProjectBuilder mavenProjectBuilder;
-
-    /**
-     * Used for resolving artifacts.
-     *
-     * @since 1.1
-     */
-    @Inject
-    private ArtifactResolver resolver;
+    private ProjectBuilder projectBuilder;
 
     /**
      * The current user system settings for use in Maven.
@@ -476,17 +469,30 @@ public class DoapMojo extends AbstractMojo {
                     artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), Artifact.SCOPE_COMPILE);
 
             if (art.getFile() == null) {
-                MavenProject proj = mavenProjectBuilder.buildFromRepository(art, remoteRepositories, localRepository);
+                ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+                request.setRepositorySession(repositorySystemSession);
+                request.setLocalRepository(localRepository);
+                request.setRemoteRepositories(remoteRepositories);
+                request.setProcessPlugins(false);
+                request.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+
+                MavenProject proj = projectBuilder.build(art, true, request).getProject();
                 art = proj.getArtifact();
 
-                resolver.resolve(art, remoteRepositories, localRepository);
+                art.setFile(repositorySystem
+                        .resolveArtifact(
+                                repositorySystemSession,
+                                new ArtifactRequest(
+                                        RepositoryUtils.toArtifact(art),
+                                        RepositoryUtils.toRepos(remoteRepositories),
+                                        null))
+                        .getArtifact()
+                        .getFile());
 
                 return proj;
             }
         } catch (ArtifactResolutionException e) {
             getLog().error("ArtifactResolutionException: " + e.getMessage() + "\nIgnored <artifact/> parameter.");
-        } catch (ArtifactNotFoundException e) {
-            getLog().error("ArtifactNotFoundException: " + e.getMessage() + "\nIgnored <artifact/> parameter.");
         } catch (ProjectBuildingException e) {
             getLog().error("ProjectBuildingException: " + e.getMessage() + "\nIgnored <artifact/> parameter.");
         }
@@ -1305,7 +1311,7 @@ public class DoapMojo extends AbstractMojo {
     private void writeReleases(XMLWriter writer, MavenProject project) throws MojoExecutionException {
         Artifact artifact = artifactFactory.createArtifact(
                 project.getGroupId(), project.getArtifactId(), project.getVersion(), null, project.getPackaging());
-        RepositoryMetadata metadata = new ArtifactRepositoryMetadata(artifact);
+        Metadata metadata = null;
 
         for (ArtifactRepository repo : remoteRepositories) {
             if (repo.isBlacklisted()) {
@@ -1315,26 +1321,19 @@ public class DoapMojo extends AbstractMojo {
                 continue;
             }
             if (repo.getReleases().isEnabled()) {
-                try {
-                    repositoryMetadataManager.resolveAlways(metadata, localRepository, repo);
-                    break;
-                } catch (RepositoryMetadataResolutionException e) {
-                    throw new MojoExecutionException(
-                            metadata.extendedToString() + " could not be retrieved from repositories due to an error: "
-                                    + e.getMessage(),
-                            e);
-                }
+                metadata = resolveVersioningMetadata(project, repo);
+                break;
             }
         }
 
-        if (metadata.getMetadata().getVersioning() == null) {
+        if (metadata == null || metadata.getVersioning() == null) {
             messages.getWarnMessages()
                     .add("No versioning was found for " + artifact.getGroupId() + ":" + artifact.getArtifactId()
                             + ". Ignored DOAP <release/> tag.");
             return;
         }
 
-        List<String> versions = metadata.getMetadata().getVersioning().getVersions();
+        List<String> versions = metadata.getVersioning().getVersions();
 
         // Recent releases in first
         Collections.reverse(versions);
@@ -1376,16 +1375,16 @@ public class DoapMojo extends AbstractMojo {
                 Date releaseDate = null;
 
                 // If the last updated date is not available, skip it
-                if (metadata.getMetadata().getVersioning().getLastUpdated() == null) {
+                if (metadata.getVersioning().getLastUpdated() == null) {
                     continue;
                 }
 
                 try {
                     releaseDate = REPOSITORY_DATE_FORMAT.parse(
-                            metadata.getMetadata().getVersioning().getLastUpdated());
+                            metadata.getVersioning().getLastUpdated());
                 } catch (ParseException e) {
                     getLog().error("Unable to parse date '"
-                            + metadata.getMetadata().getVersioning().getLastUpdated() + "'");
+                            + metadata.getVersioning().getLastUpdated() + "'");
                     continue;
                 }
 
@@ -1400,6 +1399,57 @@ public class DoapMojo extends AbstractMojo {
             writer.endElement(); // release
 
             i++;
+        }
+    }
+
+    /**
+     * Fetch the release versioning metadata of the given project from the given repository, always going to the
+     * remote repository rather than trusting whatever the local repository already holds.
+     *
+     * @param project    the Maven project, not null
+     * @param repository the repository to read the metadata from, not null
+     * @return the parsed maven-metadata.xml, or null if the repository does not carry one
+     * @throws MojoExecutionException if the metadata could not be retrieved or parsed
+     */
+    private Metadata resolveVersioningMetadata(MavenProject project, ArtifactRepository repository)
+            throws MojoExecutionException {
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(RepositoryUtils.toRepo(repository))
+                .setPolicy(new RepositoryPolicy(
+                        true, RepositoryPolicy.UPDATE_POLICY_ALWAYS, RepositoryPolicy.CHECKSUM_POLICY_WARN))
+                .build();
+
+        MetadataRequest request = new MetadataRequest(
+                new DefaultMetadata(
+                        project.getGroupId(), project.getArtifactId(), "maven-metadata.xml", Nature.RELEASE),
+                remoteRepository,
+                null);
+        request.setFavorLocalRepository(false);
+
+        MetadataResult result = repositorySystem
+                .resolveMetadata(repositorySystemSession, Collections.singletonList(request))
+                .get(0);
+
+        // a repository that simply carries no metadata for this project is not an error
+        if (result.getException() != null && !result.isMissing()) {
+            throw new MojoExecutionException(
+                    project.getGroupId() + ":" + project.getArtifactId()
+                            + " metadata could not be retrieved from repository " + repository.getId()
+                            + " due to an error: " + result.getException().getMessage(),
+                    result.getException());
+        }
+
+        File file = result.getMetadata() == null ? null : result.getMetadata().getFile();
+        if (file == null || !file.exists()) {
+            return null;
+        }
+
+        try (Reader reader = ReaderFactory.newXmlReader(file)) {
+            return new MetadataXpp3Reader().read(reader, false);
+        } catch (IOException | XmlPullParserException e) {
+            throw new MojoExecutionException(
+                    project.getGroupId() + ":" + project.getArtifactId() + " metadata could not be parsed: "
+                            + e.getMessage(),
+                    e);
         }
     }
 
