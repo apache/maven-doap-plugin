@@ -36,7 +36,7 @@ under the License.
 ### What is DOAP?
 
 DOAP stands for &quot;Description of a Project&quot; and you can find out everything there is to
-know about DOAP in its [homepage](http://usefulinc.com/doap) and in this
+know about DOAP in its [spec repository](https://github.com/ewilderj/doap) and in this
 [article](http://www.ibm.com/developerworks/xml/library/x-osproj3/).
 
 <a id="What_are_the_benefits_of_DOAP"></a>
