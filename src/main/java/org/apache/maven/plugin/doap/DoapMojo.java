@@ -43,7 +43,8 @@ import java.util.TimeZone;
 
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
@@ -145,12 +146,13 @@ public class DoapMojo extends AbstractMojo {
     private ScmManager scmManager;
 
     /**
-     * Artifact factory.
+     * Artifact handler manager, used to build {@link Artifact} instances directly instead of through the
+     * deprecated <code>ArtifactFactory</code> component.
      *
      * @since 1.0
      */
     @Inject
-    private ArtifactFactory artifactFactory;
+    private ArtifactHandlerManager artifactHandlerManager;
 
     @Inject
     private RepositorySystem repositorySystem;
@@ -205,14 +207,6 @@ public class DoapMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
     private List<ArtifactRepository> remoteRepositories;
-
-    /**
-     * Factory for creating artifact objects.
-     *
-     * @since 1.1
-     */
-    @Inject
-    private ArtifactFactory factory;
 
     @Inject
     private RepositoryConnectorProvider connectorProvider;
@@ -465,8 +459,14 @@ public class DoapMojo extends AbstractMojo {
                 + artifact.getVersion());
 
         try {
-            Artifact art = factory.createProjectArtifact(
-                    artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), Artifact.SCOPE_COMPILE);
+            Artifact art = new DefaultArtifact(
+                    artifact.getGroupId(),
+                    artifact.getArtifactId(),
+                    artifact.getVersion(),
+                    Artifact.SCOPE_COMPILE,
+                    "pom",
+                    null,
+                    artifactHandlerManager.getArtifactHandler("pom"));
 
             if (art.getFile() == null) {
                 ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
@@ -1309,8 +1309,6 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://usefulinc.com/ns/doap#Version">http://usefulinc.com/ns/doap#Version</a>
      */
     private void writeReleases(XMLWriter writer, MavenProject project) throws MojoExecutionException {
-        Artifact artifact = artifactFactory.createArtifact(
-                project.getGroupId(), project.getArtifactId(), project.getVersion(), null, project.getPackaging());
         Metadata metadata = null;
 
         for (ArtifactRepository repo : remoteRepositories) {
@@ -1325,7 +1323,7 @@ public class DoapMojo extends AbstractMojo {
 
         if (metadata == null || metadata.getVersioning() == null) {
             messages.getWarnMessages()
-                    .add("No versioning was found for " + artifact.getGroupId() + ":" + artifact.getArtifactId()
+                    .add("No versioning was found for " + project.getGroupId() + ":" + project.getArtifactId()
                             + ". Ignored DOAP <release/> tag.");
             return;
         }
@@ -1353,12 +1351,14 @@ public class DoapMojo extends AbstractMojo {
 
             // list all file release from all remote repos
             for (ArtifactRepository repo : remoteRepositories) {
-                Artifact artifactRelease = artifactFactory.createArtifact(
-                        project.getGroupId(), project.getArtifactId(), version, null, project.getPackaging());
-
-                if (artifactRelease == null) {
-                    continue;
-                }
+                Artifact artifactRelease = new DefaultArtifact(
+                        project.getGroupId(),
+                        project.getArtifactId(),
+                        version,
+                        null,
+                        project.getPackaging(),
+                        null,
+                        artifactHandlerManager.getArtifactHandler(project.getPackaging()));
 
                 String fileRelease = repo.getUrl() + "/" + repo.pathOf(artifactRelease);
 
