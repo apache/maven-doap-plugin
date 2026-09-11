@@ -74,11 +74,11 @@ import org.apache.maven.scm.repository.ScmRepositoryException;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
+import org.codehaus.plexus.util.xml.XmlStreamWriter;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -527,7 +527,7 @@ public class DoapMojo extends AbstractMojo {
                 FileUtils.mkdir(outputFile.getParentFile().getAbsolutePath());
             }
 
-            w = WriterFactory.newXmlWriter(outputFile);
+            w = new XmlStreamWriter(outputFile);
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating DOAP file " + outputFile.getAbsolutePath(), e);
         }
@@ -1314,9 +1314,6 @@ public class DoapMojo extends AbstractMojo {
         Metadata metadata = null;
 
         for (ArtifactRepository repo : remoteRepositories) {
-            if (repo.isBlacklisted()) {
-                continue;
-            }
             if (repo.getSnapshots().isEnabled()) {
                 continue;
             }
@@ -1443,7 +1440,7 @@ public class DoapMojo extends AbstractMojo {
             return null;
         }
 
-        try (Reader reader = ReaderFactory.newXmlReader(file)) {
+        try (Reader reader = new XmlStreamReader(file)) {
             return new MetadataXpp3Reader().read(reader, false);
         } catch (IOException | XmlPullParserException e) {
             throw new MojoExecutionException(
