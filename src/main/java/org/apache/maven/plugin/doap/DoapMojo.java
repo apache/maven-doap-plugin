@@ -94,7 +94,10 @@ import org.eclipse.aether.resolution.MetadataRequest;
 import org.eclipse.aether.resolution.MetadataResult;
 import org.eclipse.aether.spi.connector.ArtifactDownload;
 import org.eclipse.aether.spi.connector.RepositoryConnector;
+import org.eclipse.aether.spi.connector.layout.RepositoryLayout;
+import org.eclipse.aether.spi.connector.layout.RepositoryLayoutProvider;
 import org.eclipse.aether.transfer.NoRepositoryConnectorException;
+import org.eclipse.aether.transfer.NoRepositoryLayoutException;
 
 /**
  * <p>
@@ -201,15 +204,28 @@ public class DoapMojo extends AbstractMojo {
     private ArtifactRepository localRepository;
 
     /**
-     * The remote repositories where the artifacts are located.
+     * The remote repositories where the artifacts are located, in the legacy form required by
+     * {@link org.apache.maven.project.ProjectBuildingRequest#setRemoteRepositories(List)}: that API has no
+     * aether-native overload, so this one stays deprecated-typed.
      *
      * @since 1.0
      */
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
-    private List<ArtifactRepository> remoteRepositories;
+    private List<ArtifactRepository> projectBuildingRepositories;
+
+    /**
+     * The remote repositories where the artifacts are located.
+     *
+     * @since 1.0
+     */
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", required = true, readonly = true)
+    private List<RemoteRepository> remoteRepositories;
 
     @Inject
     private RepositoryConnectorProvider connectorProvider;
+
+    @Inject
+    private RepositoryLayoutProvider repositoryLayoutProvider;
 
     /**
      * Project builder.
@@ -472,7 +488,7 @@ public class DoapMojo extends AbstractMojo {
                 ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
                 request.setRepositorySession(repositorySystemSession);
                 request.setLocalRepository(localRepository);
-                request.setRemoteRepositories(remoteRepositories);
+                request.setRemoteRepositories(projectBuildingRepositories);
                 request.setProcessPlugins(false);
                 request.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
 
@@ -482,10 +498,7 @@ public class DoapMojo extends AbstractMojo {
                 art.setFile(repositorySystem
                         .resolveArtifact(
                                 repositorySystemSession,
-                                new ArtifactRequest(
-                                        RepositoryUtils.toArtifact(art),
-                                        RepositoryUtils.toRepos(remoteRepositories),
-                                        null))
+                                new ArtifactRequest(RepositoryUtils.toArtifact(art), remoteRepositories, null))
                         .getArtifact()
                         .getFile());
 
@@ -1311,11 +1324,11 @@ public class DoapMojo extends AbstractMojo {
     private void writeReleases(XMLWriter writer, MavenProject project) throws MojoExecutionException {
         Metadata metadata = null;
 
-        for (ArtifactRepository repo : remoteRepositories) {
-            if (repo.getSnapshots().isEnabled()) {
+        for (RemoteRepository repo : remoteRepositories) {
+            if (repo.getPolicy(true).isEnabled()) {
                 continue;
             }
-            if (repo.getReleases().isEnabled()) {
+            if (repo.getPolicy(false).isEnabled()) {
                 metadata = resolveVersioningMetadata(project, repo);
                 break;
             }
@@ -1350,7 +1363,7 @@ public class DoapMojo extends AbstractMojo {
             DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "revision", version);
 
             // list all file release from all remote repos
-            for (ArtifactRepository repo : remoteRepositories) {
+            for (RemoteRepository repo : remoteRepositories) {
                 Artifact artifactRelease = new DefaultArtifact(
                         project.getGroupId(),
                         project.getArtifactId(),
@@ -1359,10 +1372,20 @@ public class DoapMojo extends AbstractMojo {
                         project.getPackaging(),
                         null,
                         artifactHandlerManager.getArtifactHandler(project.getPackaging()));
+                org.eclipse.aether.artifact.Artifact aetherArtifactRelease =
+                        RepositoryUtils.toArtifact(artifactRelease);
 
-                String fileRelease = repo.getUrl() + "/" + repo.pathOf(artifactRelease);
+                String fileRelease;
+                try {
+                    RepositoryLayout layout =
+                            repositoryLayoutProvider.newRepositoryLayout(repositorySystemSession, repo);
+                    fileRelease = repo.getUrl() + "/" + layout.getLocation(aetherArtifactRelease, false);
+                } catch (NoRepositoryLayoutException e) {
+                    getLog().debug("No repository layout for " + repo + ", skipped.", e);
+                    continue;
+                }
 
-                if (!isArtifactInRepository(artifactRelease, repo)) {
+                if (!isArtifactInRepository(aetherArtifactRelease, repo)) {
                     getLog().debug(artifactRelease + " is not in the repository " + repo);
                     continue;
                 }
@@ -1408,9 +1431,9 @@ public class DoapMojo extends AbstractMojo {
      * @return the parsed maven-metadata.xml, or null if the repository does not carry one
      * @throws MojoExecutionException if the metadata could not be retrieved or parsed
      */
-    private Metadata resolveVersioningMetadata(MavenProject project, ArtifactRepository repository)
+    private Metadata resolveVersioningMetadata(MavenProject project, RemoteRepository repository)
             throws MojoExecutionException {
-        RemoteRepository remoteRepository = new RemoteRepository.Builder(RepositoryUtils.toRepo(repository))
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(repository)
                 .setPolicy(new RepositoryPolicy(
                         true, RepositoryPolicy.UPDATE_POLICY_ALWAYS, RepositoryPolicy.CHECKSUM_POLICY_WARN))
                 .build();
@@ -1450,26 +1473,8 @@ public class DoapMojo extends AbstractMojo {
         }
     }
 
-    private boolean isArtifactInRepository(Artifact artifact, ArtifactRepository repository) {
-        // Convert Legacy Artifact to Aether Artifact
-        String artifactCoordinates = String.format(
-                "%s:%s:%s:%s",
-                artifact.getGroupId(), artifact.getArtifactId(), artifact.getType(), artifact.getVersion());
-
-        org.eclipse.aether.artifact.Artifact aetherArtifact =
-                new org.eclipse.aether.artifact.DefaultArtifact(artifactCoordinates);
-
-        // Convert Legacy ArtifactRepository to Aether RemoteRepository
-        RemoteRepository remoteRepository = new RemoteRepository.Builder(
-                        repository.getId(), repository.getLayout().getId(), repository.getUrl())
-                .build();
-
-        // set up authentication
-        remoteRepository = repositorySystem
-                .newResolutionRepositories(repositorySystemSession, Collections.singletonList(remoteRepository))
-                .get(0);
-
-        return artifactExistsRemotely(aetherArtifact, remoteRepository);
+    private boolean isArtifactInRepository(org.eclipse.aether.artifact.Artifact artifact, RemoteRepository repository) {
+        return artifactExistsRemotely(artifact, repository);
     }
 
     /**
