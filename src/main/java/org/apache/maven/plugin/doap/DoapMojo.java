@@ -97,7 +97,7 @@ import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 
 /**
  * <p>
- * Generate a <a href="http://usefulinc.com/ns/doap">Description of a Project (DOAP)</a> file from the main information
+ * Generate a <a href="https://github.com/ewilderj/doap">Description of a Project (DOAP)</a> file from the main information
  * found in a POM.
  * </p>
  * <b>Note</b>: The generated file is tailored for use by projects at
