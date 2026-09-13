@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
@@ -36,6 +39,8 @@ import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getBasedir;
@@ -376,6 +381,94 @@ class DoapMojoTest {
         assertTrue(readed.contains("<ciManagement rdf:resource=\"http://ci.foo.org\"/>"));
         assertTrue(readed.contains("<asfext:status>active</asfext:status>"));
         assertTrue(readed.contains("<labs:status>active</labs:status>"));
+    }
+
+    /**
+     * Verify that, by default, <code>doap:file-release</code> points at the artifact of the project's packaging.
+     *
+     * @throws Exception if any
+     */
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testFileReleaseDefaultsToPackaging(DoapMojo mojo) throws Exception {
+        String readed = generateWithReleaseRepository(mojo);
+
+        assertTrue(readed.contains("<revision>1.0</revision>"));
+        assertTrue(readed.contains("<file-release>file:"));
+        assertTrue(readed.contains("/resources/test/resources-test/1.0/resources-test-1.0.jar</file-release>"));
+        assertTrue(readed.contains("<created>2008-01-01</created>"));
+        assertFalse(readed.contains("resources-test-1.0-source-release.zip"));
+    }
+
+    /**
+     * Verify that <code>fileReleaseClassifier</code> and <code>fileReleaseType</code> redirect
+     * <code>doap:file-release</code> to another artifact of the release, here the ASF source-release archive.
+     *
+     * @throws Exception if any
+     */
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @MojoParameter(name = "fileReleaseClassifier", value = "source-release")
+    @MojoParameter(name = "fileReleaseType", value = "zip")
+    @Basedir("/unit/doap-configuration/")
+    void testFileReleaseClassifierAndType(DoapMojo mojo) throws Exception {
+        String readed = generateWithReleaseRepository(mojo);
+
+        assertTrue(readed.contains("<revision>1.0</revision>"));
+        assertTrue(readed.contains("<file-release>file:"));
+        assertTrue(readed.contains(
+                "/resources/test/resources-test/1.0/resources-test-1.0-source-release.zip</file-release>"));
+        assertFalse(readed.contains("resources-test-1.0.jar"));
+    }
+
+    /**
+     * Run the mojo against a file-based release repository holding version 1.0 of the test project, as both a jar
+     * and a source-release zip, and return the generated DOAP file.
+     */
+    private String generateWithReleaseRepository(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in = Files.newInputStream(
+                getTestFile("doap-configuration-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
+
+        Path repository = Paths.get(getBasedir(), "target", "release-repo");
+        Path artifactDir = repository.resolve("resources/test/resources-test");
+        Files.createDirectories(artifactDir.resolve("1.0"));
+        Files.write(
+                artifactDir.resolve("maven-metadata.xml"),
+                ("<metadata>\n"
+                                + "  <groupId>resources.test</groupId>\n"
+                                + "  <artifactId>resources-test</artifactId>\n"
+                                + "  <versioning>\n"
+                                + "    <latest>1.0</latest>\n"
+                                + "    <release>1.0</release>\n"
+                                + "    <versions>\n"
+                                + "      <version>1.0</version>\n"
+                                + "    </versions>\n"
+                                + "    <lastUpdated>20080101120000</lastUpdated>\n"
+                                + "  </versioning>\n"
+                                + "</metadata>\n")
+                        .getBytes(StandardCharsets.UTF_8));
+        Files.write(artifactDir.resolve("1.0/resources-test-1.0.jar"), new byte[0]);
+        Files.write(artifactDir.resolve("1.0/resources-test-1.0-source-release.zip"), new byte[0]);
+
+        // writeReleases() only reads versioning metadata from repositories that serve releases but not snapshots
+        RemoteRepository remoteRepository = new RemoteRepository.Builder(
+                        "releases",
+                        "default",
+                        StringUtils.chomp(repository.toUri().toString(), "/"))
+                .setSnapshotPolicy(new RepositoryPolicy(
+                        false, RepositoryPolicy.UPDATE_POLICY_NEVER, RepositoryPolicy.CHECKSUM_POLICY_WARN))
+                .build();
+        setVariableValueToObject(mojo, "remoteRepositories", Collections.singletonList(remoteRepository));
+
+        mojo.execute();
+
+        File doapFile = new File(getBasedir(), "target/doap-configuration.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
+        return readFile(doapFile);
     }
 
     private String readFile(File file) throws IOException {

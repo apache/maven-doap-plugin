@@ -221,6 +221,25 @@ public class DoapMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.remoteProjectRepositories}", required = true, readonly = true)
     private List<RemoteRepository> remoteRepositories;
 
+    /**
+     * The classifier of the artifact to reference as <code>doap:file-release</code>, e.g.
+     * <code>source-release</code> for the ASF source-release archive. When not set, the release artifact is
+     * resolved without a classifier, as before.
+     *
+     * @since 3.0.0-M2
+     */
+    @Parameter(property = "fileReleaseClassifier")
+    private String fileReleaseClassifier;
+
+    /**
+     * The type of the artifact to reference as <code>doap:file-release</code>, e.g. <code>zip</code> for the
+     * ASF source-release archive. Defaults to the project's packaging.
+     *
+     * @since 3.0.0-M2
+     */
+    @Parameter(property = "fileReleaseType")
+    private String fileReleaseType;
+
     @Inject
     private RepositoryConnectorProvider connectorProvider;
 
@@ -1364,14 +1383,16 @@ public class DoapMojo extends AbstractMojo {
 
             // list all file release from all remote repos
             for (RemoteRepository repo : remoteRepositories) {
+                String type = StringUtils.isNotEmpty(fileReleaseType) ? fileReleaseType : project.getPackaging();
+                String classifier = StringUtils.isNotEmpty(fileReleaseClassifier) ? fileReleaseClassifier : null;
                 Artifact artifactRelease = new DefaultArtifact(
                         project.getGroupId(),
                         project.getArtifactId(),
                         version,
                         null,
-                        project.getPackaging(),
-                        null,
-                        artifactHandlerManager.getArtifactHandler(project.getPackaging()));
+                        type,
+                        classifier,
+                        artifactHandlerManager.getArtifactHandler(type));
                 org.eclipse.aether.artifact.Artifact aetherArtifactRelease =
                         RepositoryUtils.toArtifact(artifactRelease);
 
