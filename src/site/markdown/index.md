@@ -38,7 +38,7 @@ The DOAP Plugin has one goal:
 - [doap:generate](./generate-mojo.html) Generates a DOAP file from the POM.
 ## Usage
 
-The [usage page](./usage.html) has general instructions for the DOAP Plugin. The examples below describe specific ways to use the DOAP Plugin. Users sometimes contribute content to the [wiki page](http://docs.codehaus.org/display/MAVENUSER/DOAP+Plugin):
+The [usage page](./usage.html) has general instructions for the DOAP Plugin. The examples below describe specific ways to use the DOAP Plugin. 
 
 - Examples
 - Tips
@@ -48,13 +48,13 @@ If you have questions about the usage of this plugin, read the [FAQ](./faq.html)
 
 The [mail archive](./mailing-lists.html) can contain answers to your questions in older threads of the mailing list.
 
-If the plugin misses a feature, enter a feature request in the [issue tracker](./issue-management.html). If the plugin has a defect, enter a bug report in the [issue tracker](./issue-management.html). When you create a new issue, give a full description of your concern. Attach this information to the issue:
+If the plugin is missing a feature, enter a feature request in the [issue tracker](./issue-management.html). If the plugin has a defect, enter a bug report in the [issue tracker](./issue-management.html). When you create a new issue, give a full description of your concern. Attach this information to the issue:
 
 - Complete debug logs
 - POMs
 - Small demo projects
 
-The developers must be able to reproduce your problem. A small demo project is the most useful attachment. Patches are welcome. Contributors can get the project from the [source repository](./scm.html). The [guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html) has more information for contributors.
+The developers must be able to reproduce your problem. A small demo project is the most useful attachment. Patches are welcome. Contributors can get the project from the [source repository](./scm.html). The [guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html) has more information for contributors.
 
 ## Examples
 
