@@ -63,7 +63,7 @@ To generate the DOAP file for your project in the `site` phase, add the DOAP Plu
 Define A Meta Tag
 -----------------
 
-To make the DOAP file available for all HTML files in the site, modify `src/site/site.xml` to specify a &lt;link/&gt; tag:
+To link the DOAP file available from all HTML files in the site, modify `src/site/site.xml` to include a &lt;link/&gt; element in the HTML `head`:
 
 ```xml
 <project>
@@ -79,7 +79,7 @@ To make the DOAP file available for all HTML files in the site, modify `src/site
 Generate DOAP From Another Maven Project
 ------------------------------------------
 
-Since 1.1, you can generate the DOAP file for another Maven project. This can help when you have a main project and a site project.
+One Maven project can generate the DOAP file for a different Maven project. This helps when you have separate main and site projects.
 
 ```xml
 <project>
