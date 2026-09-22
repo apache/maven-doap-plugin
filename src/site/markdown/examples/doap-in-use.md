@@ -40,7 +40,7 @@ For more information, read the [Integrated DOAP Plugin With The Site Plugin](./w
 
 ## How To Distribute A DOAP File
 
-Enter the URL of the DOAP file into their catalogs. Use [Ping the Semantic Web](https://pingthesemanticweb.com/) to share RDF data with the web.
+Enter the URL of the DOAP file into the catalogs. Use [Ping the Semantic Web](https://pingthesemanticweb.com/) to share RDF data with the web.
 
 # Examples for the Maven DOAP
 
