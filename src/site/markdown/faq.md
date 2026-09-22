@@ -29,7 +29,7 @@ under the License.
 2. [What are the benefits of DOAP?](#What_are_the_benefits_of_DOAP)
 3. [Why do I use DOAP when I have a POM?](#Why_would_I_use_DOAP_when_I_have_a_POM)
 4. [What to do with the generated DOAP file?](#What_to_do_with_the_generated_DOAP_file)
-5. [Why aren't all developers and contributors listed as maintainers in the DOAP file?](#Why_are_all_developers.2Fcontributors_not_listed_in_the_DOAP_file_as_maintainer)
+5. [Why aren't all developers and contributors listed as maintainers in the DOAP file?](#Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer)
 
 <a id="What_is_DOAP"></a>
 
