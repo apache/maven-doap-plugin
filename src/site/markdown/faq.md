@@ -29,13 +29,13 @@ under the License.
 2. [What are the benefits of DOAP?](#What_are_the_benefits_of_DOAP)
 3. [Why do I use DOAP when I have a POM?](#Why_would_I_use_DOAP_when_I_have_a_POM)
 4. [What to do with the generated DOAP file?](#What_to_do_with_the_generated_DOAP_file)
-5. [Why are not all developers and contributors listed as maintainers in the DOAP file?](#Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer)
+5. [Why aren't all developers and contributors listed as maintainers in the DOAP file?](#Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer)
 
 <a id="What_is_DOAP"></a>
 
 ### What is DOAP?
 
-DOAP stands for &quot;Description of a Project&quot;. The [spec repository](https://github.com/ewilderj/doap) has all the information about DOAP.
+DOAP stands for "Description of a Project". The [spec repository](https://github.com/ewilderj/doap) has all the information about DOAP.
 
 <a id="What_are_the_benefits_of_DOAP"></a>
 
