@@ -25,11 +25,11 @@ under the License.
 -->
 
 # Apache Maven DOAP Plugin
-The DOAP Plugin is used to generate a compliant [Description of a Project (DOAP)](https://github.com/ewilderj/doap) file from a POM. The main goal is to be able to provide DOAP files for Semantic Web systems that use them as primary input but that would also alleviate the burden of maintaining two sets of metadata.
+The DOAP Plugin generates a compliant [Description of a Project (DOAP)](https://github.com/ewilderj/doap) file from a POM. The main goal is to provide DOAP files for Semantic Web systems. These systems use DOAP files as their primary input. This also removes the need to maintain two sets of metadata.
 
-Version 1.0 of this plugin is specifically tailored for use by projects at [Apache](http://projects.apache.org/doap.html), but this will change in subsequent versions as more people become interested in DOAP.
+Version 1.0 of this plugin is designed for projects at [Apache](http://projects.apache.org/doap.html). This will change in later versions of the plugin, as more people become interested in DOAP.
 
-If you are not aware about RDF or Semantic Web concepts, refer you to the [Links part](./links.html) to getting started.
+If you do not know about RDF or Semantic Web concepts, read the [Links](./links.html) page.
 
 ## Goals Overview
 
@@ -38,15 +38,27 @@ The DOAP Plugin has one goal:
 - [doap:generate](./generate-mojo.html) Generates a DOAP file from the POM.
 ## Usage
 
-General instructions on how to use the DOAP Plugin can be found on the [usage page](./usage.html). Some more specific use cases are described in the examples given below. Last but not least, users occasionally contribute additional examples, tips or errata to the [plugin's wiki page](http://docs.codehaus.org/display/MAVENUSER/DOAP+Plugin).
+The [usage page](./usage.html) has general instructions for the DOAP Plugin. The examples below describe specific ways to use the DOAP Plugin. Users sometimes contribute content to the [wiki page](http://docs.codehaus.org/display/MAVENUSER/DOAP+Plugin):
 
-In case you still have questions regarding the plugin's usage, please have a look at the [FAQ](./faq.html) and feel free to contact the [user mailing list](./mailing-lists.html). The posts to the mailing list are archived and could already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching the [mail archive](./mailing-lists.html).
+- Examples
+- Tips
+- Errata
 
-If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our [issue tracker](./issue-management.html). When creating a new issue, please provide a comprehensive description of your concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason, entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated. Of course, patches are welcome, too. Contributors can check out the project from our [source repository](./scm.html) and will find supplementary information in the [guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
+If you have questions about the usage of this plugin, read the [FAQ](./faq.html). Contact the [user mailing list](./mailing-lists.html) for more help.
+
+The [mail archive](./mailing-lists.html) can contain answers to your questions in older threads of the mailing list.
+
+If the plugin misses a feature, enter a feature request in the [issue tracker](./issue-management.html). If the plugin has a defect, enter a bug report in the [issue tracker](./issue-management.html). When you create a new issue, give a full description of your concern. Attach this information to the issue:
+
+- Complete debug logs
+- POMs
+- Small demo projects
+
+The developers must be able to reproduce your problem. A small demo project is the most useful attachment. Patches are welcome. Contributors can get the project from the [source repository](./scm.html). The [guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html) has more information for contributors.
 
 ## Examples
 
-To provide you with better understanding of some usages of the DOAP Plugin, you can take a look at the following examples:
+See these examples of the usage of the DOAP Plugin:
 
 - [Generated DOAP in use](./examples/doap-in-use.html)
 - [Integrate DOAP Plugin in the Site Plugin](./examples/with-site-plugin.html)

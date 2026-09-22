@@ -186,7 +186,7 @@ This is the minimal POM to be ASF compliant.
 </project>
 ```
 
-**Note**: See the [DoapOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html) and the [ASFExtOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/ASFExtOptions.html) for advanced options.
+**Note**: See the [DoapOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/DoapOptions.html) for advanced DOAP options. See the [ASFExtOptions Javadoc](./apidocs/org/apache/maven/plugin/doap/options/ASFExtOptions.html) for advanced ASFext options.
 
 Advanced DOAP Configuration
 ---------------------------
@@ -260,7 +260,7 @@ Advanced DOAP Configuration
 Generate DOAP File
 ------------------
 
-To generate the DOAP file you would use the following command:
+Use this command to generate the DOAP file:
 
 ```shell
 mvn doap:generate

@@ -27,49 +27,36 @@ under the License.
 
 1. [What is DOAP?](#What_is_DOAP)
 2. [What are the benefits of DOAP?](#What_are_the_benefits_of_DOAP)
-3. [Why would I use DOAP when I have a POM?](#Why_would_I_use_DOAP_when_I_have_a_POM)
+3. [Why do I use DOAP when I have a POM?](#Why_would_I_use_DOAP_when_I_have_a_POM)
 4. [What to do with the generated DOAP file?](#What_to_do_with_the_generated_DOAP_file)
-5. [Why are not all developers/contributors listed in the DOAP file as maintainer?](#Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer)
+5. [Why are not all developers and contributors listed as maintainers in the DOAP file?](#Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer)
 
 <a id="What_is_DOAP"></a>
 
 ### What is DOAP?
 
-DOAP stands for &quot;Description of a Project&quot; and you can find out everything there is to
-know about DOAP in its [spec repository](https://github.com/ewilderj/doap).
+DOAP stands for &quot;Description of a Project&quot;. The [spec repository](https://github.com/ewilderj/doap) has all the information about DOAP.
 
 <a id="What_are_the_benefits_of_DOAP"></a>
 
 ### What are the benefits of DOAP?
 
-The [Semantic Web](http://en.wikipedia.org/wiki/Semantic_web) provides
-mechanisms to process data provided in a form that is easily processed by machines. Thus,
-a DOAP is a machine readable document which facilitates projects research: it becomes much
-easier to seek information in the mass of data of the Web, since the data have a given
-foreseeable format.
+The [Semantic Web](http://en.wikipedia.org/wiki/Semantic_web) provides methods to process data in a machine-readable form. A DOAP file is a machine-readable document that helps project research. The data in a DOAP file has a predictable format. This format makes it easy to find project information in the large amount of data on the Web.
 
 <a id="Why_would_I_use_DOAP_when_I_have_a_POM"></a>
 
-### Why would I use DOAP when I have a POM?
+### Why do I use DOAP when I have a POM?
 
-That's a very good question! The answer is that generating a DOAP file should take no
-effort if you are using Maven DOAP Plugin and it helps disseminate project information
-which can only be a good thing. Cataloging tools like [SWiK](http://swik.net/)
-or like [DoapStore](http://doapstore.org/) can benefit from you generating DOAP
-files and that can also only be a good thing. Even so, it is still important to spread as
-much information about projects around as possible so there is no downside to creating
-DOAP files.
+A DOAP file takes little effort to generate with the Maven DOAP Plugin. The DOAP file spreads project information to other systems. Cataloging tools like [SWiK](http://swik.net/) and [DoapStore](http://doapstore.org/) use DOAP files. A project must publish its information in many places.
 
 <a id="What_to_do_with_the_generated_DOAP_file"></a>
 
 ### What to do with the generated DOAP file?
 
-Maven DOAP plugin has generated a DOAP file, what's next? See
-[DOAP in Use](./examples/doap-in-use.html) part.
+After the Maven DOAP Plugin generates a DOAP file, read the [DOAP in Use](./examples/doap-in-use.html) page.
 
 <a id="Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer"></a>
 
-### Why are not all developers/contributors listed in the DOAP file as maintainer?
+### Why are not all developers and contributors listed as maintainers in the DOAP file?
 
-Developers/contributors having a role containing &quot;*emeritus*&quot; are no longer active in the
-project and can't be maintainers therefore.
+Developers and contributors with a role that contains &quot;*emeritus*&quot; are no longer active in the project. They cannot be maintainers.
