@@ -42,7 +42,7 @@ For more information, read the [Integrated DOAP Plugin With The Site Plugin](./w
 
 Several Semantic Web directories, like [http://doapspace.org/](http://doapspace.org/) and [http://doapstore.org](http://doapstore.org), list metadata about open source projects in a public catalog.
 
-Enter the URL of the DOAP file into their catalogs. Use [Ping the Semantic Web](http://pingthesemanticweb.com/) to share RDF data with the web.
+Enter the URL of the DOAP file into their catalogs. Use [Ping the Semantic Web](https://pingthesemanticweb.com/) to share RDF data with the web.
 
 # Examples for the Maven DOAP
 
