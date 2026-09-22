@@ -53,7 +53,7 @@ A DOAP file is easy to generate with the Maven DOAP Plugin. The DOAP file spread
 
 ### What to do with the generated DOAP file?
 
-After the Maven DOAP Plugin generates a DOAP file, read the [DOAP in Use](./examples/doap-in-use.html) page.
+Read the [DOAP in Use](./examples/doap-in-use.html) page.
 
 <a id="Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer"></a>
 
