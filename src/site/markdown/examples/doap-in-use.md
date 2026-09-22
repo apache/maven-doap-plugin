@@ -46,4 +46,4 @@ Enter the URL of the DOAP file into their catalogs. Use [Ping the Semantic Web](
 
 The Maven project shares its DOAP file in this [SVN repository](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Some Semantic Web directories show this file:
 
-- [Zigtgist RDF Viewer](http://dataviewer.zitgist.com/?uri=http%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
+- [Zigtgist RDF Viewer](https://dataviewer.zitgist.com/?uri=https%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
