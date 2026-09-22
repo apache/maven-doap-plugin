@@ -27,7 +27,7 @@ under the License.
 # Apache Maven DOAP Plugin
 The DOAP Plugin generates a compliant [Description of a Project (DOAP)](https://github.com/ewilderj/doap) file from a POM. The main goal is to provide DOAP files for Semantic Web systems. These systems use DOAP files as their primary input. This also removes the need to maintain two sets of metadata.
 
-Version 1.0 of this plugin is designed for projects at [Apache](http://projects.apache.org/doap.html). This will change in later versions of the plugin, as more people become interested in DOAP.
+Version 1.0 of this plugin is designed for projects at [Apache](https://projects.apache.org/doap.html). This will change in later versions of the plugin, as more people become interested in DOAP.
 
 If you do not know about RDF or Semantic Web concepts, read the [Links](./links.html) page.
 
