@@ -41,13 +41,13 @@ DOAP stands for "Description of a Project". The [spec repository](https://github
 
 ### What are the benefits of DOAP?
 
-The [Semantic Web](http://en.wikipedia.org/wiki/Semantic_web) provides methods to process data in a machine-readable form. A DOAP file is a machine-readable document that helps project research. The data in a DOAP file has a predictable format. This format makes it easy to find project information in the large amount of data on the Web.
+A DOAP file is a machine-readable document that helps project research. The data in a DOAP file has a predictable format. This format makes it easy to find project information in the large amount of data on the Web.
 
 <a id="Why_would_I_use_DOAP_when_I_have_a_POM"></a>
 
 ### Why do I use DOAP when I have a POM?
 
-A DOAP file takes little effort to generate with the Maven DOAP Plugin. The DOAP file spreads project information to other systems. Cataloging tools like [SWiK](http://swik.net/) and [DoapStore](http://doapstore.org/) use DOAP files. A project must publish its information in many places.
+A DOAP file is easy to generate with the Maven DOAP Plugin. The DOAP file spreads project information to other systems. Cataloging tools like [SWiK](https://swik.net/) use DOAP files. A project must publish its information in many places.
 
 <a id="What_to_do_with_the_generated_DOAP_file"></a>
 
