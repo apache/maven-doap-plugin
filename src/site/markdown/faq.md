@@ -57,6 +57,6 @@ Read the [DOAP in Use](./examples/doap-in-use.html) page.
 
 <a id="Why_are_not_all_developers.2Fcontributors_listed_in_the_DOAP_file_as_maintainer"></a>
 
-### Why are not all developers and contributors listed as maintainers in the DOAP file?
+### Why are all developers and contributors not listed as maintainers in the DOAP file?
 
-Developers and contributors with a role that contains &quot;*emeritus*&quot; are no longer active in the project. They cannot be maintainers.
+Developers and contributors with a role that contains "*emeritus*" are no longer active in the project. They are not maintainers.
