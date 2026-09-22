@@ -33,7 +33,8 @@ The DOAP Plugin generates a DOAP file from a POM.
 
 Publish the DOAP file on a web server or in source code control. Make sure that other people can get the file with an HTTP or HTTPS request.
 
-By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory}). The file is available when you deploy the Maven site with the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal.
+By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory})
+so that it is included as part of the site.
 
 For more information, read the [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) page.
 
