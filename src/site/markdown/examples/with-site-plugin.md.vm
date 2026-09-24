@@ -26,14 +26,14 @@ under the License.
 
 # Integrated DOAP Plugin With The Site Plugin
 
-As described in [DOAP In Use](./doap-in-use.html), you need to publish the generated DOAP file.
+You must publish the generated DOAP file, as described in [DOAP In Use](./doap-in-use.html).
 
-By default, the generated DOAP file will be deploy using the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal in the site specified in the _distributionManagement_ section of the POM.
+By default, the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal deploys the generated DOAP file to the site that the _distributionManagement_ section of the POM specifies.
 
-Including DOAP In The Site Phase
+Include DOAP In The Site Phase
 --------------------------------
 
-You could always generate the DOAP file for your project by sticking the DOAP Plugin in the `site` phase, like the following:
+To generate the DOAP file for your project in the `site` phase, add the DOAP Plugin with this configuration:
 
 ```xml
 <project>
@@ -60,10 +60,10 @@ You could always generate the DOAP file for your project by sticking the DOAP Pl
 </project>
 ```
 
-Defining Meta Tag
+Define A Meta Tag
 -----------------
 
-To make the DOAP file available for all HTML files deployed on the site, you could modify the `src/site/site.xml` to specify a &lt;link/&gt; tag, i.e.:
+To link the DOAP file available from all HTML files in the site, modify `src/site/site.xml` to include a &lt;link/&gt; element in the HTML `head`:
 
 ```xml
 <project>
@@ -76,10 +76,10 @@ To make the DOAP file available for all HTML files deployed on the site, you cou
 </project>
 ```
 
-Generating DOAP from Another Maven Project
+Generate DOAP From Another Maven Project
 ------------------------------------------
 
-Since 1.1, you could generate the DOAP file against another Maven Project. It could be useful, if you have a main project and a site project.
+One Maven project can generate the DOAP file for a different Maven project. This helps when you have separate main and site projects.
 
 ```xml
 <project>

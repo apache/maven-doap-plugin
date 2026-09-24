@@ -26,23 +26,24 @@ under the License.
 
 # Generated DOAP In Use
 
-DOAP is used to share informations (metadata) about a software project. Now that you have a generated DOAP from POM by the DOAP Plugin, you need to publish it and diffuse it.
+People use DOAP to share information and metadata about a software project.
+The DOAP Plugin generates a DOAP file from a POM.
 
 ## How To Publish A DOAP File
 
-You need to publish it somewhere where the DOAP file will be accessible via an HTTP or HTTPS request like a web server or SVN.
+Publish the DOAP file on a web server or in source code control. Make sure that other people can get the file with an HTTP or HTTPS request.
 
-By default, the DOAP Plugin generates the file in the reporting output directory (i.e. ${project.reporting.outputDirectory}). So, it will be available when you will deploy the Maven site via the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal. See [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) part for more information.
+By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory})
+so that it is included as part of the site.
 
-## How To Diffuse A DOAP File
+For more information, read the [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) page.
 
-Several Semantic Web directories like [http://doapspace.org/](http://doapspace.org/) or [http://doapstore.org](http://doapstore.org) provide metadatas relating to open source projects into a public catalog. You need to enter the DOAP file URL to their catalogs.
+## How To Distribute A DOAP File
 
-You could also use the [Ping the Semantic Web](http://pingthesemanticweb.com/) which share RDF data with the World.
+Enter the URL of the DOAP file into the catalogs. Use [Ping the Semantic Web](https://pingthesemanticweb.com/) to share RDF data with the web.
 
 # Examples for the Maven DOAP
 
-Our Maven DOAP file is share on SVN [here](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Here are the result from some Semantic Web directories:
+The Maven project shares its DOAP file in this [SVN repository](https://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Some Semantic Web directories show this file:
 
-- [Doapstore](http://doapstore.org/view.php?uri=http%3A%2F%2FMaven.rdf.apache.org%2F)
-- [Zigtgist RDF Viewer](http://dataviewer.zitgist.com/?uri=http%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
+- [Zigtgist RDF Viewer](https://dataviewer.zitgist.com/?uri=https%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
