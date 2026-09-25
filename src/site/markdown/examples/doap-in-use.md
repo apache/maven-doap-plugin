@@ -42,7 +42,7 @@ You could also use the [Ping the Semantic Web](http://pingthesemanticweb.com/) w
 
 # Examples for the Maven DOAP
 
-Our Maven DOAP file is share on SVN [here](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Here are the result from some Semantic Web directories:
+Our Maven DOAP file is shared in the Maven Git repository [here](https://raw.githubusercontent.com/apache/maven/master/doap_Maven.rdf). Here are the result from some Semantic Web directories:
 
 - [Doapstore](http://doapstore.org/view.php?uri=http%3A%2F%2FMaven.rdf.apache.org%2F)
-- [Zigtgist RDF Viewer](http://dataviewer.zitgist.com/?uri=http%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
+- [Zigtgist RDF Viewer](http://dataviewer.zitgist.com/?uri=https%3A//raw.githubusercontent.com/apache/maven/master/doap_Maven.rdf)
