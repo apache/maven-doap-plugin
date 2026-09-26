@@ -54,8 +54,7 @@ foreseeable format.
 
 That's a very good question! The answer is that generating a DOAP file should take no
 effort if you are using Maven DOAP Plugin and it helps disseminate project information
-which can only be a good thing. Cataloging tools like [SWiK](http://swik.net/)
-or like [DoapStore](http://doapstore.org/) can benefit from you generating DOAP
+which can only be a good thing. Cataloging tools can benefit from you generating DOAP
 files and that can also only be a good thing. Even so, it is still important to spread as
 much information about projects around as possible so there is no downside to creating
 DOAP files.
