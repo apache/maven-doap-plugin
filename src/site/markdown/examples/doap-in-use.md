@@ -26,23 +26,24 @@ under the License.
 
 # Generated DOAP In Use
 
-DOAP is used to share informations (metadata) about a software project. Now that you have a generated DOAP from POM by the DOAP Plugin, you need to publish it and diffuse it.
+DOAP is used to share metadata about a software project. After generating a DOAP file from the POM, publish it at a stable URL so that consumers can retrieve it.
 
 ## How To Publish A DOAP File
 
-You need to publish it somewhere where the DOAP file will be accessible via an HTTP or HTTPS request like a web server or SVN.
+Publish the file somewhere that is accessible over HTTP or HTTPS. A project repository, a generated project site, or another web server are all suitable locations. The important property is a stable URL that returns the generated RDF document; no central DOAP directory is required.
 
 By default, the DOAP Plugin generates the file in the reporting output directory (i.e. ${project.reporting.outputDirectory}). So, it will be available when you will deploy the Maven site via the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal. See [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) part for more information.
 
-## How To Diffuse A DOAP File
+If the file is published with the project site, you can advertise it from the site's HTML pages with a link such as:
 
-Several Semantic Web directories like [http://doapspace.org/](http://doapspace.org/) or [http://doapstore.org](http://doapstore.org) provide metadatas relating to open source projects into a public catalog. You need to enter the DOAP file URL to their catalogs.
+```html
+<link rel="meta" title="DOAP" href="https://example.org/doap_example.rdf" type="application/rdf+xml">
+```
 
-You could also use the [Ping the Semantic Web](http://pingthesemanticweb.com/) which share RDF data with the World.
+## How To Share A DOAP File
 
-# Examples for the Maven DOAP
+Share the stable URL with the tools or catalogs that consume DOAP. Check their current submission instructions before registering a project, since third-party services and their availability can change independently of this plugin.
 
-Our Maven DOAP file is share on SVN [here](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Here are the result from some Semantic Web directories:
+# Example
 
-- [Doapstore](http://doapstore.org/view.php?uri=http%3A%2F%2FMaven.rdf.apache.org%2F)
-- [Zigtgist RDF Viewer](http://dataviewer.zitgist.com/?uri=http%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
+For example, a project publishing its Maven site at `https://example.org/` can make its generated file available at `https://example.org/doap_example.rdf`. Consumers can then fetch that URL directly, and the project can update the file whenever its POM metadata changes.
