@@ -26,14 +26,19 @@ under the License.
 
 # Generated DOAP In Use
 
-DOAP is used to share informations (metadata) about a software project. Now that you have a generated DOAP from POM by the DOAP Plugin, you need to publish it.
+Developers use DOAP to share information and metadata about a software project.
+The DOAP Plugin generates a DOAP file from a POM.
 
 ## How To Publish A DOAP File
 
-You need to publish it somewhere where the DOAP file will be accessible via an HTTP or HTTPS request like a web server or SVN.
+Publish the DOAP file on a web server or in source code control. Make sure that other people can get the file with an HTTP or HTTPS request.
 
-By default, the DOAP Plugin generates the file in the reporting output directory (i.e. ${project.reporting.outputDirectory}). So, it will be available when you will deploy the Maven site via the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal. See [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) part for more information.
+By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory})
+so that it is included as part of the site.
+
+For more information, read the [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) page.
 
 # Examples for the Maven DOAP
 
-Our Maven DOAP file is share on SVN [here](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf).
+Our Maven DOAP file is shared on 
+[SVN](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf).
