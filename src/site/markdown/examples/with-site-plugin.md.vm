@@ -28,7 +28,7 @@ under the License.
 
 You must publish the generated DOAP file, as described in [DOAP In Use](./doap-in-use.html).
 
-By default, the [`site:deploy`](http://maven.apache.org/plugins/maven-site-plugin/usage.html) goal deploys the generated DOAP file to the site that the _distributionManagement_ section of the POM specifies.
+By default, the [`site:deploy`](https://maven.apache.org/plugins/maven-site-plugin/usage.html) goal deploys the generated DOAP file to the site that the _distributionManagement_ section of the POM specifies.
 
 Include DOAP In The Site Phase
 --------------------------------
