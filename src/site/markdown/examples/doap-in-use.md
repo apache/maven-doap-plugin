@@ -26,7 +26,7 @@ under the License.
 
 # Generated DOAP In Use
 
-People use DOAP to share information and metadata about a software project.
+Developers use DOAP to share information and metadata about a software project.
 The DOAP Plugin generates a DOAP file from a POM.
 
 ## How To Publish A DOAP File
@@ -44,6 +44,5 @@ Enter the URL of the DOAP file into the catalogs. Use [Ping the Semantic Web](ht
 
 # Examples for the Maven DOAP
 
-The Maven project shares its DOAP file in this [SVN repository](https://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf). Some Semantic Web directories show this file:
-
-- [Zigtgist RDF Viewer](https://dataviewer.zitgist.com/?uri=https%3A//svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf)
+Our Maven DOAP file is shared on 
+[SVN](http://svn.apache.org/repos/asf/maven/maven-3/trunk/doap_Maven.rdf).

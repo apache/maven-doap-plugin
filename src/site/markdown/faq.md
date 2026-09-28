@@ -11,7 +11,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+  https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -47,7 +47,8 @@ A DOAP file is a machine-readable document that helps project research. The data
 
 ### Why do I use DOAP when I have a POM?
 
-A DOAP file is easy to generate with the Maven DOAP Plugin. The DOAP file spreads project information to other systems. Cataloging tools like [SWiK](https://swik.net/) use DOAP files. A project must publish its information in many places.
+A DOAP file is easy to generate with the Maven DOAP Plugin. The DOAP file spreads project information to other systems.
+Cataloging tools use DOAP files. A project should publish its information in many places.
 
 <a id="What_to_do_with_the_generated_DOAP_file"></a>
 
