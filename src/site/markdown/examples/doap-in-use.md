@@ -26,11 +26,17 @@ under the License.
 
 # Generated DOAP In Use
 
-DOAP is used to share metadata about a software project. After generating a DOAP file from the POM, publish it at a stable URL so that consumers can retrieve it.
+DOAP is used to share metadata about a software project. After generating a DOAP file from the POM, publish it at a stable URL. Consumers can then retrieve the generated RDF document from that URL.
 
 ## How To Publish A DOAP File
 
 Publish the file somewhere that is accessible over HTTP or HTTPS. A project repository, a generated project site, or another web server are all suitable locations. The important property is a stable URL that returns the generated RDF document; no central DOAP directory is required.
+
+Projects that publish an HTML site can also advertise the RDF document with a link element in the HTML header such as:
+
+```html
+<link rel="meta" type="application/rdf+xml" title="DOAP" href="doap_example.rdf" />
+```
 
 By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory})
 so that it is included as part of the site.
