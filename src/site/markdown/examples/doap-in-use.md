@@ -38,8 +38,8 @@ Projects that publish an HTML site can also advertise the RDF document with a li
 <link rel="meta" type="application/rdf+xml" title="DOAP" href="doap_example.rdf" />
 ```
 
-By default, the DOAP Plugin generates the file in the reporting output directory (that is ${project.reporting.outputDirectory})
-so that it is included as part of the site.
+By default, the DOAP Plugin generates the file in the reporting output directory.
+That directory is `${project.reporting.outputDirectory}`, so the file is included as part of the site.
 
 For more information, read the [Integrated DOAP Plugin With The Site Plugin](./with-site-plugin.html) page.
 
