@@ -47,6 +47,4 @@ For more information, read the [Integrated DOAP Plugin With The Site Plugin](./w
 
 Share the stable URL with the tools or catalogs that consume DOAP. Check their current submission instructions before registering a project, since third-party services and their availability can change independently of this plugin.
 
-# Example
-
 For example, a project publishing its Maven site at `https://example.org/` can make its generated file available at `https://example.org/doap_example.rdf`. Consumers can then fetch that URL directly, and the project can update the file whenever its POM metadata changes.
