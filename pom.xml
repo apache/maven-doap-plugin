@@ -63,7 +63,7 @@ under the License.
     <javaVersion>8</javaVersion>
     <mavenVersion>3.10.0</mavenVersion>
     <scmVersion>2.2.1</scmVersion>
-    <resolverVersion>1.9.27</resolverVersion>
+    <resolverVersion>2.0.24</resolverVersion>
     <checkstyle.violation.ignore>FileLength</checkstyle.violation.ignore>
     <project.build.outputTimestamp>2026-09-19T15:43:02Z</project.build.outputTimestamp>
   </properties>
@@ -213,7 +213,7 @@ under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-transport-http</artifactId>
+      <artifactId>maven-resolver-transport-apache</artifactId>
       <version>${resolverVersion}</version>
       <scope>test</scope>
     </dependency>
