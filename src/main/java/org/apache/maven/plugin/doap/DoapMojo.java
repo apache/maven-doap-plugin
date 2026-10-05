@@ -1504,7 +1504,7 @@ public class DoapMojo extends AbstractMojo {
     private boolean artifactExistsRemotely(org.eclipse.aether.artifact.Artifact artifact, RemoteRepository repository) {
         try (RepositoryConnector connector =
                 connectorProvider.newRepositoryConnector(this.repositorySystemSession, repository)) {
-            ArtifactDownload download = new ArtifactDownload(artifact, null, null, null);
+            ArtifactDownload download = new ArtifactDownload(artifact, null, (File) null, null);
             download.setExistenceCheck(true);
 
             connector.get(Collections.singleton(download), null);
