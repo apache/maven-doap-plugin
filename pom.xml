@@ -35,7 +35,7 @@ under the License.
   <description>Plugin which generates a DOAP file from information in a POM.</description>
 
   <prerequisites>
-    <maven>3.6.3</maven>
+    <maven>3.9.0</maven>
   </prerequisites>
 
   <scm>
