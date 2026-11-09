@@ -38,7 +38,7 @@ The DOAP Plugin has one goal:
 - [doap:generate](./generate-mojo.html) Generates a DOAP file from the POM.
 ## Usage
 
-The [usage page](./usage.html) has general instructions for the DOAP Plugin. The examples below describe specific ways to use the DOAP Plugin. 
+The [usage page](./usage.html) has general instructions for the DOAP Plugin. The examples below describe specific ways to use the DOAP Plugin.
 
 - Examples
 - Tips
