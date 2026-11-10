@@ -321,8 +321,8 @@ public class DoapMojo extends AbstractMojo {
      * automatically set to <code>true</code> if the project is hosted at ASF. <br/>
      * See <a href="./apidocs/org/apache/maven/plugin/doap/options/ASFExtOptions.html">Javadoc</a> <br/>
      *
-     * @see <a href="http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext">
-     *      http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext</a>
+     * @see <a href="https://projects.apache.org/ns/asfext#">
+     *      https://projects.apache.org/ns/asfext#</a>
      * @see <a href="http://projects.apache.org/docs/pmc.html">http://projects.apache.org/docs/pmc.html</a>
      * @see <a href="http://projects.apache.org/docs/standards.html">http://projects.apache.org/docs/standards.html</a>
      * @see ASFExtOptionsUtil#isASFProject(MavenProject)
@@ -1830,8 +1830,8 @@ public class DoapMojo extends AbstractMojo {
      *
      * @param writer  not null
      * @param project the Maven project, not null
-     * @see <a href="http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext">
-     *      http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext</a>
+     * @see <a href="https://projects.apache.org/ns/asfext#">
+     *      https://projects.apache.org/ns/asfext#</a>
      * @see <a href="http://projects.apache.org/docs/pmc.html">http://projects.apache.org/docs/pmc.html</a>
      */
     private void writeASFext(XMLWriter writer, MavenProject project) {
@@ -1919,8 +1919,8 @@ public class DoapMojo extends AbstractMojo {
      * Write the ASF implements.
      *
      * @param writer not null
-     * @see <a href="http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext">
-     *      http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext</a>
+     * @see <a href="https://projects.apache.org/ns/asfext#">
+     *      https://projects.apache.org/ns/asfext#</a>
      * @see <a href="http://projects.apache.org/docs/standards.html">http://projects.apache.org/docs/standards.html</a>
      */
     private void writeASFImplements(XMLWriter writer) {
