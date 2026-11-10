@@ -35,8 +35,8 @@ under the License.
     <class>
       <name>ASFExtOptions</name>
       <description><![CDATA[Specific ASF DOAP parameters, i.e. ASF options which make DOAP file ASF compliant.
-@see <a href="http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext">
-http://svn.apache.org/repos/asf/infrastructure/site-tools/trunk/projects/asfext</a>
+@see <a href="https://projects.apache.org/ns/asfext#">
+https://projects.apache.org/ns/asfext#</a>
 @see <a href="http://projects.apache.org/docs/pmc.html">http://projects.apache.org/docs/pmc.html</a>
 @see <a href="http://projects.apache.org/docs/standards.html">http://projects.apache.org/docs/standards.html</a>]]></description>
       <version>1.0.0</version>

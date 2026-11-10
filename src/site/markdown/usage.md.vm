@@ -95,9 +95,9 @@ This is the minimal POM to be ASF compliant.
   <inceptionYear>2010</inceptionYear>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/XXX/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/XXX/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/XXX/trunk</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/XXX.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/XXX.git</developerConnection>
+    <url>https://github.com/apache/XXX</url>
   </scm>
   <issueManagement>
     <system>jira</system>
