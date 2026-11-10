@@ -45,9 +45,9 @@ import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.License;
@@ -178,6 +178,9 @@ public class DoapMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
+    private MavenSession session;
+
     @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
     private RepositorySystemSession repositorySystemSession;
 
@@ -194,24 +197,6 @@ public class DoapMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project.reporting.outputDirectory}", required = true)
     private String outputDirectory;
-
-    /**
-     * The local repository where the artifacts are located.
-     *
-     * @since 1.0
-     */
-    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
-    private ArtifactRepository localRepository;
-
-    /**
-     * The remote repositories where the artifacts are located, in the legacy form required by
-     * {@link org.apache.maven.project.ProjectBuildingRequest#setRemoteRepositories(List)}: that API has no
-     * aether-native overload, so this one stays deprecated-typed.
-     *
-     * @since 1.0
-     */
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
-    private List<ArtifactRepository> projectBuildingRepositories;
 
     /**
      * The remote repositories where the artifacts are located.
@@ -504,10 +489,7 @@ public class DoapMojo extends AbstractMojo {
                     artifactHandlerManager.getArtifactHandler("pom"));
 
             if (art.getFile() == null) {
-                ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
-                request.setRepositorySession(repositorySystemSession);
-                request.setLocalRepository(localRepository);
-                request.setRemoteRepositories(projectBuildingRepositories);
+                ProjectBuildingRequest request = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
                 request.setProcessPlugins(false);
                 request.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
 
