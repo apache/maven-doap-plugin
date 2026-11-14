@@ -548,6 +548,33 @@ class DoapMojoTest {
                         + "number is 10.");
     }
 
+    /**
+     * Verify that a Git connection is written as a DOAP Git repository with a plain URL as its location.
+     *
+     * @throws Exception if any
+     */
+    @Test
+    @InjectMojo(goal = "generate", pom = "doap-configuration-plugin-config.xml")
+    @Basedir("/unit/doap-configuration/")
+    void testGitRepository(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in = Files.newInputStream(
+                getTestFile("doap-configuration-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
+        mavenProject.getScm().setConnection("scm:git:https://git.example.org/doap-plugin.git");
+        mavenProject.getScm().setDeveloperConnection("scm:git|https://user@git.example.org/doap.git");
+        setVariableValueToObject(mojo, "about", mavenProject.getUrl());
+
+        mojo.execute();
+
+        String readed = readFile(new File(getBasedir(), "target/doap-configuration.rdf"));
+        assertFalse(readed.contains("<SVNRepository>"));
+        assertTrue(readed.contains("<GitRepository>"));
+        assertTrue(readed.contains("<location rdf:resource=\"https://git.example.org/doap-plugin.git\"/>"));
+        assertTrue(readed.contains("<location rdf:resource=\"https://git.example.org/doap.git\"/>"));
+    }
+
     private String readFile(File file) throws IOException {
         return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
     }
