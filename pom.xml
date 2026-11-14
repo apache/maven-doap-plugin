@@ -175,6 +175,13 @@ under the License.
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <!-- 5.x needs Java 11; the build still runs on Java 8 -->
+      <version>4.11.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-testing</artifactId>
       <version>2.2.0</version>
