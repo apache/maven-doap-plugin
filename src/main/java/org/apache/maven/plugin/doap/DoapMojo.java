@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +58,6 @@ import org.apache.maven.plugin.doap.options.ASFExtOptionsUtil;
 import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.plugin.doap.options.ExtOptions;
-import org.apache.maven.plugin.doap.options.Standard;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
@@ -410,7 +408,11 @@ public class DoapMojo extends AbstractMojo {
      *
      * @since 1.1
      */
-    private UserMessages messages = new UserMessages();
+    private UserMessages messages;
+
+    private ContributorWriter contributorWriter;
+
+    private AsfExtWriter asfExtWriter;
 
     // ----------------------------------------------------------------------
     // Public methods
@@ -525,6 +527,10 @@ public class DoapMojo extends AbstractMojo {
         // ----------------------------------------------------------------------------
         // Includes ASF extensions
         // ----------------------------------------------------------------------------
+
+        messages = new UserMessages(asfExtOptions);
+        contributorWriter = new ContributorWriter(doapOptions, i18n, messages);
+        asfExtWriter = new AsfExtWriter(doapOptions, asfExtOptions, settings, messages, contributorWriter);
 
         if (!asfExtOptions.isIncluded() && ASFExtOptionsUtil.isASFProject(project)) {
             getLog().info("This project is an ASF project, ASF Extensions to DOAP will be added.");
@@ -770,18 +776,18 @@ public class DoapMojo extends AbstractMojo {
 
         // Developers
         List<Developer> developers = project.getDevelopers();
-        writeContributors(writer, new ArrayList<Contributor>(developers));
+        contributorWriter.writeContributors(writer, new ArrayList<Contributor>(developers));
 
         // Contributors
         List<Contributor> contributors = project.getContributors();
-        writeContributors(writer, contributors);
+        contributorWriter.writeContributors(writer, contributors);
 
         // Extra DOAP
         Map<Object, String> map = doapOptions.getExtra();
-        writeExtra(writer, project, "Extra DOAP vocabulary.", map, doapOptions.getXmlnsPrefix());
+        DoapUtil.writeExtra(writer, project, settings, "Extra DOAP vocabulary.", map, doapOptions.getXmlnsPrefix());
 
         // ASFext
-        writeASFext(writer, project);
+        asfExtWriter.writeASFext(writer, project);
 
         // Extra extensions
         writeExtensions(writer);
@@ -1604,189 +1610,6 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Write all DOAP persons.
-     *
-     * @param writer       not null
-     * @param contributors list of developers or contributors
-     */
-    private void writeContributors(XMLWriter writer, List<Contributor> contributors) {
-        if (contributors == null || contributors.isEmpty()) {
-            return;
-        }
-
-        boolean isDeveloper =
-                Developer.class.isAssignableFrom(contributors.get(0).getClass());
-        if (isDeveloper) {
-            DoapUtil.writeComment(writer, "Main committers.");
-        } else {
-            DoapUtil.writeComment(writer, "Contributed persons.");
-        }
-
-        List<Contributor> maintainers = DoapUtil.getContributorsWithMaintainerRole(i18n, contributors);
-        List<Contributor> developers = DoapUtil.getContributorsWithDeveloperRole(i18n, contributors);
-        List<Contributor> documenters = DoapUtil.getContributorsWithDocumenterRole(i18n, contributors);
-        List<Contributor> translators = DoapUtil.getContributorsWithTranslatorRole(i18n, contributors);
-        List<Contributor> testers = DoapUtil.getContributorsWithTesterRole(i18n, contributors);
-        List<Contributor> helpers = DoapUtil.getContributorsWithHelperRole(i18n, contributors);
-        List<Contributor> unknowns = DoapUtil.getContributorsWithUnknownRole(i18n, contributors);
-
-        // By default, all developers are maintainers and contributors are helpers
-        if (isDeveloper) {
-            maintainers.addAll(unknowns);
-        } else {
-            helpers.addAll(unknowns);
-        }
-
-        // all alphabetical
-        if (developers.size() != 0) {
-            writeContributor(writer, developers, "developer");
-        }
-        if (documenters.size() != 0) {
-            writeContributor(writer, documenters, "documenter");
-        }
-        if (helpers.size() != 0) {
-            writeContributor(writer, helpers, "helper");
-        }
-        if (maintainers.size() != 0) {
-            writeContributor(writer, maintainers, "maintainer");
-        }
-        if (testers.size() != 0) {
-            writeContributor(writer, testers, "tester");
-        }
-        if (translators.size() != 0) {
-            writeContributor(writer, translators, "translator");
-        }
-    }
-
-    /**
-     * Write a DOAP maintainer or developer or documenter or translator or tester or helper, for instance:
-     * <p/>
-     * <pre>
-     *   &lt;maintainer&gt;
-     *     &lt;foaf:Person&gt;
-     *       &lt;foaf:name&gt;Emmanuel Venisse&lt;/foaf:name&gt;
-     *       &lt;foaf:mbox rdf:resource="mailto:evenisse@apache.org"/&gt;
-     *     &lt;/foaf:Person&gt;
-     *   &lt;/maintainer&gt;
-     * </pre>
-     *
-     * @param writer                   not null
-     * @param developersOrContributors list of <code>{@link Developer}/{@link Contributor}</code>
-     * @param doapType                 not null
-     * @see #writeContributor(XMLWriter, Object, String)
-     */
-    private void writeContributor(XMLWriter writer, List<Contributor> developersOrContributors, String doapType) {
-        if (developersOrContributors == null || developersOrContributors.isEmpty()) {
-            return;
-        }
-
-        sortContributors(developersOrContributors);
-
-        for (Contributor developersOrContributor : developersOrContributors) {
-            writeContributor(writer, developersOrContributor, doapOptions.getXmlnsPrefix(), doapType);
-        }
-    }
-
-    /**
-     * Writer a single developer or contributor.
-     *
-     * @param writer                 not null
-     * @param xmlsPrefix             could be null
-     * @param developerOrContributor not null, instance of <code>{@link Developer}/{@link Contributor}</code>
-     * @param doapType               not null
-     * @see <a href="http://usefulinc.com/ns/doap#maintainer">http://usefulinc.com/ns/doap#maintainer</a>
-     * @see <a href="http://usefulinc.com/ns/doap#developer">http://usefulinc.com/ns/doap#developer</a>
-     * @see <a href="http://usefulinc.com/ns/doap#documenter">http://usefulinc.com/ns/doap#documenter</a>
-     * @see <a href="http://usefulinc.com/ns/doap#translator">http://usefulinc.com/ns/doap#translator</a>
-     * @see <a href="http://usefulinc.com/ns/doap#tester">http://usefulinc.com/ns/doap#tester</a>
-     * @see <a href="http://usefulinc.com/ns/doap#helper">http://usefulinc.com/ns/doap#helper</a>
-     * @see <a href="http://xmlns.com/foaf/0.1/Person">http://xmlns.com/foaf/0.1/Person</a>
-     * @see <a href="http://xmlns.com/foaf/0.1/name">http://xmlns.com/foaf/0.1/name</a>
-     * @see <a href="http://xmlns.com/foaf/0.1/mbox">http://xmlns.com/foaf/0.1/mbox</a>
-     * @see <a href="http://xmlns.com/foaf/0.1/Organization">http://xmlns.com/foaf/0.1/Organization</a>
-     * @see <a href="http://xmlns.com/foaf/0.1/homepage">http://xmlns.com/foaf/0.1/homepage</a>
-     */
-    private void writeContributor(
-            XMLWriter writer, Contributor developerOrContributor, String xmlsPrefix, String doapType) {
-        if (developerOrContributor == null) {
-            return;
-        }
-
-        if (doapType == null || doapType.isEmpty()) {
-            throw new IllegalArgumentException("doapType is required.");
-        }
-
-        String name = developerOrContributor.getName();
-        String email = developerOrContributor.getEmail();
-        String organization = developerOrContributor.getOrganization();
-        String organizationUrl = developerOrContributor.getOrganizationUrl();
-        String homepage = developerOrContributor.getUrl();
-        String nodeId = null;
-
-        // Name is required to write doap
-        if (name == null || name.isEmpty()) {
-            messages.addMessage(
-                    new String[] {"project", "developers|contributors", "developer|contributor", "name"},
-                    null,
-                    UserMessages.REQUIRED);
-            return;
-        }
-
-        if (!(organization == null || organization.isEmpty())
-                || !(organizationUrl == null || organizationUrl.isEmpty())) {
-            DoapUtil.Organization doapOrganization = DoapUtil.addOrganization(organization, organizationUrl);
-            nodeId = DoapUtil.getNodeId();
-            doapOrganization.addMember(nodeId);
-        }
-
-        DoapUtil.writeStartElement(writer, xmlsPrefix, doapType);
-        DoapUtil.writeStartElement(writer, "foaf", "Person");
-        if (nodeId != null && !nodeId.isEmpty()) {
-            writer.addAttribute("rdf:nodeID", nodeId);
-        }
-        DoapUtil.writeStartElement(writer, "foaf", "name");
-        writer.writeText(name);
-        writer.endElement(); // foaf:name
-        if (email != null && !email.isEmpty()) {
-            if (DoapUtil.isValidEmail(email)) {
-                DoapUtil.writeRdfResourceElement(writer, "foaf", "mbox", "mailto:" + email);
-            } else {
-                messages.addMessage(
-                        new String[] {"project", "developers|contributors", "developer|contributor", "email"},
-                        null,
-                        UserMessages.INVALID_EMAIL);
-            }
-        }
-        if ((organization != null && !organization.isEmpty())
-                && (organizationUrl != null && !organizationUrl.isEmpty())) {
-            try {
-                new URL(organizationUrl);
-
-                DoapUtil.addOrganization(organization, organizationUrl);
-            } catch (MalformedURLException e) {
-                messages.addMessage(
-                        new String[] {"project", "developers|contributors", "developer|contributor", "organizationUrl"},
-                        organizationUrl,
-                        UserMessages.INVALID_URL);
-            }
-        }
-        if (homepage != null && !homepage.isEmpty()) {
-            try {
-                new URL(homepage);
-
-                DoapUtil.writeRdfResourceElement(writer, "foaf", "homepage", homepage);
-            } catch (MalformedURLException e) {
-                messages.addMessage(
-                        new String[] {"project", "developers|contributors", "developer|contributor", "homepage"},
-                        homepage,
-                        UserMessages.INVALID_URL);
-            }
-        }
-        writer.endElement(); // foaf:Person
-        writer.endElement(); // doapType
-    }
-
-    /**
      * Return a <code>SCM repository</code> defined by a given url.
      *
      * @param scmUrl an SCM URL
@@ -1808,163 +1631,6 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Write the ASF extensions.
-     *
-     * @param writer  not null
-     * @param project the Maven project, not null
-     * @see <a href="https://projects.apache.org/ns/asfext#">
-     *      https://projects.apache.org/ns/asfext#</a>
-     * @see <a href="http://projects.apache.org/docs/pmc.html">http://projects.apache.org/docs/pmc.html</a>
-     */
-    private void writeASFext(XMLWriter writer, MavenProject project) {
-        if (!asfExtOptions.isIncluded()) {
-            return;
-        }
-
-        DoapUtil.writeComment(writer, "ASF extension.");
-
-        // asfext:pmc
-        String pmc = DoapUtil.interpolate(asfExtOptions.getPmc(), project, settings);
-        if (pmc != null && !pmc.isEmpty()) {
-            DoapUtil.writeRdfResourceElement(writer, asfExtOptions.getXmlnsPrefix(), "pmc", pmc);
-        } else {
-            messages.addMessage(new String[] {"asfExtOptions", "pmc"}, null, UserMessages.REQUIRED_BY_ASF);
-        }
-
-        // asfext:name
-        String name = DoapUtil.interpolate(asfExtOptions.getName(), project, settings);
-        if (name != null && !name.isEmpty()) {
-            if (!name.toLowerCase(Locale.ENGLISH).trim().startsWith("apache")) {
-                name = "Apache " + name;
-            }
-            DoapUtil.writeElement(writer, asfExtOptions.getXmlnsPrefix(), "name", name);
-        } else {
-            messages.addMessage(new String[] {"asfExtOptions", "name"}, null, UserMessages.REQUIRED_BY_ASF);
-        }
-
-        String homepage = DoapUtil.interpolate(doapOptions.getHomepage(), project, settings);
-        if (homepage != null && !homepage.isEmpty()) {
-            try {
-                new URL(homepage);
-
-                DoapUtil.writeRdfResourceElement(writer, "foaf", "homepage", homepage);
-            } catch (MalformedURLException e) {
-                messages.addMessage(new String[] {"doapOptions", "homepage"}, homepage, UserMessages.INVALID_URL);
-            }
-        }
-
-        // asfext:charter
-        if (StringUtils.isEmpty(asfExtOptions.getCharter())) {
-            messages.addMessage(new String[] {"asfExtOptions", "charter"}, null, UserMessages.REQUIRED_BY_ASF);
-        } else {
-            DoapUtil.writeElement(writer, asfExtOptions.getXmlnsPrefix(), "charter", asfExtOptions.getCharter());
-        }
-
-        // asfext:chair
-        @SuppressWarnings("unchecked")
-        List<Developer> developers = new ArrayList<Developer>(project.getDevelopers());
-        sortContributors(developers);
-
-        if (StringUtils.isNotEmpty(asfExtOptions.getChair())) {
-            DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "chair");
-            DoapUtil.writeStartElement(writer, "foaf", "Person");
-            DoapUtil.writeStartElement(writer, "foaf", "name");
-            writer.writeText(asfExtOptions.getChair());
-            writer.endElement(); // foaf:name
-            writer.endElement(); // foaf:Person
-            writer.endElement(); // asfext:chair
-        } else {
-            Developer chair = ASFExtOptionsUtil.findChair(developers);
-            if (chair != null) {
-                writeContributor(writer, chair, asfExtOptions.getXmlnsPrefix(), "chair");
-                developers.remove(chair);
-            } else {
-                messages.addMessage(new String[] {"asfExtOptions", "chair"}, null, UserMessages.REQUIRED_BY_ASF);
-            }
-        }
-
-        // asfext:member
-        if (developers != null && developers.size() > 0) {
-            List<Developer> pmcMembers = ASFExtOptionsUtil.findPMCMembers(developers);
-            for (Developer pmcMember : pmcMembers) {
-                writeContributor(writer, pmcMember, asfExtOptions.getXmlnsPrefix(), "member");
-            }
-        }
-
-        writeASFImplements(writer);
-
-        Map<Object, String> map = asfExtOptions.getExtra();
-        writeExtra(writer, project, "Extra ASFExt vocabulary.", map, asfExtOptions.getXmlnsPrefix());
-    }
-
-    /**
-     * Write the ASF implements.
-     *
-     * @param writer not null
-     * @see <a href="https://projects.apache.org/ns/asfext#">
-     *      https://projects.apache.org/ns/asfext#</a>
-     * @see <a href="http://projects.apache.org/docs/standards.html">http://projects.apache.org/docs/standards.html</a>
-     */
-    private void writeASFImplements(XMLWriter writer) {
-        if (asfExtOptions.getStandards() == null || asfExtOptions.getStandards().isEmpty()) {
-            return;
-        }
-
-        for (Standard standard : asfExtOptions.getStandards()) {
-            DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "implements");
-            DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "Standard");
-
-            if (StringUtils.isEmpty(standard.getTitle())) {
-                messages.addMessage(
-                        new String[] {"asfExtOptions", "standards", "title"}, null, UserMessages.REQUIRED_BY_ASF);
-            } else {
-                DoapUtil.writeElement(
-                        writer,
-                        asfExtOptions.getXmlnsPrefix(),
-                        "title",
-                        standard.getTitle().trim());
-            }
-
-            if (StringUtils.isEmpty(standard.getBody())) {
-                messages.addMessage(
-                        new String[] {"asfExtOptions", "standards", "body"}, null, UserMessages.REQUIRED_BY_ASF);
-            } else {
-                DoapUtil.writeElement(
-                        writer,
-                        asfExtOptions.getXmlnsPrefix(),
-                        "body",
-                        standard.getBody().trim());
-            }
-
-            if (StringUtils.isEmpty(standard.getId())) {
-                messages.addMessage(
-                        new String[] {"asfExtOptions", "standards", "id"}, null, UserMessages.REQUIRED_BY_ASF);
-            } else {
-                DoapUtil.writeElement(
-                        writer,
-                        asfExtOptions.getXmlnsPrefix(),
-                        "id",
-                        standard.getId().trim());
-            }
-
-            if (StringUtils.isNotEmpty(standard.getUrl())) {
-                String standardUrl = standard.getUrl().trim();
-                try {
-                    new URL(standardUrl);
-
-                    DoapUtil.writeElement(writer, asfExtOptions.getXmlnsPrefix(), "url", standardUrl);
-                } catch (MalformedURLException e) {
-                    messages.addMessage(
-                            new String[] {"asfExtOptions", "standards", "url"}, standardUrl, UserMessages.INVALID_URL);
-                }
-            }
-
-            writer.endElement(); // asfext:Standard
-            writer.endElement(); // asfext:implements
-        }
-    }
-
-    /**
      * Write a Foaf Organization, for instance:
      * <p/>
      * <pre>
@@ -1978,7 +1644,7 @@ public class DoapMojo extends AbstractMojo {
      * @param writer                   not null
      * @param developersOrContributors list of <code>{@link Developer}/{@link Contributor}</code>
      * @param doapType                 not null
-     * @see #writeContributor(XMLWriter, Object, String)
+     * @see ContributorWriter#writeContributor(XMLWriter, Contributor, String, String)
      */
     private void writeOrganizations(XMLWriter writer) {
         Set<Entry<String, DoapUtil.Organization>> organizations = DoapUtil.getOrganizations();
@@ -1996,8 +1662,8 @@ public class DoapMojo extends AbstractMojo {
 
                     DoapUtil.writeRdfResourceElement(writer, "foaf", "homepage", organization.getUrl());
                 } catch (MalformedURLException e) {
-                    messages.errorMessages.add(
-                            "The organization URL " + organization.getUrl() + " is not a valid URL.");
+                    messages.getErrorMessages()
+                            .add("The organization URL " + organization.getUrl() + " is not a valid URL.");
                 }
             }
             List<String> members = organization.getMembers();
@@ -2163,51 +1829,6 @@ public class DoapMojo extends AbstractMojo {
     }
 
     /**
-     * Write extra for DOAP or any extension.
-     *
-     * @param writer      not null
-     * @param project     not null
-     * @param comment     not null
-     * @param map         not null
-     * @param xmlnsPrefix not null
-     * @since 1.1
-     */
-    private void writeExtra(
-            XMLWriter writer, MavenProject project, String comment, Map<Object, String> map, String xmlnsPrefix) {
-        if (map == null || map.isEmpty()) {
-            return;
-        }
-
-        boolean addComment = false;
-        for (Map.Entry<Object, String> entry : map.entrySet()) {
-            String key = (String) entry.getKey();
-            String value = entry.getValue();
-
-            if (value == null) {
-                continue;
-            }
-
-            String interpolatedValue = DoapUtil.interpolate(value, project, settings);
-            if (interpolatedValue == null) {
-                continue;
-            }
-
-            if (!addComment) {
-                DoapUtil.writeComment(writer, comment);
-                addComment = true;
-            }
-
-            try {
-                new URL(interpolatedValue);
-
-                DoapUtil.writeRdfResourceElement(writer, xmlnsPrefix, key, interpolatedValue);
-            } catch (MalformedURLException e) {
-                DoapUtil.writeElement(writer, xmlnsPrefix, key, interpolatedValue);
-            }
-        }
-    }
-
-    /**
      * Write the extra DOAP extensions.
      *
      * @param writer not null
@@ -2222,7 +1843,8 @@ public class DoapMojo extends AbstractMojo {
 
         for (ExtOptions extOption : extOptions) {
             Map<Object, String> map = extOption.getExtensions();
-            writeExtra(writer, project, "Other extension vocabulary.", map, extOption.getXmlnsPrefix());
+            DoapUtil.writeExtra(
+                    writer, project, settings, "Other extension vocabulary.", map, extOption.getXmlnsPrefix());
         }
     }
 
@@ -2251,197 +1873,5 @@ public class DoapMojo extends AbstractMojo {
         }
 
         return false;
-    }
-
-    /**
-     * Sort Contributor by name or Developer by id.
-     *
-     * @param contributors not null
-     * @since 1.1
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private static void sortContributors(List contributors) {
-        Collections.sort(contributors, new Comparator<Contributor>() {
-            public int compare(Contributor contributor1, Contributor contributor2) {
-                if (contributor1 == contributor2) {
-                    return 0;
-                }
-
-                if (contributor1 == null && contributor2 != null) {
-                    return -1;
-                }
-                if (contributor1 != null && contributor2 == null) {
-                    return +1;
-                }
-
-                if (Developer.class.isAssignableFrom(contributor1.getClass())
-                        && Developer.class.isAssignableFrom(contributor2.getClass())) {
-                    Developer developer1 = (Developer) contributor1;
-                    Developer developer2 = (Developer) contributor2;
-
-                    if (developer1.getId() == null && developer2.getId() != null) {
-                        return -1;
-                    }
-                    if (developer1.getId() != null && developer2.getId() == null) {
-                        return +1;
-                    }
-
-                    return developer1.getId().compareTo(developer2.getId());
-                }
-
-                if (contributor1.getName() == null && contributor2.getName() != null) {
-                    return -1;
-                }
-                if (contributor1.getName() != null && contributor2.getName() == null) {
-                    return +1;
-                }
-                return contributor1.getName().compareTo(contributor2.getName());
-            }
-        });
-    }
-
-    /**
-     * Encapsulates all user messages.
-     *
-     * @since 1.1
-     */
-    private class UserMessages {
-        public static final int REQUIRED = 10;
-
-        public static final int REQUIRED_BY_ASF_OR_RECOMMENDED = 11;
-
-        public static final int REQUIRED_BY_ASF = 12;
-
-        public static final int RECOMMENDED = 20;
-
-        public static final int INVALID_URL = 30;
-
-        public static final int INVALID_DATE = 31;
-
-        public static final int INVALID_ISO_DATE = 32;
-
-        public static final int INVALID_EMAIL = 33;
-
-        public static final int SHORT_DESC_TOO_LONG = 34;
-
-        private List<String> errorMessages = new ArrayList<>();
-
-        private List<String> warnMessages = new ArrayList<>();
-
-        /**
-         * @return the error messages
-         */
-        public List<String> getErrorMessages() {
-            return errorMessages;
-        }
-
-        /**
-         * @return the warn messages
-         */
-        public List<String> getWarnMessages() {
-            return warnMessages;
-        }
-
-        /**
-         * @param tags    not null
-         * @param value   could be null
-         * @param errorId positive id
-         */
-        protected void addMessage(String[] tags, String value, int errorId) {
-            if (tags == null) {
-                throw new IllegalArgumentException("tags is required");
-            }
-
-            boolean isPom = false;
-            if (tags[0].equalsIgnoreCase("project")) {
-                isPom = true;
-            }
-            switch (errorId) {
-                case REQUIRED:
-                    errorMessages.add("A " + toConfiguration(tags, null) + "  parameter is required.");
-                    break;
-                case REQUIRED_BY_ASF_OR_RECOMMENDED:
-                    if (isPom) {
-                        if (asfExtOptions.isIncluded()) {
-                            errorMessages.add("A POM " + toConfiguration(tags, null) + " value is required by ASF.");
-                        } else {
-                            warnMessages.add("No POM " + toConfiguration(tags, null)
-                                    + " value is defined, it is highly recommended to have one.");
-                        }
-                    } else {
-                        if (asfExtOptions.isIncluded()) {
-                            errorMessages.add("A " + toConfiguration(tags, null) + " parameter is required by ASF.");
-                        } else {
-                            warnMessages.add("No " + toConfiguration(tags, null)
-                                    + " parameter defined, it is highly recommended to have one.");
-                        }
-                    }
-                    break;
-                case REQUIRED_BY_ASF:
-                    if (isPom) {
-                        errorMessages.add("A POM " + toConfiguration(tags, null) + " value is required by ASF.");
-                    } else {
-                        errorMessages.add("A " + toConfiguration(tags, null) + " parameter is required by ASF.");
-                    }
-                    break;
-                case RECOMMENDED:
-                    warnMessages.add("No " + toConfiguration(tags, null)
-                            + " parameter defined, it is highly recommended to have one.");
-                    break;
-                case INVALID_URL:
-                    if (isPom) {
-                        errorMessages.add("The POM " + toConfiguration(tags, value) + " value is not a valid URL.");
-                    } else {
-                        errorMessages.add("The " + toConfiguration(tags, value) + " parameter is not a valid URL.");
-                    }
-                    break;
-                case INVALID_DATE:
-                    errorMessages.add("The " + toConfiguration(tags, value) + " parameter should be in YYYY-MM-DD.");
-                    break;
-                case INVALID_EMAIL:
-                    errorMessages.add("The POM " + toConfiguration(tags, value) + " value is not a valid email.");
-                    break;
-                case INVALID_ISO_DATE:
-                    errorMessages.add(
-                            "The " + toConfiguration(tags, value) + " parameter is not a valid ISO language.");
-                    break;
-                case SHORT_DESC_TOO_LONG:
-                    errorMessages.add("The " + toConfiguration(tags, value)
-                            + " first sentence is too long maximum words number is 10.");
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown errorId=" + errorId);
-            }
-        }
-
-        /**
-         * @param tags  not null
-         * @param value of the last tag, could be null
-         * @return the XML configuration defined in tags
-         */
-        protected String toConfiguration(String[] tags, String value) {
-            if (tags == null) {
-                throw new IllegalArgumentException("tags is required");
-            }
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < tags.length; i++) {
-                if (i == tags.length - 1 && (value == null || value.isEmpty())) {
-                    sb.append("<").append(tags[i]).append("/>");
-                } else {
-                    sb.append("<").append(tags[i]).append(">");
-                }
-            }
-            if (value != null && !value.isEmpty()) {
-                sb.append(value);
-            }
-            for (int i = tags.length - 1; i >= 0; i--) {
-                if (!(i == tags.length - 1 && (value == null || value.isEmpty()))) {
-                    sb.append("</").append(tags[i]).append(">");
-                }
-            }
-
-            return sb.toString();
-        }
     }
 }

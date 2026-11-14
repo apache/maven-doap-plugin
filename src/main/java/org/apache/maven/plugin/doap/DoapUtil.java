@@ -739,4 +739,55 @@ public class DoapUtil {
             return classMap;
         }
     }
+
+    /**
+     * Write extra for DOAP or any extension.
+     *
+     * @param writer      not null
+     * @param project     not null
+     * @param settings    could be null
+     * @param comment     not null
+     * @param map         not null
+     * @param xmlnsPrefix not null
+     * @since 1.1
+     */
+    static void writeExtra(
+            XMLWriter writer,
+            MavenProject project,
+            Settings settings,
+            String comment,
+            Map<Object, String> map,
+            String xmlnsPrefix) {
+        if (map == null || map.isEmpty()) {
+            return;
+        }
+
+        boolean addComment = false;
+        for (Map.Entry<Object, String> entry : map.entrySet()) {
+            String key = (String) entry.getKey();
+            String value = entry.getValue();
+
+            if (value == null) {
+                continue;
+            }
+
+            String interpolatedValue = DoapUtil.interpolate(value, project, settings);
+            if (interpolatedValue == null) {
+                continue;
+            }
+
+            if (!addComment) {
+                DoapUtil.writeComment(writer, comment);
+                addComment = true;
+            }
+
+            try {
+                new URL(interpolatedValue);
+
+                DoapUtil.writeRdfResourceElement(writer, xmlnsPrefix, key, interpolatedValue);
+            } catch (MalformedURLException e) {
+                DoapUtil.writeElement(writer, xmlnsPrefix, key, interpolatedValue);
+            }
+        }
+    }
 }
