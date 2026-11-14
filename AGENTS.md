@@ -51,8 +51,9 @@ These notes cover what the code and POM do not make obvious, for contributors an
   `src/test/resources/unit/`. The harness hands the mojo a Mockito mock `MavenSession`; stub
   anything the mojo reads from it. `DoapMojoTest#setUp` stubs `getProjectBuildingRequest()`, which
   `DoapMojo` needs to resolve the POM of a configured `<artifact>`.
-- Integration tests are in `src/it/` (`basic`, `doapfile`, `minimal`, `MDOAP-38`). Each has a
-  `verify.groovy`; `MDOAP-38` expects the build to fail.
+- Integration tests in `src/it/` run a real Maven build and check the result in `verify.groovy`.
+  Keep them for what needs that build; a check of how the POM and parameters shape the output
+  belongs in `DoapMojoTest`.
 - Namespace URIs such as `http://usefulinc.com/ns/doap#` and
   `http://projects.apache.org/ns/asfext#` are identifiers, not links. Keep them on `http`; the
   tests assert the literal values.
@@ -63,6 +64,19 @@ These notes cover what the code and POM do not make obvious, for contributors an
   (`----` underlines), and a literal `$` is written as `${esc.d}`.
 - Keep page names and `<a id="...">` anchors stable: they are published, and `DoapMojo` prints
   a link to `usage.html#DOAP_ASF_Configuration` when ASF validation fails.
+
+## Security
+
+- Report suspected vulnerabilities privately to `security@apache.org`, following the
+  [ASF security process](https://www.apache.org/security/). Do not open public issues or pull
+  requests for them. Fixed Maven vulnerabilities are listed on
+  [Maven security reports](https://maven.apache.org/security.html).
+- Trust model, for scanners and reviewers: like any Maven plugin, the plugin trusts the POM and its
+  own configuration, including `doapFile` and `outputDirectory`, which choose where the RDF file is
+  written. It reaches the network only through Maven Resolver, for the POM of a configured
+  `<artifact>` and the release metadata it lists in the DOAP file. The `new URL(...)` calls in
+  `DoapMojo` only check syntax and open no connection. With `validate` on (the default), the
+  generated file is parsed again with Apache Jena.
 
 ## Pull requests
 
