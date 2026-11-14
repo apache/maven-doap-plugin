@@ -37,6 +37,7 @@ import org.codehaus.plexus.util.xml.XMLWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -252,5 +253,40 @@ class DoapUtilTest {
         assertEquals("developerName1", DoapUtil.interpolate("${project.developers[0].name}", project, null));
         assertEquals("developerName2", DoapUtil.interpolate("${project.developers[1].name}", project, null));
         assertEquals("myValue", DoapUtil.interpolate("${myKey}", project, null));
+    }
+
+    @Test
+    void testSplitScmConnection() {
+        assertArrayEquals(
+                new String[] {"git", "https://gitbox.apache.org/repos/asf/maven.git"},
+                DoapUtil.splitScmConnection("scm:git:https://gitbox.apache.org/repos/asf/maven.git"));
+        assertArrayEquals(
+                new String[] {"svn", "https://svn.apache.org/repos/asf/maven"},
+                DoapUtil.splitScmConnection("scm:svn|https://svn.apache.org/repos/asf/maven"));
+        assertNull(DoapUtil.splitScmConnection("https://github.com/apache/maven"));
+        assertNull(DoapUtil.splitScmConnection("scm:git"));
+        assertNull(DoapUtil.splitScmConnection("scm:git:"));
+        assertNull(DoapUtil.splitScmConnection(null));
+    }
+
+    @Test
+    void testGetScmRepositoryType() {
+        assertEquals("SVNRepository", DoapUtil.getScmRepositoryType("svn"));
+        assertEquals("GitRepository", DoapUtil.getScmRepositoryType("GIT"));
+        assertEquals("HgRepository", DoapUtil.getScmRepositoryType("hg"));
+        assertEquals("BazaarBranch", DoapUtil.getScmRepositoryType("bzr"));
+        assertNull(DoapUtil.getScmRepositoryType("cvs"));
+        assertNull(DoapUtil.getScmRepositoryType(null));
+    }
+
+    @Test
+    void testRemoveUserInfo() {
+        assertEquals(
+                "https://svn.apache.org/repos/asf",
+                DoapUtil.removeUserInfo("https://user:pass@svn.apache.org/repos/asf"));
+        assertEquals("svn://host/repo", DoapUtil.removeUserInfo("svn://user@host/repo"));
+        assertEquals("svn+ssh://user@host/repo", DoapUtil.removeUserInfo("svn+ssh://user@host/repo"));
+        assertEquals("git@github.com:apache/maven.git", DoapUtil.removeUserInfo("git@github.com:apache/maven.git"));
+        assertEquals("https://host/path@tag", DoapUtil.removeUserInfo("https://host/path@tag"));
     }
 }

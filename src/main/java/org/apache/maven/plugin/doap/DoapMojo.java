@@ -65,11 +65,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.scm.manager.NoSuchScmProviderException;
-import org.apache.maven.scm.manager.ScmManager;
-import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
-import org.apache.maven.scm.repository.ScmRepository;
-import org.apache.maven.scm.repository.ScmRepositoryException;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.FileUtils;
@@ -137,14 +132,6 @@ public class DoapMojo extends AbstractMojo {
     // ----------------------------------------------------------------------
     // Mojo components
     // ----------------------------------------------------------------------
-
-    /**
-     * Maven SCM Manager.
-     *
-     * @since 1.0
-     */
-    @Inject
-    private ScmManager scmManager;
 
     /**
      * Artifact handler manager, used to build {@link Artifact} instances directly instead of through the
@@ -1575,23 +1562,23 @@ public class DoapMojo extends AbstractMojo {
      * @param connection not null
      * @see <a href="http://usefulinc.com/ns/doap#Repository">http://usefulinc.com/ns/doap#Repository</a>
      * @see <a href="http://usefulinc.com/ns/doap#SVNRepository">http://usefulinc.com/ns/doap#SVNRepository</a>
+     * @see <a href="http://usefulinc.com/ns/doap#GitRepository">http://usefulinc.com/ns/doap#GitRepository</a>
      */
     private void writeSourceRepository(XMLWriter writer, MavenProject project, String connection) {
-        ScmRepository repository = getScmRepository(connection);
+        String[] scm = DoapUtil.splitScmConnection(connection);
+        String repositoryType = scm == null ? null : DoapUtil.getScmRepositoryType(scm[0]);
 
         DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "repository");
 
-        if (isScmSystem(repository, "svn")) {
-            DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "SVNRepository");
+        if (repositoryType != null) {
+            DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), repositoryType);
 
-            SvnScmProviderRepository svnRepo = (SvnScmProviderRepository) repository.getProviderRepository();
-
-            DoapUtil.writeRdfResourceElement(writer, doapOptions.getXmlnsPrefix(), "location", svnRepo.getUrl());
+            DoapUtil.writeRdfResourceElement(
+                    writer, doapOptions.getXmlnsPrefix(), "location", DoapUtil.removeUserInfo(scm[1]));
         } else {
             /*
-             * Supported DOAP repositories actually unsupported by SCM: BitKeeper
-             * (http://usefulinc.com/ns/doap#BKRepository) Arch (http://usefulinc.com/ns/doap#ArchRepository) Other SCM
-             * repos are unsupported by DOAP.
+             * CVS, Arch, BitKeeper and other systems: DOAP describes them with more than a location, so only a
+             * generic repository is written.
              */
             DoapUtil.writeStartElement(writer, doapOptions.getXmlnsPrefix(), "Repository");
 
@@ -1605,29 +1592,8 @@ public class DoapMojo extends AbstractMojo {
         DoapUtil.writeRdfResourceElement(
                 writer, doapOptions.getXmlnsPrefix(), "browse", project.getScm().getUrl());
 
-        writer.endElement(); // SVNRepository || Repository
+        writer.endElement(); // typed repository || Repository
         writer.endElement(); // repository
-    }
-
-    /**
-     * Return a <code>SCM repository</code> defined by a given url.
-     *
-     * @param scmUrl an SCM URL
-     * @return a valid SCM repository or null
-     */
-    private ScmRepository getScmRepository(String scmUrl) {
-        ScmRepository repo = null;
-        if (!(scmUrl == null || scmUrl.isEmpty())) {
-            try {
-                repo = scmManager.makeScmRepository(scmUrl);
-            } catch (NoSuchScmProviderException | ScmRepositoryException e) {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug(e.getMessage(), e);
-                }
-            }
-        }
-
-        return repo;
     }
 
     /**
@@ -1852,26 +1818,4 @@ public class DoapMojo extends AbstractMojo {
     // Static methods
     // ----------------------------------------------------------------------
 
-    /**
-     * Convenience method that return true is the defined <code>SCM repository</code> is a known provider.
-     * <p>
-     * Actually, we fully support SVN by the maven-scm-providers component.
-     * </p>
-     *
-     * @param scmRepository a SCM repository
-     * @param scmProvider   a SCM provider name
-     * @return true if the provider of the given SCM repository is equal to the given scm provider
-     * @see <a href="http://svn.apache.org/repos/asf/maven/scm/trunk/maven-scm-providers/">maven-scm-providers</a>
-     */
-    private static boolean isScmSystem(ScmRepository scmRepository, String scmProvider) {
-        if (scmProvider == null || scmProvider.isEmpty()) {
-            return false;
-        }
-
-        if (scmRepository != null && scmProvider.equalsIgnoreCase(scmRepository.getProvider())) {
-            return true;
-        }
-
-        return false;
-    }
 }

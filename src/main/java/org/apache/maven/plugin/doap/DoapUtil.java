@@ -741,6 +741,70 @@ public class DoapUtil {
     }
 
     /**
+     * DOAP repository classes for the Maven SCM providers that DOAP describes by a location alone.
+     */
+    private static final Map<String, String> SCM_REPOSITORY_TYPES = new HashMap<>();
+
+    static {
+        SCM_REPOSITORY_TYPES.put("svn", "SVNRepository");
+        SCM_REPOSITORY_TYPES.put("git", "GitRepository");
+        SCM_REPOSITORY_TYPES.put("hg", "HgRepository");
+        SCM_REPOSITORY_TYPES.put("bazaar", "BazaarBranch");
+        SCM_REPOSITORY_TYPES.put("bzr", "BazaarBranch");
+    }
+
+    /**
+     * Split a Maven SCM connection, <code>scm:&lt;provider&gt;:&lt;url&gt;</code> or
+     * <code>scm:&lt;provider&gt;|&lt;url&gt;</code>, into its provider and URL.
+     *
+     * @param connection a Maven SCM connection, may be null
+     * @return the provider and the URL, or null when the connection does not have that form
+     */
+    static String[] splitScmConnection(String connection) {
+        if (connection == null || !connection.startsWith("scm:")) {
+            return null;
+        }
+        String rest = connection.substring("scm:".length());
+        int delimiter = 0;
+        while (delimiter < rest.length() && rest.charAt(delimiter) != ':' && rest.charAt(delimiter) != '|') {
+            delimiter++;
+        }
+        if (delimiter == 0 || delimiter >= rest.length() - 1) {
+            return null;
+        }
+        return new String[] {rest.substring(0, delimiter), rest.substring(delimiter + 1)};
+    }
+
+    /**
+     * @param provider a Maven SCM provider id, such as <code>git</code>
+     * @return the DOAP repository class for the provider, or null when DOAP needs more than a location for it
+     */
+    static String getScmRepositoryType(String provider) {
+        return provider == null ? null : SCM_REPOSITORY_TYPES.get(provider.toLowerCase(Locale.ENGLISH));
+    }
+
+    /**
+     * Remove the user name and password from an <code>http</code>, <code>https</code>, <code>svn</code> or
+     * <code>git</code> URL, so they are not published in the DOAP file. Other URLs, such as
+     * <code>svn+ssh</code> and <code>file</code>, are returned unchanged.
+     *
+     * @param url not null
+     * @return the URL without user information
+     */
+    static String removeUserInfo(String url) {
+        for (String scheme : new String[] {"http://", "https://", "svn://", "git://"}) {
+            if (url.startsWith(scheme)) {
+                String rest = url.substring(scheme.length());
+                int slash = rest.indexOf('/');
+                String authority = slash < 0 ? rest : rest.substring(0, slash);
+                int at = authority.lastIndexOf('@');
+                return at < 0 ? url : scheme + rest.substring(at + 1);
+            }
+        }
+        return url;
+    }
+
+    /**
      * Write extra for DOAP or any extension.
      *
      * @param writer      not null

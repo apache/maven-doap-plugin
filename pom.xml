@@ -61,7 +61,6 @@ under the License.
 
   <properties>
     <mavenVersion>3.9.16</mavenVersion>
-    <scmVersion>2.2.1</scmVersion>
     <resolverVersion>1.9.27</resolverVersion>
     <project.build.outputTimestamp>2026-09-19T15:43:02Z</project.build.outputTimestamp>
   </properties>
@@ -130,28 +129,6 @@ under the License.
       <groupId>org.apache.maven.resolver</groupId>
       <artifactId>maven-resolver-spi</artifactId>
       <version>${resolverVersion}</version>
-    </dependency>
-
-    <!-- scm -->
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-api</artifactId>
-      <version>${scmVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-svn-commons</artifactId>
-      <version>${scmVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-manager-plexus</artifactId>
-      <version>${scmVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-svnexe</artifactId>
-      <version>${scmVersion}</version>
     </dependency>
 
     <!-- misc -->
