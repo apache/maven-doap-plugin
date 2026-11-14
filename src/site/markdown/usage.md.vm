@@ -51,7 +51,7 @@ The DOAP Plugin generates DOAP and ASF DOAP compliant files. The following examp
             <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
             <homepage>${esc.d}{project.url}</homepage>
             <license>${esc.d}{project.licenses[0].url}</license>
-            <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
+            <mailingList>${esc.d}{project.url}/mailing-lists.html</mailingList>
             <name>${esc.d}{project.name}</name>
             <programmingLanguage>Java</programmingLanguage>
             <scmAnonymousConnection>${esc.d}{project.scm.connection}</scmAnonymousConnection>
@@ -152,7 +152,7 @@ This is the minimal POM to be ASF compliant.
             <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
             <homepage>${esc.d}{project.url}</homepage>
             <license>${esc.d}{project.licenses[0].url}</license>
-            <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
+            <mailingList>${esc.d}{project.url}/mailing-lists.html</mailingList>
             <name>${esc.d}{project.name}</name>
             <scmAnonymousConnection>${esc.d}{project.scm.connection}</scmAnonymousConnection>
             <scmDeveloperConnection>${esc.d}{project.scm.developerConnection}</scmDeveloperConnection>
