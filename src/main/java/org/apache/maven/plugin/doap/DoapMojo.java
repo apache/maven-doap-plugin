@@ -250,24 +250,6 @@ public class DoapMojo extends AbstractMojo {
     // ----------------------------------------------------------------------
 
     /**
-     * The category which should be displayed in the DOAP file.
-     *
-     * @deprecated Since 1.0. Instead of, configure
-     *             <code>&lt;doapOptions&gt;&lt;category/&gt;&lt;/doapOptions&gt;</code> parameter.
-     */
-    @Parameter(property = "category")
-    private String category;
-
-    /**
-     * The programming language which should be displayed in the DOAP file.
-     *
-     * @deprecated Since 1.0. Instead of, configure
-     *             <code>&lt;doapOptions&gt;&lt;programmingLanguage/&gt;&lt;/doapOptions&gt;</code> parameter.
-     */
-    @Parameter(property = "language")
-    private String language;
-
-    /**
      * Specific DOAP parameters, i.e. options that POM doesn't have any notions. <br/>
      * Example:
      * <p/>
@@ -944,7 +926,7 @@ public class DoapMojo extends AbstractMojo {
      *      http://usefulinc.com/ns/doap#programming-language</a>
      */
     private void writeProgrammingLanguage(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getProgrammingLanguage()) && (language == null || language.isEmpty())) {
+        if (StringUtils.isEmpty(doapOptions.getProgrammingLanguage())) {
             messages.addMessage(
                     new String[] {"doapOptions", "programmingLanguage"},
                     null,
@@ -954,34 +936,6 @@ public class DoapMojo extends AbstractMojo {
 
         boolean addComment = false;
         String comment = "Programming language.";
-        if (language != null && !language.isEmpty()) // backward compatible
-        {
-            getLog().warn("The <language/> parameter is deprecated, please use "
-                    + messages.toConfiguration(new String[] {"doapOptions", "programmingLanguage"}, null)
-                    + " parameter instead of.");
-
-            language = language.trim();
-
-            if (asfExtOptions.isIncluded()) {
-                String asfLanguage = ASFExtOptionsUtil.getProgrammingLanguageSupportedByASF(language);
-                if (asfLanguage == null) {
-                    messages.getErrorMessages()
-                            .add("The deprecated " + messages.toConfiguration(new String[] {"language"}, language)
-                                    + " parameter is not supported by ASF. Should be one of "
-                                    + Arrays.toString(ASFExtOptionsUtil.PROGRAMMING_LANGUAGES));
-                } else {
-                    DoapUtil.writeComment(writer, comment);
-                    addComment = true;
-                    DoapUtil.writeElement(
-                            writer, doapOptions.getXmlnsPrefix(), "programming-language", asfLanguage.trim());
-                }
-            } else {
-                DoapUtil.writeComment(writer, comment);
-                addComment = true;
-                DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "programming-language", language.trim());
-            }
-        }
-
         if (StringUtils.isNotEmpty(doapOptions.getProgrammingLanguage())) {
             String[] languages = StringUtils.split(doapOptions.getProgrammingLanguage(), ",");
             for (String language : languages) {
@@ -1024,7 +978,7 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://usefulinc.com/ns/doap#category">http://usefulinc.com/ns/doap#category</a>
      */
     private void writeCategory(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getCategory()) && (category == null || category.isEmpty())) {
+        if (StringUtils.isEmpty(doapOptions.getCategory())) {
             messages.addMessage(
                     new String[] {"doapOptions", "category"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -1033,37 +987,6 @@ public class DoapMojo extends AbstractMojo {
         // TODO: how to lookup category, map it, or just declare it.
         boolean addComment = false;
         String comment = "A category of project.";
-        if (category != null && !category.isEmpty()) // backward compatible
-        {
-            getLog().warn("The <category/> parameter is deprecated, please use "
-                    + messages.toConfiguration(new String[] {"doapOptions", "category"}, null)
-                    + " parameter instead of.");
-
-            category = category.trim();
-
-            if (asfExtOptions.isIncluded()) {
-                String asfCategory = ASFExtOptionsUtil.getCategorySupportedByASF(category);
-                if (asfCategory == null) {
-                    messages.getErrorMessages()
-                            .add("The deprecated " + messages.toConfiguration(new String[] {"category"}, category)
-                                    + " parameter is not supported by ASF. Should be one of "
-                                    + Arrays.toString(ASFExtOptionsUtil.CATEGORIES));
-                } else {
-                    DoapUtil.writeComment(writer, comment);
-                    addComment = true;
-                    DoapUtil.writeRdfResourceElement(
-                            writer,
-                            doapOptions.getXmlnsPrefix(),
-                            "category",
-                            ASFExtOptionsUtil.CATEGORY_RESOURCE + asfCategory);
-                }
-            } else {
-                DoapUtil.writeComment(writer, comment);
-                addComment = true;
-                DoapUtil.writeElement(writer, doapOptions.getXmlnsPrefix(), "category", category);
-            }
-        }
-
         if (StringUtils.isNotEmpty(doapOptions.getCategory())) {
             String[] categories = StringUtils.split(doapOptions.getCategory(), ",");
             for (String category : categories) {
