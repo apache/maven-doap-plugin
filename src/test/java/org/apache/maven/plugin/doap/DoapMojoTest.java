@@ -369,6 +369,8 @@ class DoapMojoTest {
         assertTrue(readed.contains("<name>Apache " + mavenProject.getName() + "</name>"));
         assertTrue(readed.contains("<programming-language>Java</programming-language>"));
         assertTrue(readed.contains("<category rdf:resource=\"http://projects.apache.org/category/library\"/>"));
+        assertTrue(
+                readed.contains("<mailing-list rdf:resource=\"" + mavenProject.getUrl() + "/mailing-lists.html\"/>"));
 
         // ASF ext
         assertTrue(readed.contains("<asfext:pmc rdf:resource=\"" + mavenProject.getUrl() + "\"/>"));
