@@ -40,9 +40,9 @@ public class ASFExtOptionsUtil {
     /**
      * The ASF category resource.
      *
-     * @see <a href="http://projects.apache.org/guidelines.html">http://projects.apache.org/guidelines.html</a>
+     * @see <a href="https://projects.apache.org/guidelines.html">https://projects.apache.org/guidelines.html</a>
      */
-    public static final String CATEGORY_RESOURCE = "http://projects.apache.org/category/";
+    public static final String CATEGORY_RESOURCE = "https://projects.apache.org/category/";
 
     /** Projects related to building/maintaining source code/websites. */
     public static final String BUILD_MANAGEMENT_CATEGORY = "build-management";
