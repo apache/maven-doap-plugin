@@ -38,6 +38,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.doap.options.DoapArtifact;
 import org.apache.maven.plugin.doap.options.DoapOptions;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -51,9 +52,11 @@ import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValue
 import static org.apache.maven.api.plugin.testing.MojoExtension.setVariableValueToObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test {@link DoapMojo} class.
@@ -68,6 +71,9 @@ class DoapMojoTest {
 
     @Inject
     private MavenSession session;
+
+    @Inject
+    private Log log;
 
     @BeforeEach
     void setUp() {
@@ -487,6 +493,59 @@ class DoapMojoTest {
         File doapFile = new File(getBasedir(), "target/doap-configuration.rdf");
         assertTrue(doapFile.exists(), "Doap File was not generated!");
         return readFile(doapFile);
+    }
+
+    /**
+     * Verify that a POM with empty scm, issueManagement, organization and prerequisites elements still
+     * generates a DOAP file.
+     *
+     * @throws Exception if any
+     */
+    @Test
+    @InjectMojo(goal = "generate", pom = "minimal-plugin-config.xml")
+    @Basedir("/unit/minimal/")
+    void testGeneratedDoapForMinimalPom(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in =
+                Files.newInputStream(getTestFile("minimal-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
+
+        mojo.execute();
+
+        File doapFile = new File(getBasedir(), "target/doap_minimal.rdf");
+        assertTrue(doapFile.exists(), "Doap File was not generated!");
+        assertTrue(readFile(doapFile).contains("<name>minimal</name>"));
+    }
+
+    /**
+     * Verify that an ASF project fails when the first sentence of the short description is longer than
+     * ten words.
+     *
+     * @throws Exception if any
+     */
+    @Test
+    @InjectMojo(goal = "generate", pom = "asf-doap-configuration-plugin-config.xml")
+    @Basedir("/unit/asf-doap-configuration/")
+    void testShortDescTooLongFailsForASF(DoapMojo mojo) throws Exception {
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        try (InputStream in = Files.newInputStream(
+                getTestFile("asf-doap-configuration-plugin-config.xml").toPath())) {
+            mavenProject.setModel(pomReader.read(in));
+        }
+        DoapOptions doapOptions = getVariableValueFromObject(mojo, "doapOptions");
+        // the length check applies when the short description falls back to the description
+        String description = "Tests the check of a simple plugin Tests the check of a simple plugin.";
+        doapOptions.setDescription(description);
+        doapOptions.setShortdesc(description);
+        setVariableValueToObject(mojo, "doapOptions", doapOptions);
+
+        MojoExecutionException e = assertThrows(MojoExecutionException.class, mojo::execute);
+
+        assertEquals("The generated DOAP doesn't respect ASF rules, see above.", e.getMessage());
+        verify(log)
+                .error("The <doapOptions><shortdesc/></doapOptions> first sentence is too long maximum words "
+                        + "number is 10.");
     }
 
     private String readFile(File file) throws IOException {
