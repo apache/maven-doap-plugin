@@ -66,14 +66,14 @@ Define A Meta Tag
 To link the DOAP file available from all HTML files in the site, modify `src/site/site.xml` to include a &lt;link/&gt; element in the HTML `head`:
 
 ```xml
-<project>
+<site>
   <body>
     <head>
-      <link rel="meta" title="DOAP" href="${esc.d}{project.url}/doap_${esc.d}{project.artifactId}.rdf" type="application/rdf+xml"/>
+      <![CDATA[<link rel="meta" title="DOAP" href="${esc.d}{project.url}/doap_${esc.d}{project.artifactId}.rdf" type="application/rdf+xml"/>]]>
     </head>
     ...
   </body>
-</project>
+</site>
 ```
 
 Generate DOAP From Another Maven Project

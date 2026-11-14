@@ -50,7 +50,7 @@ The DOAP Plugin generates DOAP and ASF DOAP compliant files. The following examp
             <description>${esc.d}{project.description}</description>
             <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
             <homepage>${esc.d}{project.url}</homepage>
-            <license>\$\{project.licenses[0].url}</license>
+            <license>${esc.d}{project.licenses[0].url}</license>
             <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
             <name>${esc.d}{project.name}</name>
             <programmingLanguage>Java</programmingLanguage>
@@ -81,7 +81,7 @@ This is the minimal POM to be ASF compliant.
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>8</version>
+    <version>40</version>
   </parent>
 
   <groupId>org.apache.XXX</groupId>
@@ -91,7 +91,7 @@ This is the minimal POM to be ASF compliant.
 
   <name>Apache XXX Project</name>
   <description>Apache XXX is ...</description>
-  <url>http://XXX.apache.org</url>
+  <url>https://XXX.apache.org</url>
   <inceptionYear>2010</inceptionYear>
 
   <scm>
@@ -100,11 +100,11 @@ This is the minimal POM to be ASF compliant.
     <url>https://github.com/apache/XXX</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/XXX</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/XXX/issues</url>
   </issueManagement>
   <distributionManagement>
-    <downloadUrl>http://XXX.apache.org/download.html</downloadUrl>
+    <downloadUrl>https://XXX.apache.org/download.html</downloadUrl>
   </distributionManagement>
 
   <developers>
@@ -139,9 +139,10 @@ This is the minimal POM to be ASF compliant.
         <version>${project.version}</version>
         <configuration>
           <doapOptions>
-            <!-- See http://projects.apache.org/languages.html -->
+            <!-- One of C, Java, Perl, Python, SVG, Tcl -->
             <programmingLanguage>Java</programmingLanguage>
-            <!-- http://projects.apache.org/categories.html -->
+            <!-- One of build-management, database, http, httpd-modules, library, mail,
+                 network-client, network-server, testing, web-framework, xml -->
             <category>build-management</category>
 
             <!-- Default values -->
@@ -150,7 +151,7 @@ This is the minimal POM to be ASF compliant.
             <description>${esc.d}{project.description}</description>
             <downloadPage>${esc.d}{project.distributionManagement.downloadUrl}</downloadPage>
             <homepage>${esc.d}{project.url}</homepage>
-            <license>\$\{project.licenses[0].url}</license>
+            <license>${esc.d}{project.licenses[0].url}</license>
             <mailingList>${esc.d}{project.url}/mail-lists.html</mailingList>
             <name>${esc.d}{project.name}</name>
             <scmAnonymousConnection>${esc.d}{project.scm.connection}</scmAnonymousConnection>
@@ -174,7 +175,7 @@ This is the minimal POM to be ASF compliant.
                 <title>Extensible Stylesheet Language - Formatting Objects (XSL-FO 1.1)</title>
                 <body>W3C</body>
                 <id>XSL 1.1</id>
-                <url>http://www.w3.org/TR/xsl11/</url>
+                <url>https://www.w3.org/TR/xsl11/</url>
               </standard>
             </standards>
           </asfExtOptions>
@@ -219,7 +220,7 @@ Advanced DOAP Configuration
 
             <!-- Some extra DOAP vocabulary -->
             <extra>
-              <!-- For example, i.e. actually unsupported by DOAP schema -->
+              <!-- Not part of the DOAP schema -->
               <ciManagement>http://ci.foo.org</ciManagement>
             </extra>
           </doapOptions>
@@ -232,14 +233,14 @@ Advanced DOAP Configuration
 
             <!-- Some extra ASFExt vocabulary -->
             <extra>
-              <!-- Actually unsupported by ASFext -->
+              <!-- Not part of the ASFext schema -->
               <status>active</status>
             </extra>
           </asfExtOptions>
 
           <!-- More extensions -->
           <extOptions>
-            <!-- ASF labs extension, http://labs.apache.org/doapizer.html -->
+            <!-- A custom extension namespace -->
             <extOption>
               <xmlnsPrefix>labs</xmlnsPrefix>
               <xmlnsNamespaceURI>http://labs.apache.org/doap-ext/1.0#</xmlnsNamespaceURI>
@@ -270,7 +271,6 @@ Further Links
 -------------
 
 - Parameters for the [doap:generate](./generate-mojo.html) goal
-- [http://usefulinc.com/ns/doap#](http://usefulinc.com/ns/doap#)
-- [http://projects.apache.org/docs/pmc.html](http://projects.apache.org/docs/pmc.html)
-- [http://projects.apache.org/docs/standards.html](http://projects.apache.org/docs/standards.html)
-- [W3C RDF Validation Service](http://www.w3.org/RDF/Validator/)
+- [DOAP specification](https://github.com/ewilderj/doap)
+- [ASF DOAP guidelines](https://projects.apache.org/guidelines.html), including PMC descriptors
+- [W3C RDF Validation Service](https://www.w3.org/RDF/Validator/)
