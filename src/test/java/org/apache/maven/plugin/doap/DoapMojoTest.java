@@ -33,6 +33,7 @@ import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.doap.options.DoapArtifact;
@@ -41,6 +42,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getBasedir;
@@ -51,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.lenient;
 
 /**
  * Test {@link DoapMojo} class.
@@ -62,6 +65,19 @@ class DoapMojoTest {
 
     @Inject
     private MavenProject mavenProject;
+
+    @Inject
+    private MavenSession session;
+
+    @BeforeEach
+    void setUp() {
+        // the harness mocks MavenSession without a project building request; build it as MavenSession does
+        lenient()
+                .when(session.getProjectBuildingRequest())
+                .thenAnswer(invocation -> session.getRequest()
+                        .getProjectBuildingRequest()
+                        .setRepositorySession(session.getRepositorySession()));
+    }
 
     /**
      * Verify the generation of a pure DOAP file.
