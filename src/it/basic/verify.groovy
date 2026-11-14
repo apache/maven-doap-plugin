@@ -19,3 +19,12 @@
 
 def rdfFile = new File( basedir, 'target/site/doap_maven-it-plugin.rdf' )
 assert rdfFile.exists()
+
+def rdf = rdfFile.text
+// values interpolated from the POM by a real Maven build
+assert rdf.contains( '<name>Apache Test Plugin</name>' )
+assert rdf.contains( '<shortdesc xml:lang="en">Tests the check of a simple plugin</shortdesc>' )
+assert rdf.contains( '<download-page rdf:resource="http://maven.apache.org/plugins/maven-doap-plugin/downloads"/>' )
+// ASF extensions, written because the project is hosted at Apache
+assert rdf.contains( 'projects.apache.org/category/build-management"/>' )
+assert rdf.contains( '<asfext:charter>World Domination</asfext:charter>' )
