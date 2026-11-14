@@ -28,14 +28,16 @@ under the License.
 
 ## Definitions
 
-- [Semantic Web](http://en.wikipedia.org/wiki/Semantic_web)
-- [Wikipedia DOAP](http://en.wikipedia.org/wiki/DOAP)
-- [Three Minute RDF](http://semanticplanet.com/2003/05/parsingFOAFWithPHP#threeMinuteRdf)
-- [Three Minute FOAF](http://semanticplanet.com/2003/05/parsingFOAFWithPHP#threeMinuteFoaf)
+- [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web)
+- [Wikipedia DOAP](https://en.wikipedia.org/wiki/DOAP)
+- [DOAP specification](https://github.com/ewilderj/doap)
+- [RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
+
 ## Articles On DOAP
 
-- [XML Watch: Describe open source projects with XML, Part 3](http://www.ibm.com/developerworks/xml/library/x-osproj3/)
-- [Project Catalogues and Project Descriptors using DOAP](http://www.oss-watch.ac.uk/resources/doap.xml)
+- [Project Catalogues and Project Descriptors using DOAP](http://oss-watch.ac.uk/resources/doap)
+- [ASF DOAP guidelines](https://projects.apache.org/guidelines.html)
+
 ## Tools
 
-- [W3C RDF Validation Service](http://www.w3.org/RDF/Validator/)
+- [W3C RDF Validation Service](https://www.w3.org/RDF/Validator/)
