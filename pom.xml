@@ -178,7 +178,7 @@ under the License.
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <!-- 5.x needs Java 11; the build still runs on Java 8 -->
-      <version>4.11.0</version>
+      <version>5.24.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
