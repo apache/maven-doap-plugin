@@ -439,9 +439,9 @@ public class DoapMojo extends AbstractMojo {
             return null;
         }
 
-        if (StringUtils.isEmpty(artifact.getGroupId())
-                || StringUtils.isEmpty(artifact.getArtifactId())
-                || StringUtils.isEmpty(artifact.getVersion())) {
+        if ((artifact.getGroupId() == null || artifact.getGroupId().isEmpty())
+                || (artifact.getArtifactId() == null || artifact.getArtifactId().isEmpty())
+                || (artifact.getVersion() == null || artifact.getVersion().isEmpty())) {
             getLog().warn("Missing groupId or artifactId or version in <artifact/> parameter, ignored it.");
             return null;
         }
@@ -589,7 +589,8 @@ public class DoapMojo extends AbstractMojo {
             throw new MojoExecutionException(messages.getErrorMessages().get(0));
         }
         writer.addAttribute("xml:lang", lang);
-        if (StringUtils.isEmpty(doapOptions.getXmlnsNamespaceURI())) {
+        if (doapOptions.getXmlnsNamespaceURI() == null
+                || doapOptions.getXmlnsNamespaceURI().isEmpty()) {
             messages.addMessage(new String[] {"doapOptions", "xmlnsNamespaceURI"}, null, UserMessages.REQUIRED);
             throw new MojoExecutionException(messages.getErrorMessages().get(0));
         }
@@ -599,11 +600,13 @@ public class DoapMojo extends AbstractMojo {
         writer.addAttribute("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
         writer.addAttribute("xmlns:foaf", "http://xmlns.com/foaf/0.1/");
         if (asfExtOptions.isIncluded()) {
-            if (StringUtils.isEmpty(asfExtOptions.getXmlnsPrefix())) {
+            if (asfExtOptions.getXmlnsPrefix() == null
+                    || asfExtOptions.getXmlnsPrefix().isEmpty()) {
                 messages.addMessage(new String[] {"doapOptions", "xmlnsPrefix"}, null, UserMessages.REQUIRED);
                 throw new MojoExecutionException(messages.getErrorMessages().get(0));
             }
-            if (StringUtils.isEmpty(asfExtOptions.getXmlnsNamespaceURI())) {
+            if (asfExtOptions.getXmlnsNamespaceURI() == null
+                    || asfExtOptions.getXmlnsNamespaceURI().isEmpty()) {
                 messages.addMessage(new String[] {"doapOptions", "xmlnsNamespaceURI"}, null, UserMessages.REQUIRED);
             }
             writer.addAttribute(
@@ -617,12 +620,14 @@ public class DoapMojo extends AbstractMojo {
                 && extOptions.length > 0
                 && !extOptions[0].getExtensions().isEmpty()) {
             for (ExtOptions extOption : extOptions) {
-                if (StringUtils.isEmpty(extOption.getXmlnsPrefix())) {
+                if (extOption.getXmlnsPrefix() == null
+                        || extOption.getXmlnsPrefix().isEmpty()) {
                     messages.addMessage(
                             new String[] {"extOptions", "extOption", "xmlnsPrefix"}, null, UserMessages.REQUIRED);
                     throw new MojoExecutionException(messages.getErrorMessages().get(0));
                 }
-                if (StringUtils.isEmpty(extOption.getXmlnsNamespaceURI())) {
+                if (extOption.getXmlnsNamespaceURI() == null
+                        || extOption.getXmlnsNamespaceURI().isEmpty()) {
                     messages.addMessage(
                             new String[] {"extOptions", "extOption", "xmlnsNamespaceURI"}, null, UserMessages.REQUIRED);
                     throw new MojoExecutionException(messages.getErrorMessages().get(0));
@@ -887,7 +892,8 @@ public class DoapMojo extends AbstractMojo {
             }
         }
 
-        if (StringUtils.isNotEmpty(doapOptions.getOldHomepage())) {
+        if (doapOptions.getOldHomepage() != null
+                && !doapOptions.getOldHomepage().isEmpty()) {
             String oldHomepage = DoapUtil.interpolate(doapOptions.getOldHomepage(), project, settings);
             if (oldHomepage == null || oldHomepage.isEmpty()) {
                 return;
@@ -913,7 +919,8 @@ public class DoapMojo extends AbstractMojo {
      *      http://usefulinc.com/ns/doap#programming-language</a>
      */
     private void writeProgrammingLanguage(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getProgrammingLanguage())) {
+        if (doapOptions.getProgrammingLanguage() == null
+                || doapOptions.getProgrammingLanguage().isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "programmingLanguage"},
                     null,
@@ -923,7 +930,8 @@ public class DoapMojo extends AbstractMojo {
 
         boolean addComment = false;
         String comment = "Programming language.";
-        if (StringUtils.isNotEmpty(doapOptions.getProgrammingLanguage())) {
+        if (doapOptions.getProgrammingLanguage() != null
+                && !doapOptions.getProgrammingLanguage().isEmpty()) {
             String[] languages = StringUtils.split(doapOptions.getProgrammingLanguage(), ",");
             for (String language : languages) {
                 language = language.trim();
@@ -965,7 +973,7 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://usefulinc.com/ns/doap#category">http://usefulinc.com/ns/doap#category</a>
      */
     private void writeCategory(XMLWriter writer, MavenProject project) {
-        if (StringUtils.isEmpty(doapOptions.getCategory())) {
+        if (doapOptions.getCategory() == null || doapOptions.getCategory().isEmpty()) {
             messages.addMessage(
                     new String[] {"doapOptions", "category"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -974,7 +982,7 @@ public class DoapMojo extends AbstractMojo {
         // TODO: how to lookup category, map it, or just declare it.
         boolean addComment = false;
         String comment = "A category of project.";
-        if (StringUtils.isNotEmpty(doapOptions.getCategory())) {
+        if (doapOptions.getCategory() != null && !doapOptions.getCategory().isEmpty()) {
             String[] categories = StringUtils.split(doapOptions.getCategory(), ",");
             for (String category : categories) {
                 category = category.trim();
@@ -1034,7 +1042,8 @@ public class DoapMojo extends AbstractMojo {
             messages.addMessage(new String[] {"doapOptions", "downloadPage"}, downloadPage, UserMessages.INVALID_URL);
         }
 
-        if (StringUtils.isNotEmpty(doapOptions.getDownloadMirror())) {
+        if (doapOptions.getDownloadMirror() != null
+                && !doapOptions.getDownloadMirror().isEmpty()) {
             boolean addComment = false;
             String[] downloadMirrors = StringUtils.split(doapOptions.getDownloadMirror(), ",");
             for (String downloadMirror : downloadMirrors) {
@@ -1281,8 +1290,12 @@ public class DoapMojo extends AbstractMojo {
 
             // list all file release from all remote repos
             for (RemoteRepository repo : remoteRepositories) {
-                String type = StringUtils.isNotEmpty(fileReleaseType) ? fileReleaseType : project.getPackaging();
-                String classifier = StringUtils.isNotEmpty(fileReleaseClassifier) ? fileReleaseClassifier : null;
+                String type = fileReleaseType != null && !fileReleaseType.isEmpty()
+                        ? fileReleaseType
+                        : project.getPackaging();
+                String classifier = fileReleaseClassifier != null && !fileReleaseClassifier.isEmpty()
+                        ? fileReleaseClassifier
+                        : null;
                 Artifact artifactRelease = new DefaultArtifact(
                         project.getGroupId(),
                         project.getArtifactId(),
@@ -1542,10 +1555,10 @@ public class DoapMojo extends AbstractMojo {
             DoapUtil.Organization organization = organizationEntry.getValue();
 
             DoapUtil.writeStartElement(writer, "foaf", "Organization");
-            if (!StringUtils.isEmpty(organization.getName())) {
+            if (!(organization.getName() == null || organization.getName().isEmpty())) {
                 DoapUtil.writeElement(writer, "foaf", "name", organization.getName());
             }
-            if (!StringUtils.isEmpty(organization.getUrl())) {
+            if (!(organization.getUrl() == null || organization.getUrl().isEmpty())) {
                 try {
                     new URL(organization.getUrl());
 
@@ -1589,7 +1602,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeBlog(XMLWriter writer) {
         String blog = DoapUtil.interpolate(doapOptions.getBlog(), project, settings);
-        if (StringUtils.isEmpty(doapOptions.getBlog())) {
+        if (doapOptions.getBlog() == null || doapOptions.getBlog().isEmpty()) {
             return;
         }
 
@@ -1613,7 +1626,7 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private void writePlateform(XMLWriter writer) {
-        if (StringUtils.isEmpty(doapOptions.getPlatform())) {
+        if (doapOptions.getPlatform() == null || doapOptions.getPlatform().isEmpty()) {
             return;
         }
 
@@ -1650,7 +1663,7 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private void writeLanguage(XMLWriter writer) {
-        if (StringUtils.isEmpty(doapOptions.getLanguage())) {
+        if (doapOptions.getLanguage() == null || doapOptions.getLanguage().isEmpty()) {
             return;
         }
 
@@ -1706,7 +1719,8 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private void writeImplements(XMLWriter writer) {
-        if (StringUtils.isEmpty(doapOptions.getImplementations())) {
+        if (doapOptions.getImplementations() == null
+                || doapOptions.getImplementations().isEmpty()) {
             return;
         }
 
