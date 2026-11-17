@@ -32,7 +32,6 @@ import org.apache.maven.plugin.doap.options.DoapOptions;
 import org.apache.maven.plugin.doap.options.Standard;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 class AsfExtWriter {
@@ -107,7 +106,7 @@ class AsfExtWriter {
         }
 
         // asfext:charter
-        if (StringUtils.isEmpty(asfExtOptions.getCharter())) {
+        if (asfExtOptions.getCharter() == null || asfExtOptions.getCharter().isEmpty()) {
             messages.addMessage(new String[] {"asfExtOptions", "charter"}, null, UserMessages.REQUIRED_BY_ASF);
         } else {
             DoapUtil.writeElement(writer, asfExtOptions.getXmlnsPrefix(), "charter", asfExtOptions.getCharter());
@@ -118,7 +117,7 @@ class AsfExtWriter {
         List<Developer> developers = new ArrayList<>(project.getDevelopers());
         ContributorWriter.sortContributors(developers);
 
-        if (StringUtils.isNotEmpty(asfExtOptions.getChair())) {
+        if (asfExtOptions.getChair() != null && !asfExtOptions.getChair().isEmpty()) {
             DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "chair");
             DoapUtil.writeStartElement(writer, "foaf", "Person");
             DoapUtil.writeStartElement(writer, "foaf", "name");
@@ -167,7 +166,7 @@ class AsfExtWriter {
             DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "implements");
             DoapUtil.writeStartElement(writer, asfExtOptions.getXmlnsPrefix(), "Standard");
 
-            if (StringUtils.isEmpty(standard.getTitle())) {
+            if (standard.getTitle() == null || standard.getTitle().isEmpty()) {
                 messages.addMessage(
                         new String[] {"asfExtOptions", "standards", "title"}, null, UserMessages.REQUIRED_BY_ASF);
             } else {
@@ -178,7 +177,7 @@ class AsfExtWriter {
                         standard.getTitle().trim());
             }
 
-            if (StringUtils.isEmpty(standard.getBody())) {
+            if (standard.getBody() == null || standard.getBody().isEmpty()) {
                 messages.addMessage(
                         new String[] {"asfExtOptions", "standards", "body"}, null, UserMessages.REQUIRED_BY_ASF);
             } else {
@@ -189,7 +188,7 @@ class AsfExtWriter {
                         standard.getBody().trim());
             }
 
-            if (StringUtils.isEmpty(standard.getId())) {
+            if (standard.getId() == null || standard.getId().isEmpty()) {
                 messages.addMessage(
                         new String[] {"asfExtOptions", "standards", "id"}, null, UserMessages.REQUIRED_BY_ASF);
             } else {
@@ -200,7 +199,7 @@ class AsfExtWriter {
                         standard.getId().trim());
             }
 
-            if (StringUtils.isNotEmpty(standard.getUrl())) {
+            if (standard.getUrl() != null && !standard.getUrl().isEmpty()) {
                 String standardUrl = standard.getUrl().trim();
                 try {
                     new URL(standardUrl);

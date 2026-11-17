@@ -368,7 +368,7 @@ class DoapMojoTest {
                 + "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "
                 + "xmlns:foaf=\"http://xmlns.com/foaf/0.1/\" "
                 + "xmlns:asfext=\"http://projects.apache.org/ns/asfext#\">"));
-        if (StringUtils.isNotEmpty(mavenProject.getUrl())) {
+        if (mavenProject.getUrl() != null && !mavenProject.getUrl().isEmpty()) {
             assertTrue(readed.contains("<Project rdf:about=\"" + mavenProject.getUrl() + "\">"));
             assertTrue(readed.contains("<homepage rdf:resource=\"" + mavenProject.getUrl() + "\"/>"));
         }
