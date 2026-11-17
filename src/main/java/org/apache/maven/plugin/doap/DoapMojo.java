@@ -440,9 +440,9 @@ public class DoapMojo extends AbstractMojo {
             return null;
         }
 
-        if ((artifact.getGroupId() == null || artifact.getGroupId().isEmpty())
-                || (artifact.getArtifactId() == null || artifact.getArtifactId().isEmpty())
-                || (artifact.getVersion() == null || artifact.getVersion().isEmpty())) {
+        if (StringUtils.isEmpty(artifact.getGroupId())
+                || StringUtils.isEmpty(artifact.getArtifactId())
+                || StringUtils.isEmpty(artifact.getVersion())) {
             getLog().warn("Missing groupId or artifactId or version in <artifact/> parameter, ignored it.");
             return null;
         }
@@ -974,7 +974,7 @@ public class DoapMojo extends AbstractMojo {
      * @see <a href="http://usefulinc.com/ns/doap#category">http://usefulinc.com/ns/doap#category</a>
      */
     private void writeCategory(XMLWriter writer, MavenProject project) {
-        if (doapOptions.getCategory() == null || doapOptions.getCategory().isEmpty()) {
+        if (StringUtils.isEmpty(doapOptions.getCategory())) {
             messages.addMessage(
                     new String[] {"doapOptions", "category"}, null, UserMessages.REQUIRED_BY_ASF_OR_RECOMMENDED);
             return;
@@ -983,7 +983,7 @@ public class DoapMojo extends AbstractMojo {
         // TODO: how to lookup category, map it, or just declare it.
         boolean addComment = false;
         String comment = "A category of project.";
-        if (doapOptions.getCategory() != null && !doapOptions.getCategory().isEmpty()) {
+        if (StringUtils.isNotEmpty(doapOptions.getCategory())) {
             String[] categories = StringUtils.split(doapOptions.getCategory(), ",");
             for (String category : categories) {
                 category = category.trim();
@@ -1291,12 +1291,8 @@ public class DoapMojo extends AbstractMojo {
 
             // list all file release from all remote repos
             for (RemoteRepository repo : remoteRepositories) {
-                String type = fileReleaseType != null && !fileReleaseType.isEmpty()
-                        ? fileReleaseType
-                        : project.getPackaging();
-                String classifier = fileReleaseClassifier != null && !fileReleaseClassifier.isEmpty()
-                        ? fileReleaseClassifier
-                        : null;
+                String type = StringUtils.isNotEmpty(fileReleaseType) ? fileReleaseType : project.getPackaging();
+                String classifier = StringUtils.isNotEmpty(fileReleaseClassifier) ? fileReleaseClassifier : null;
                 Artifact artifactRelease = new DefaultArtifact(
                         project.getGroupId(),
                         project.getArtifactId(),
@@ -1556,10 +1552,10 @@ public class DoapMojo extends AbstractMojo {
             DoapUtil.Organization organization = organizationEntry.getValue();
 
             DoapUtil.writeStartElement(writer, "foaf", "Organization");
-            if (!(organization.getName() == null || organization.getName().isEmpty())) {
+            if (!StringUtils.isEmpty(organization.getName())) {
                 DoapUtil.writeElement(writer, "foaf", "name", organization.getName());
             }
-            if (!(organization.getUrl() == null || organization.getUrl().isEmpty())) {
+            if (!StringUtils.isEmpty(organization.getUrl())) {
                 try {
                     new URL(organization.getUrl());
 
@@ -1603,7 +1599,7 @@ public class DoapMojo extends AbstractMojo {
      */
     private void writeBlog(XMLWriter writer) {
         String blog = DoapUtil.interpolate(doapOptions.getBlog(), project, settings);
-        if (doapOptions.getBlog() == null || doapOptions.getBlog().isEmpty()) {
+        if (StringUtils.isEmpty(doapOptions.getBlog())) {
             return;
         }
 
@@ -1627,7 +1623,7 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private void writePlateform(XMLWriter writer) {
-        if (doapOptions.getPlatform() == null || doapOptions.getPlatform().isEmpty()) {
+        if (StringUtils.isEmpty(doapOptions.getPlatform())) {
             return;
         }
 
@@ -1664,7 +1660,7 @@ public class DoapMojo extends AbstractMojo {
      * @since 1.1
      */
     private void writeLanguage(XMLWriter writer) {
-        if (doapOptions.getLanguage() == null || doapOptions.getLanguage().isEmpty()) {
+        if (StringUtils.isEmpty(doapOptions.getLanguage())) {
             return;
         }
 
