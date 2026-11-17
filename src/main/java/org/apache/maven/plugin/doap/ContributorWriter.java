@@ -234,6 +234,7 @@ class ContributorWriter {
     @SuppressWarnings({"unchecked", "rawtypes"})
     static void sortContributors(List contributors) {
         contributors.sort(new Comparator<Contributor>() {
+            @Override
             public int compare(Contributor contributor1, Contributor contributor2) {
                 if (contributor1 == contributor2) {
                     return 0;

@@ -390,6 +390,7 @@ public class DoapMojo extends AbstractMojo {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute() throws MojoExecutionException {
         if (skip) {
             getLog().info("Skipping DOAP generation");
