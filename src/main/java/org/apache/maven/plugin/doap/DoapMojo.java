@@ -745,7 +745,7 @@ public class DoapMojo extends AbstractMojo {
 
         // Developers
         List<Developer> developers = project.getDevelopers();
-        contributorWriter.writeContributors(writer, new ArrayList<Contributor>(developers));
+        contributorWriter.writeContributors(writer, new ArrayList<>(developers));
 
         // Contributors
         List<Contributor> contributors = project.getContributors();

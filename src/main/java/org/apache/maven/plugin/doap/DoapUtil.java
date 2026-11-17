@@ -539,7 +539,7 @@ public class DoapUtil {
         for (Contributor contributor : developersOrContributors) {
             List<String> roles = contributor.getRoles();
 
-            if (roles != null && roles.size() != 0) {
+            if (roles != null && !roles.isEmpty()) {
                 for (String role : roles) {
                     role = role.toLowerCase(Locale.ENGLISH);
                     if (role.contains(getLowerCaseString(i18n, "doap.maintainer"))) {
@@ -616,7 +616,7 @@ public class DoapUtil {
     /**
      * Fork of {@link org.codehaus.plexus.interpolation.reflection.ReflectionValueExtractor} to care of list or arrays.
      */
-    static class ReflectionValueExtractor {
+    static final class ReflectionValueExtractor {
         @SuppressWarnings("rawtypes")
         private static final Class[] CLASS_ARGS = new Class[0];
 

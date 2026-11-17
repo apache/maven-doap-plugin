@@ -115,7 +115,7 @@ class AsfExtWriter {
 
         // asfext:chair
         @SuppressWarnings("unchecked")
-        List<Developer> developers = new ArrayList<Developer>(project.getDevelopers());
+        List<Developer> developers = new ArrayList<>(project.getDevelopers());
         ContributorWriter.sortContributors(developers);
 
         if (StringUtils.isNotEmpty(asfExtOptions.getChair())) {
@@ -137,7 +137,7 @@ class AsfExtWriter {
         }
 
         // asfext:member
-        if (developers != null && developers.size() > 0) {
+        if (developers != null && !developers.isEmpty()) {
             List<Developer> pmcMembers = ASFExtOptionsUtil.findPMCMembers(developers);
             for (Developer pmcMember : pmcMembers) {
                 contributorWriter.writeContributor(writer, pmcMember, asfExtOptions.getXmlnsPrefix(), "member");

@@ -20,7 +20,6 @@ package org.apache.maven.plugin.doap;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -79,22 +78,22 @@ class ContributorWriter {
         }
 
         // all alphabetical
-        if (developers.size() != 0) {
+        if (!developers.isEmpty()) {
             writeContributor(writer, developers, "developer");
         }
-        if (documenters.size() != 0) {
+        if (!documenters.isEmpty()) {
             writeContributor(writer, documenters, "documenter");
         }
-        if (helpers.size() != 0) {
+        if (!helpers.isEmpty()) {
             writeContributor(writer, helpers, "helper");
         }
-        if (maintainers.size() != 0) {
+        if (!maintainers.isEmpty()) {
             writeContributor(writer, maintainers, "maintainer");
         }
-        if (testers.size() != 0) {
+        if (!testers.isEmpty()) {
             writeContributor(writer, testers, "tester");
         }
-        if (translators.size() != 0) {
+        if (!translators.isEmpty()) {
             writeContributor(writer, translators, "translator");
         }
     }
@@ -234,7 +233,7 @@ class ContributorWriter {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     static void sortContributors(List contributors) {
-        Collections.sort(contributors, new Comparator<Contributor>() {
+        contributors.sort(new Comparator<Contributor>() {
             public int compare(Contributor contributor1, Contributor contributor2) {
                 if (contributor1 == contributor2) {
                     return 0;
