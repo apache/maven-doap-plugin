@@ -75,7 +75,6 @@ class DoapUtilTest {
             DoapUtil.writeElement(writer, null, null, null);
             fail("Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
@@ -100,7 +99,6 @@ class DoapUtilTest {
             DoapUtil.writeRdfResourceElement(writer, null, null, null);
             fail("Null not catched");
         } catch (IllegalArgumentException e) {
-            assertTrue(true, "IllegalArgumentException catched");
         } finally {
             w.close();
         }
