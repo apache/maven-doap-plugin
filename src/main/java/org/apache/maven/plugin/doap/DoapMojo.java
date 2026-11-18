@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -67,7 +68,6 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.i18n.I18N;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -514,7 +514,7 @@ public class DoapMojo extends AbstractMojo {
         Writer w;
         try {
             if (!outputFile.getParentFile().exists()) {
-                FileUtils.mkdir(outputFile.getParentFile().getAbsolutePath());
+                Files.createDirectories(outputFile.getParentFile().toPath());
             }
 
             w = new XmlStreamWriter(outputFile);
